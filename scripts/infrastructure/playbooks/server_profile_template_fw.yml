@@ -22,11 +22,7 @@
   vars_files:
    - ../secret.yml
    - ../inputs.yml
-   - ../roles/deploy_template/tasks/controller_server_profile_template_file.yml
-   - ../roles/deploy_template/tasks/master_server_profile_template_file.yml
-   - ../roles/deploy_template/tasks/worker_server_profile_template_file.yml
+   - ../roles/deploy_template/tasks/hcpnodes_template_file.yml
    - ../roles/deploy_template/tasks/gw_server_profile_template_file.yml
   roles:
-   - ../roles/deploy_template
-
-
+   - ../roles/deploy_template_fw

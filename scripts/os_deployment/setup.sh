@@ -21,37 +21,21 @@ echo "Starting Environment Setup"
 echo "============================================================"
 
 echo "============================================================"
-echo "Verifying subscription manager status"
+echo "Updating /etc/yum.repos.d/nginx.repo"
 echo "============================================================"
-subscription_status=$(subscription-manager status | grep -e "Current"|awk '{print $3}')
-expected="Current"
-if [[ $subscription_status == $expected ]]
-then
-    echo "System is registered to Red Hat Subscription Manager"
-    echo "Enabling required Red Hat repositories"
-    subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-extras-rpms --enable=rhel-7-server-optional-rpms --enable=rhel-server-rhscl-7-rpms
-else
-    echo "!!!!!!!!!!!======================================!!!!!!!!!!!!"
-    echo "Please subscribe to Red Hat Subscription Manager before proceeding further"
-    echo "!!!!!!!!!!!======================================!!!!!!!!!!!!"
-    exit 1
-fi
+
+cat > /etc/yum.repos.d/nginx.repo <<EOF
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/mainline/centos/7/\$basearch
+gpgcheck=0
+enabled=1
+EOF
 
 echo "============================================================"
 echo "Installing development tools"
 echo "============================================================"
 yum -y install @development
-
-echo "============================================================"
-echo "Updating /etc/yum.repos.d/nginx.repo"
-echo "============================================================"
-cat > /etc/yum.repos.d/nginx.repo <<EOF
-[nginx]
-name=nginx repo
-baseurl=http://nginx.org/packages/mainline/rhel/7/\$basearch
-gpgcheck=0
-enabled=1
-EOF
 
 echo "============================================================"
 echo "Installing Nginx server"
@@ -80,6 +64,39 @@ firewall-cmd --permanent --zone=public --add-service=https
 firewall-cmd --reload
 
 echo "============================================================"
+echo " verifying git installation "
+echo "============================================================"
+git --version 2>&1 >/dev/null # improvement by tripleee
+GIT_IS_AVAILABLE=$?
+#...
+if [ $GIT_IS_AVAILABLE -eq 0 ]; then
+    echo "git installed"
+else
+     yum install git -y
+fi
+
+echo "============================================================"
+echo "installing libuuid and libuuid-devel"
+echo "============================================================"
+yum -y install libuuid libuuid-devel
+
+echo "============================================================"
+echo "cloning mksusecd"
+echo "============================================================"
+git clone https://github.com/openSUSE/mksusecd
+cd mksusecd/
+make
+echo "============================================================"
+echo "installing mksusecd"
+echo "============================================================"
+make install
+echo "============================================================"
+echo "installing perl-Digest-HMAC"
+echo "============================================================"
+yum -y install perl-Digest-HMAC
+
+
+echo "============================================================"
 echo "Verifying Python3 status and installing the prerequisites"
 echo "============================================================"
 rpm -qa | grep -qw rh-python36 || yum install rh-python36 -y
@@ -100,5 +117,5 @@ then
 else
     echo "Python3 is enabled"
     echo "Installing requirements"
-    pip3 install -r requirements.txt
+    pip3 install -r ../requirements.txt
 fi

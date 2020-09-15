@@ -80,8 +80,8 @@ This role consists of ansible playbooks developed to automate the task of creati
 
 - Expected output on successful creation of Server Profiles and updation of firmware based on firmware baseline specified by the user.
 
-  ![](./media/6-srv-profile-and-fw-validation)
+  ![](../../media/6-srv-profile-and-fw-validation)
 
 - Expected output in OneView on successful creation of Server Profile and updation of firmware based on firmware baseline specified by the user.
 
-  ![](./media/7-srv-profile-and-fw-validation_OneView.JPG)
+  ![](../../media/7-srv-profile-and-fw-validation_OneView.JPG)

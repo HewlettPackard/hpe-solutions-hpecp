@@ -15,5 +15,4 @@
 ####
 ---
 # tasks file for deploy_vsphere
-- import_tasks: firmware_driver_details.yml
 - import_tasks: server_profile_template.yml

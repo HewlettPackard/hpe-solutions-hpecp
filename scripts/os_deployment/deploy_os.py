@@ -40,6 +40,7 @@ from esxi_operations import *
 from rhel_operations import *
 from ilo_operations import *
 from image_operations import *
+from suse_operations import *
 
 max_threads_for_deployment = 10
 os_deployment_semaphores = threading.Semaphore(value=max_threads_for_deployment)
@@ -132,8 +133,11 @@ def image_deployment(servers, server_serial_number, os_type, kickstart_files):
     elif os_type == "esxi67":
         custom_iso_created = create_custom_iso_image_esxi(os_type, server, config, kickstart_files[os_type])
 
+    elif os_type == "sles15":
+        custom_iso_created = create_custom_iso_image_sles(os_type, server, config, kickstart_files[os_type])
+    
     else:
-        print("Unsupported OS type. Supported OS types are rhel7 and esxi67")
+        print("Unsupported OS type. Supported OS types are rhel7, sles15 and esxi67")
         return False
 
     print("Starting OS installation for server: " + server_serial_number)
@@ -207,12 +211,18 @@ def validate_prerequisites(os_type, http_url, image_name, kickstart_files, worke
                 print("Base kickstart file for worker nodes is not present for {} installation".format(os_type))
                 return False
 
+    elif(os_type == "sles15"):
+        if not os.path.isfile(kickstart_files[os_type]):
+            print("Base AutoYaST file is not present for {} installation".format(os_type))
+            return False
+
     elif(os_type == "esxi67"):
         if not os.path.isfile(kickstart_files[os_type]):
             print("Base kickstart file is not present for {} installation".format(os_type))
             return False
+
     else:
-        print("Unsupported OS type. Supported OS Types are rhel7, ESXI67")
+        print("Unsupported OS type. Supported OS Types are rhel7,sles15 and ESXI67")
         return False
 
     iso_image_state = is_iso_image(image_name)
@@ -233,15 +243,14 @@ if __name__ == '__main__':
     kickstart_files = {
     "rhel7_master"             :   "kickstart_files/ks_rhel7.cfg",
     "rhel7_worker"             :   "kickstart_files/ks_rhel7_worker.cfg",
-    "esxi67"                   :   "kickstart_files/ks_esxi67.cfg"
+    "esxi67"                   :   "kickstart_files/ks_esxi67.cfg",
+    "sles15"                   :   "kickstart_files/autoinst.xml"
     }
 
     config_path = 'input_files/config.json'
     servers_path = 'input_files/server_details.json'
-
     # Chckign if input files exist or not
     if os.path.exists(config_path) and os.path.exists(servers_path):
-        # Enter decryption key to decrypt input files
         key = getpass("Enter Key:")
         try:
             config_vault = VaultLib([(DEFAULT_VAULT_ID_MATCH, VaultSecret(key.encode('utf-8')))])
@@ -254,7 +263,13 @@ if __name__ == '__main__':
             server_input_file = open(servers_path)
             # Decrypting server_details.json file
             servers = json.loads(server_vault.decrypt(server_input_file.read()))
-
+            # creating inventory file
+            with open("../prepare_hpecp_hosts/inventory",'w') as t:
+                for server in servers:
+                    t.write(server['Hostname'] + " " + "GPU_Host=")
+                    t.write(server['GPU_Host'])
+                    t.write("\n")
+			
         except Exception as e:
             print("Error occured while opening input encrypted configuration file {} ".format(e))
     else:
@@ -266,4 +281,5 @@ if __name__ == '__main__':
     #Closing open file
     configuration_file.close()
     server_input_file.close()
+
 

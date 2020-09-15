@@ -1,0 +1,95 @@
+###
+## Copyright (2020) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Prepare input file for epicctl to create controller ha.
+    template:
+      src: enable-ha.j2
+      dest: /tmp/enable-ha.json
+      mode: 0640
+
+  - name: Get worker information
+    command:  epicctl api get -u "/api/v1/workers" -n {{ common.name }} -p {{ common.platform }} -o /tmp/worker-info.json
+    register: res
+    failed_when: res.rc != 0
+
+  - name: load worker information
+    include_vars:
+      file: /tmp/worker-info.json
+      name: worker_info
+
+  - name: Get valid worker urls
+    set_fact:
+      worker_hrefs: "{{ worker_hrefs|default({}) | combine( {item.ip: item._links.self.href} ) }}"
+    with_items: "{{worker_info._embedded.workers }}"
+
+  - name: Gather epicworkers urls
+    set_fact:
+      epiworker_urls: "{{ epiworker_urls| default([]) + [worker_hrefs[item.worker]] }}"
+    with_items: "{{ epicworkers.host_pools}}"
+
+  - name: Load enable-ha json file
+    include_vars:
+      file: /tmp/enable-ha.json
+      name: enable_ha
+
+  - name: Update shadow key in json file
+    set_fact:
+      enable_ha: "{{ enable_ha | default({}) | combine({ 'shadow': epiworker_urls[0]}) }}"
+
+  - name: Update arbiter key in json file
+    set_fact:
+      enable_ha: "{{ enable_ha | default({}) | combine({ 'arbiter': epiworker_urls[1]}) }}"
+
+  - name: Write enable-ha file back to disk.
+    copy:
+      content: "{{ enable_ha | to_nice_json }}"
+      dest: /tmp/enable-ha.json
+
+  - name: Enable HA
+    command: epicctl api put -a -u "/api/v1/install/?install_ha" -f /tmp/enable-ha.json -p  {{ common.platform }} -n {{ common.name }}
+    register: res
+    failed_when: res.rc != 0
+
+  - debug:
+      msg: "{{ res.stdout }}"
+
+  - name: Poll the status of enable ha  by making get call to /api/v1/install
+    command: epicctl api get -u "/api/v1/install" -n {{ common.name }} -p {{ common.platform }} -o /tmp/get-response.json
+    vars:
+      getResp: "{{ (lookup('file', '/tmp/get-response.json') | from_json)['install_state'] }}"
+    register : res
+    failed_when: false # when resource is deleted, last get call returns 404, don't want to fail it
+    changed_when: false
+    retries: 30
+    delay: 60
+    until: '"installed" == getResp'
+
+  - name: Check Controller HA Status
+    command: grep -i "ha_state" /tmp/get-response.json
+    register: reg_ha_status
+    ignore_errors: true
+
+  - set_fact:
+      ha_status: "{{ (lookup('file', '/tmp/get-response.json') | from_json)['ha_state'] }}"
+    when: reg_ha_status.stdout | length > 0
+
+  - debug:
+      msg: "HA installed succssfully"
+    when: reg_ha_status.stdout | length > 0 and '"ok" == ha_status'
+
+  - debug:
+      msg: "HA not installed"
+    when: reg_ha_status.stdout | length == 0 and  '"ok" != ha_status'

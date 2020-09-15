@@ -15,23 +15,22 @@
 ####
 
 [server_profile_template]
-"Frame1, bay 5" type="SY 480 Gen10 1" role="master"
-"Frame1, bay 6" type="SY 480 Gen10 1" role="worker"
-"Frame1, bay 7" type="SY 480 Gen10 1" role="controller"
+#format "enclosure serial number, server bay number" type=<server hardware type> role=<role(hcpnodes/gw) of the server profile template>
+"Frame1, bay 7" type="SY 480 Gen10 1" role="hcpnodes"
 "Frame1, bay 8" type="SY 480 Gen10 1" role="gw"
 
 
 [server_profile]
-# format "enclosure serial number, server bay number", type=<server hardware type> role=<role(master/worker/controller/gw) of the server> name=<server profile name>
-"Frame1, bay 4" type="SY 480 Gen10 1" role="master" name="cp_master_01"
-"Frame2, bay 4" type="SY 480 Gen10 1" role="master" name="cp_master_02"
-"Frame3, bay 4" type="SY 480 Gen10 1" role="master" name="cp_master_03"
-"Frame1, bay 5" type="SY 480 Gen10 1" role="worker" name="cp_worker_01"
-"Frame2, bay 5" type="SY 480 Gen10 1" role="worker" name="cp_worker_02"
-"Frame3, bay 5" type="SY 480 Gen10 1" role="worker" name="cp_worker_03"
-"Frame1, bay 9" type="SY 480 Gen10 1" role="controller" name="cp_controller_01"
-"Frame2, bay 9" type="SY 480 Gen10 1" role="controller" name="cp_controller_02"
-"Frame3, bay 9" type="SY 480 Gen10 1" role="controller" name="cp_controller_03"
+#format "enclosure serial number, server bay number" type=<server hardware type> role=<role(hcpnodes/gw) of the server> name=<server profile name>
+"Frame1, bay 4" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_master_01"
+"Frame2, bay 4" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_master_02"
+"Frame3, bay 4" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_master_03"
+"Frame1, bay 5" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_worker_01"
+"Frame2, bay 5" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_worker_02"
+"Frame3, bay 5" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_worker_03"
+"Frame1, bay 9" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_controller_01"
+"Frame2, bay 9" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_controller_02"
+"Frame3, bay 9" type="SY 480 Gen10 1" role="hcpnodes" name="hcp_controller_03"
 "Frame3, bay 10" type="SY 480 Gen10 1" role="gw" name="cp_gw_01"
 "Frame3, bay 11" type="SY 480 Gen10 1" role="gw" name="cp_gw_02"
 

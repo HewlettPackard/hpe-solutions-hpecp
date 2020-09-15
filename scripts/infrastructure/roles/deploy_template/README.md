@@ -56,18 +56,31 @@ This role consists of ansible playbooks developed to automate the task of creati
 ```
 # enclosure_group: <Enclosure group name as per OneView> 
 
- # deployment_network_name: <Deployment network name as per OneView>
+# deployment_network_name: <Deployment network name as per OneView>
 
- # iSCSI_A_network_name: <iscsi_A network name as per OneView>
+# hcpnodes_template_name: <Custom name for hcpnodes_SPT>
 
- # iSCSI_B_network_name: <iscsi_B network name as per OneView>
+# gw_template_name: <Custom name for gw_SPT>
 
- # server_profile_template_name: <Custom name for SPT>
+**NOTE**
 
- # fw_bundle_path: <Firmware Bundle file path>
+If the firmware is updated and available in the composer, then there is no need to upload the firmware again. Update the following parameters.
 
-# fw_bundle_file_name: <Firmware file name with extension>
+# fw_bundle_path: <Firmware Bundle file path>  #Comment this parameter to deploy the server profiles without firmware.
+
+# fw_bundle_file_name: <Firmware file name with extension>  #Comment this parameter to deploy the server profiles without firmware.
+
+# managefw: true  #Change this parameter to false for deploy the server profiles without firmware. 
+
 ```
+
+**Note:**
+
+If the firmware is already available in the composer and there is no requirement of a new firmware then the following changes need to be made:
+
+- Comment the "fw_bundle_path", "fw_bundle_file_name" parameters
+- Set the "managefw" parameter as false
+
 
  \- Input file name: secret.yml
 
@@ -109,24 +122,9 @@ This role consists of ansible playbooks developed to automate the task of creati
 
 **##### Details about the tasks available in this role:** 
 
-The following variable available in the "inputs.yml" file, inform the playbook from about the name of the firmware bundle iso. This iso name is internally converted to a OneView understandable name by OneView APIs. Details about this variable is available in the "inputs.yml" file.
+This playbook has 2 tasks namely  "server_profile_template.yml" and server profile template facts file with the name " (hcpnodes/gw)server_profile_template_file.yml".
 
-
-
-fw_bundle_file_name: <Firmware file name with extension>
-
-
-
-This playbook has 2 tasks namely "firmware_driver_details.yml" and "(controller/master/worker)server_profile_template.yml" and server profile template facts file with the name " (controller/master/worker)server_profile_template_file.yml".
-
-
-
-Task "firmware_driver_details.yml" checks the availability of the firmware bundle iso specified in the varibale "fw_bundle_file_name" in OneView and derives its name from OneView.
-
-
-
-Parameters or facts (OneView Terminology) required to create a Server Profile Template are available in the file "server_profile_template_file.yml". This file gathers the information about various dynamic variables based on the inputs provided by user in the four input files.
-
+Parameters or facts (OneView Terminology) is required to create a Server Profile Template . This is available in the file "server_profile_template_file.yml". This file gathers the information about various dynamic variables based on the inputs provided by user in the four input files.
 
 
 Task "server_profile_template.yml" creates the server profile template in OneView.
@@ -136,19 +134,25 @@ Task "server_profile_template.yml" creates the server profile template in OneVie
 ```
 # cd BASE_DIR/infrastructure
 
-# ansible-playbook -i hosts playbooks/server_profile_template_fw.yml --ask-vault-pass
+# ansible-playbook -i hosts playbooks/server_profile_template.yml --ask-vault-pass
+```
+
+\- Execute the following command to create and deploy the Server Profile template with managed Firmware manually.
+
+```
+ # ansible-playbook -i hosts playbooks/server_profile_template.yml --ask-vault-pass
 ```
 
  **Note**: BASE_DIR is defined and set in Ansible Engine section in deployment guide
 
-\- Expected output on successful creation of Server Profile Template using "server_profile_template_fw.yml" playbook.
+\- Expected output on successful creation of Server Profile Template using "server_profile_template.yml" playbook.
 
- ![](C:/Program Files/Typora/media/3-role-srv-profile-template-Create.JPG)
+ ![](../../media/3-role-srv-profile-template-Create.JPG)
 
 \- In case template is already available then the expected output on successful updation of Server Profile Template with the Server Profile Facts specified in the server_profile_template_file.yml.
 
- ![](C:/Program Files/Typora/media/4-role-srv-profile-template_update.JPG)
+ ![](../../media/4-role-srv-profile-template_update.JPG)
 
 \- Expected output on successful creation/updation of Server Profile Template in OneView using "server_profile_template_fw.yml" playbook.
 
- ![](./media/5-role-srv-profile-template_OneVeiw.JPG)
+ ![](../../media/5-role-srv-profile-template_OneVeiw.JPG)

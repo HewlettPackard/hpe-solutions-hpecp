@@ -14,88 +14,136 @@
 ## limitations under the License.
 ####
 
+
 ---
-- name: prepare hosts
-  hosts: hpecp_nodes 
-  gather_facts: true
-  become: true
+- hosts: all
   vars_files:
-    - ./secret.yml
-
+    - reg_details.yaml
+    
   tasks:
-    - name: Checking if the host is already registered?
-      shell: subscription-manager status | grep -e "Current"|awk '{print $3}'
-      register: issubscribed
-      ignore_errors: yes
+  - name: Verifying registration status
+    command: SUSEConnect --status
+    register: reg_status
 
-    - name: Registering hosts to Red Hat Subscription Manager
-      redhat_subscription:
-          state: present
-          username: "{{ rhsub_username }}"
-          password: "{{ rhsub_password }}"
-          force_register: yes
-          auto_attach: yes
-      when:
-          - issubscribed.stdout.find('Current') == -1
-      ignore_errors: yes
+  - name: De-registering the server
+    command: SUSEConnect --de-register
+    when: "'Not Registered' not in reg_status.stdout"
 
-    - name: Enabling Reqired repositories
-      command: 'subscription-manager repos "--enable=rhel-7-server-optional-rpms" "--enable=rhel-7-server-extras-rpms" "--enable=rhel-ha-for-rhel-7-server-rpms"'
+  - name: Verifying Input Mode
+    debug:
+      msg: Input mode is {{ Mode }}
 
-    - name: Setting the OS release version to Red Hat Enterprise Linux 7.7
-      command: 'subscription-manager release --set=7.7'
+  - fail: 
+       msg: "valid input mode,either 1 or 2 is required for server registration"
+    when: Mode !=1 and Mode !=2
+    
+  - name: Registering the server through RMT
+    command: SUSEConnect --url {{ RMT_URL }}
+    when: Mode == 1
 
-    - name: Perform an Update
-      yum:
-          name: '*'
-          state: latest
+  - name: Verifying Internet Connection
+    uri:
+      url: http://api.ipify.org
+      return_content: yes
+    register: this
+    when: Mode == 2
 
-    - name: Restricting the behaviour of Yum plugin to "notifications only" in the /etc/yum/pluginconf.d/search-disabled-repos.conf file
-      lineinfile:
-        path: /etc/yum/pluginconf.d/search-disabled-repos.conf
-        state: present
-        regexp: '^notify_only'
-        line: 'notify_only=0'
+  - fail:
+      msg: "Active internet connection is required"
+    when: Mode == 2 and this.status != 200
+  
+  - name: Registering the server through user credentials
+    command: SUSEConnect -r {{ base_code }} -e {{ Email }}
+    when: Mode == 2
+  
+  - name: Verifying registration status
+    command: SUSEConnect --status
+    register: reg_status
+    failed_when: "'Not Registered' in reg_status.stdout"
 
-    - name: Disabling firewall
-      firewalld:
-        permanent: yes
-        state: disabled
+  - name: Installing the SLES modules
+    command: SUSEConnect -p "{{ item }}"
+    loop: "{{ sles_packages }}"
 
-    - name: Setting SELinux to Permissive mode
-      lineinfile:
-        path: /etc/selinux/config
-        regexp: '^SELINUX='
-        line: SELINUX=permissive
+  - name: Installing packageHub module
+    command: SUSEConnect -p PackageHub/15.1/x86_64
+    register: output
+    no_log: True
+    ignore_errors: True
 
-    - name: Updating the ARP settings in the /etc/sysctl.conf configuration file for arp_announce and arp_ignore to 0
-      lineinfile:
-        path: /etc/sysctl.conf
-        state: present
-        regexp: '{{ item.From }}'
-        line: '{{ item.To }}'
-      with_items:
-         - { From: '^net.ipv4.conf.eth0.arp_ignore=', To: 'net.ipv4.conf.eth0.arp_ignore=0'}
-         - { From: '^net.ipv4.conf.eth0.arp_announce=', To: 'net.ipv4.conf.eth0.arp_announce=0'}
+  - name: ReInstalling packageHub Module
+    command: SUSEConnect -p PackageHub/15.1/x86_64
+    when: output.rc != 0
+    
+  - name: Activating the HA module using user credentials
+    command: SUSEConnect -p sle-ha/15.1/x86_64 -r {{ ha_code }}
+    when: Mode == 2
 
-    - name: Updating the "PubkeyAuthentication", "AuthorizedKeysFile", and "PermitRootLogin" fields in /etc/ssh/sshd_config configuration file
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        state: present
-        regexp: '{{ item.From }}'
-        line: '{{ item.To }}'
-      with_items:
-         - { From: '^PubkeyAuthentication=', To: 'PubkeyAuthentication=yes'}
-         - { From: '^AuthorizedKeysFile=', To: 'AuthorizedKeysFile=.ssh/authorized_keys'}
-         - { From: '^PermitRootLogin=', To: 'PermitRootLogin=yes'}
+  - name: Activating the caas module using user credentials
+    command: SUSEConnect -p caasp/4.0/x86_64 -r {{ caas_code }}
+    when: Mode == 2
 
-    - name: Enabling Reqired yum repositories
-      command: 'yum install -y bluedata-bdmgmt-*.el7 bluedata-troubleshoot-*.el7 bluedata-webui-*.el7 bluedata-datatap-*.el7 bluedata-bdconfig-*.el7 openvswitch-2.5.2-1.el7* yum-utils sos python-requests python-requests-kerberos python-argparse python-boto python-urllib3 policycoreutils-python python-dateutil ceph-common httpd mod_ssl mod_wsgi django chrony bind-utils bc lvm2 parted autofs rpcbind libcgroup-tools psmisc nfs-utils python-ipaddr python-iniparse patch curl wget openssh-clients python-setuptools createrepo openldap-clients docker selinux-policy python-devel python-cffi python-virtualenv python-dateutil libxml2-devel libxslt-devel openssl-devel device-mapper-persistent-data dnsmasq haproxy socat --skip-broken'
-      args:
-        warn: no
+  - name: Activating the HA module using RMT server
+    command: SUSEConnect -p sle-ha/15.1/x86_64 
+    when: Mode == 1
 
-    - name: Reboot the host 
-      command: /sbin/shutdown -r +1
-      async: 0
-      poll: 0
-      ignore_errors: true
+  - name: Activating the caas module using RMT server
+    command: SUSEConnect -p caasp/4.0/x86_64
+    when: Mode == 1
+
+  - name: Installing Zypper packages
+    zypper:
+      name: "{{ item }}"
+      state: latest
+    loop: "{{ zypper_packages }}"
+    
+  - name: Installing package for GPU host
+    zypper:
+      name: libglvnd-devel
+      state: latest
+    when: GPU_Host  == "yes"
+    
+  - name: Running sed command to change the autofs file
+    command: sed -i'' -e "s|#/net.*$|/net\ -hosts|g" /etc/auto.master
+    
+  - name: Checking apparmor service
+    command: systemctl status apparmor
+    register: armor_output
+    no_log: True
+    ignore_errors: True
+
+  - name: Stopping apparmor service
+    command: systemctl stop apparmor 
+    when: armor_output.rc == 0
+
+  - name: Disabling apparmor service
+    command: systemctl disable apparmor
+    when: armor_output.rc == 0
+
+  - name: Disabling SWAP in fstab 
+    replace:
+      path: /etc/fstab
+      regexp: '^(/dev/system/swap)'
+      replace: '# \1'
+ 
+  - name: Updating grub file in accordance with hpecp implementation 
+    lineinfile:
+      path: /etc/default/grub
+      regexp: 'GRUB_CMDLINE_LINUX='
+      line: GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=0 systemd.legacy_systemd_cgroup_controller=1 apparmor=0 cgroup_enable=memory swapaccount=1 ipv6.disable=1 security=selinux selinux=1"
+
+  - name: Running grub2 command
+    command: grub2-mkconfig
+
+  - name: Running dracut command
+    command: dracut -f
+
+  - name: Rebooting the hosts
+    reboot:
+  
+  - name: Enabling firewall
+    command: systemctl enable firewalld
+    
+  - name: Starting firewall service
+    command: systemctl start firewalld
+     

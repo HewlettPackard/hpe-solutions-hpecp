@@ -70,8 +70,8 @@ fw_bundle_file_name: <Firmware file name with extension>
 	Note: BASE_DIR is defined and set in Ansible Engine section in deployment guide
 - Expected output on installer machine after successful upload of firmware bundle to OneView
 
-  ![](./media/2-role-upload_firmware_bundle.JPG)
+  ![](../../media/2-role-upload_firmware_bundle.JPG)
 
 - Expected output after Firmware Baseline id uploaded to OneView
 
-  ![](./media/1-role-upload_firmware_bundle_OneView.JPG)
+  ![](../../media/1-role-upload_firmware_bundle_OneView.JPG)

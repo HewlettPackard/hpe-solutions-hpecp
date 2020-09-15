@@ -15,19 +15,9 @@
 ####
 ---
 - set_fact:
-    server_profile_template_name: "{{ worker_template_name }}"
+    server_profile_template_name: "{{ hcpnodes_template_name }}"
   when: 
-    - server_role=="worker"
-
-- set_fact:
-    server_profile_template_name: "{{ master_template_name }}"
-  when: 
-    - server_role=="master"
-
-- set_fact:
-    server_profile_template_name: "{{ controller_template_name }}"
-  when: 
-    - server_role=="controller"
+    - server_role=="hcpnodes"
 
 - set_fact:
     server_profile_template_name: "{{ gw_template_name }}"

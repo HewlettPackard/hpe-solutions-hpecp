@@ -21,21 +21,8 @@ enclosure_group: <Enclosure group name as per OneView>
 # Example: deployment_network_name: TwentyNet
 deployment_network_name: <Deployment network name as per OneView>
 
-#<iscsi_A network name as per OneView>
-iSCSI_A_network_name: <iSCSI_SAN_A primary iSCSI network name as per one view> 
-
-#<iscsi_B network name as per OneView>
-iSCSI_B_network_name: <iSCSI_SAN_B Secondary iSCSI network name as per one view> 
-
-#<Custom name for workerServerProfileTemplate>
-# Example: worker_template_name: hpecptemplate
-worker_template_name: <Custom name for worker_SPT> 
-
-#<Custom name for MasterServerProfileTemplate>
-master_template_name: <Custom name for master_SPT>
-
-#<Custom name for ControllerServerProfileTemplate>
-controller_template_name: <Custom name for controller_SPT>
+#<Custom name for hcpnodes ServerProfileTemplate>
+hcpnodes_template_name: <Custom name for hcpnodes_SPT>
 
 #<Custom name for gwServerProfileTemplate>
 gw_template_name: <Custom name for gw_SPT>
@@ -44,14 +31,15 @@ gw_template_name: <Custom name for gw_SPT>
 # Path on installer machine where the firmware bundle or firmware baseline for Compute Module of HPE Synergy is present. 
 # This path should end with "/" but it should not include firmware file name.
 # Example: fw_bundle_path: /etc/ansible/hpe-solutions-openshift/synergy/scalable/infrastructure/roles/upload_firmware_bundle/files/
-fw_bundle_path: <Firmware Bundle file path>
+fw_bundle_path: <Firmware Bundle file path> #Comment this parameter to deploy the server profiles without firmware.
 
 # Provide the firmware file name with extension
 # fw_bundle_file_name: HPE_Synergy_Custom_SPP2019.12_20200326_Z7550-96866.iso
-fw_bundle_file_name: <Firmware file name with extension>
+fw_bundle_file_name: <Firmware file name with extension> #Comment this parameter to deploy the server profiles without firmware.
+
 ###### Enable or Diable Firmware update,BIOS Setttings, and ilo settings by changing the flag to true or false #########
 # manage firmware
-managefw: true
+managefw: true   #Change this parameter to false for deploy the server profiles without firmware.
 
 # manage BIOS security settings 
 manageBios: true
@@ -61,9 +49,11 @@ bioscomplianceControl: Checked
 manageilo: true
 ilocomplianceControl: Checked
 
+# Ansible python interpreter path (This needs to be modified according to your environment)
+# Example: ansible_python_interpreter: /opt/hpe/solutions/hpecp/hpcp_venv/bin/python
+ansible_python_interpreter: <Specify the absolute path of Ansible python interpreter according to your environment>
+
 ############################## No need to change #############################
-# ansible python interpreter path (Need to change)
-ansible_python_interpreter: /etc/ansible/hpe-solutions-openshift/synergy/scalable/installer/ocp42_venv/bin/python
 
 server_profile_name: "{{ hostvars[inventory_hostname].name }}"
 server_hardware: "{{ inventory_hostname }}"

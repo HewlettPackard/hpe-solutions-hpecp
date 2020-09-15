@@ -1,90 +1,124 @@
-# Preparing RHEL 7.7 hosts for HPECP installation
-
-This folder consists of scripts to prepare RHEL 7.7 hosts for HPECP installation. 
+# Preparing SLES 15 hosts for HPECP installation
 
 ## Prerequisites 
-RHEL 7.6 Installer machine with the following configurations is essential.
+- Centos 7 Installer machine with the following configurations is essential.
 1. Enable Python3 and Ansible Environment as mentioned in "Installer machine" section of deployment guide.
 2. Passwordless SSH is configured to target hosts from the installer machine. Steps for configuring passwordless SSH is as follows:
-   - Execute the following command on installer machine to generate a new SSH key pair.
-     ```
+  - Execute the following command on installer machine to generate a new SSH key pair.
+    ```
      # ssh-keygen
-     ```
-     Note
-        To generate a SSH key pair of specific algorithm or specific key size as per user requirements, use the following command.
-        ```
-        # ssh-keygen -t <algorithm> -b <keysize>
-        ```
-   - Execute the following command on the installer machine for each of target hosts and provide the password for the root user on that target host.
-     ```
-     # ssh-copy-id root@<target_host_ip_address_or_fully_qualified_domain_name>
-     ```
+    ```
+     **Note**
+  * To generate a SSH key pair of specific algorithm or specific key size as per user requirements, use the following command.
 
-## Description 
-This automation script configures the following on the hosts on which HPECP is to be installed:
-- Register the host to Red Hat Subscription Manager(RHSM) if not already registered.
-- Enable repos "rhel-7-server-optional-rpms", "rhel-7-server-extras-rpms" and "rhel-ha-for-rhel-7-server-rpms".
-- Set the RHEL OS release to 7.7 and perform an update.
-- The behaviour of Yum plugin is set to notifications only in the /etc/yum/pluginconf.d/search-disabled-repos.conf file.
-- Disable firewall and set SELinux to permissive mode
-- The ARP settings in the /etc/sysctl.conf configuration file for arp_announce and arp_ignore is set to 0 to facilitate the use of local target IP address configured on any interface and reply for any local target IP address, configured on any interface
-- The SSHD service allows the Controller host to communicate directly with Worker hosts via password-less SSH when adding the Worker hosts to the HPE Container Platform deployment. This script updates the following fields in /etc/ssh/sshd_config file:
-  - PubkeyAuthentication=yes
-  - AuthorizedKeysFile=.ssh/authorized_keys
-  - PermitRootLogin=yes
-- Downloading yum repos - bluedata-bdmgmt-.el7 bluedata-troubleshoot-.el7 bluedata-webui-.el7 bluedata-datatap-.el7 bluedata-bdconfig-.el7 openvswitch-2.5.2-1.el7 yum-utils sos python-requests python-requests-kerberos python-argparse python-boto python-urllib3 policycoreutils-python python-dateutil ceph-common httpd mod_ssl mod_wsgi django chrony bind-utils bc lvm2 parted autofs rpcbind libcgroup-tools psmisc nfs-utils python-ipaddr python-iniparse patch curl wget openssh-clients python-setuptools createrepo openldap-clients docker selinux-policy python-devel python-cffi python-virtualenv python-dateutil libxml2-devel libxslt-devel openssl-devel device-mapper-persistent-data dnsmasq haproxy socat
-- Reboot the server once all the above tasks are completed
+    ```
+     # ssh-keygen -t <algorithm> -b <keysize>
+    ```    
+ 
+## Input Files
 
-For more information on the configuring requirements for HPCP nodes, refer to the documentation at http://docs.bluedata.com/50_operating-system-requirements and http://docs.bluedata.com/50_configuration-requirements
+1. There is 1 input files reg_detail.yaml which needs to be updated with values for all the variables present within them.
+
+  1. Open reg_detail.yaml present in "BASE_DIR/prepare_hpecp_hosts" folder with the following command and enter the details listed Below.
+   
+	  Command to edit reg_details.yaml
+
+      ```
+      # ansible-vault edit reg_details.yaml
+      ```
+	  
+	  **Note**
+     * Default password for Ansible Vault file reg_details.yaml is "changeme".
+   
+	  1. Mode :- There are two modes of server registration, RMT and User Email.
+       Permissible values are 1 (For registering the SUSE server to RMT) and 2 (For registering the SUSE server using Email)
+    
+      Mode 1 : Registration using RMT server.
+      Update the reg_details.yaml with the following inputs
+      1. RMT_URL: RMT server ip address.
+
+      Mode 2 : Registration using User Email Id and RegCode.
+      Update the reg_details.yaml with the following inputs
+      1. Email :- User Email-id which will be used for server registration.
+      2. base_code :- Registration code which will be used for server registration.
+      3. caas_code :- Registration code for caas module.
+      4. ha_code:- Registration code for ha module.
+
+		
+      **Note** 
+       * Email and Reg_codes are applicable only for Mode 2 else leave blank.
+			
+	    2. sles_packages : sles modules which will be installed separated by comma.
+		3. Zypper_packages : zypper packages which will be installed separated by comma.
+
+  	  
+  4. Example values for the reg_details.yaml is as follows.
+	
+      ```
+      ---
+      #Mode 1 for RMT Registration and Mode 2 for User Registration
+      
+
+      Mode: 2
+      
+      Email: jim.***@***.com
+      base_code: 8BAB9EC****
+      caas_code: 21E02******
+      ha_code: 87D73*****
+      
+      RMT_URL: http://20.**.**.**/
+
+      sles_packages: [sle-module-public-cloud/15.1/x86_64,sle-module-legacy/15.1/x86_64,sle-module-python2/15.1/x86_64,sle-module-containers/15.1/x86_64,sle-module-basesystem/15.1/x86_64,sle-module-desktop-applications/15.1/x86_64]
+      
+      zypper_packages: [iputils,bind-utils,autofs,libcgroup1,kernel-default-devel,gcc-c++,perl,pciutils,rsyslog,firewalld]
+      
+      ```
+**Note** 
+  * Don't modify the sles_packages and zypper_packages as these packages are required for HPECP implementation.Any changes made to this section may impact the installation. 
+
 
 ## Installation
 1. Enable Python3 and Ansible Environment as mentioned in "Installer machine" section of deployment guide.
 2. Change the current working directory to "prepare_hpecp_hosts" using the following command
-   ```
+  ```
    # cd BASE_DIR/prepare_hpecp_hosts
-   ```
-  Note: BASE_DIR is defined and set in "Installer machine" section in deployment guide.
+  ```
+  **Note**
+  * BASE_DIR is defined and set in "Installer machine" section in deployment guide.
+  
+   
+3. Execute the copy.sh script to copy the ssh keys to the SLES hosts.
 
-3. Update the input file hosts and provide the IP addresses of the hosts which needs to be configured with the prerequisites for HPECP installation.
-    ```
-    vi hosts
-    ```
-    Example values for the hosts file is as follows.
-    ```
-    [hpecp_nodes]
-    # HPECP controller nodes
-    20.0.x.x
-    20.0.x.x
-    20.0.x.x
+  ```
+	#sh copy.sh
 
-    # HPECP gateway nodes
-    20.0.x.x
-    20.0.x.x    
+  ```
+      
+	  *User Needs to enter the sles hosts password at the prompt.
 
-    # HPECP worker nodes
-    20.0.x.x
-    20.0.x.x
-    20.0.x.x
-    20.0.x.x
-    20.0.x.x
-    20.0.x.x    
-    ```
-4. Update the secret.yml ansible vault file using the following command to provide the Red Hat Subscription Manager credentials. 
-    ```
-    ansible-vault edit secret.yml
-    ```
-    Example values for the secret.yml file is as follows.
-    ```
-    rhsub_password: "<redhat_subscription_manager_password>"
-    rhsub_username: "<redhat_subscription_manager_username>"
-    ```
+  
+**Note**
+   * By default, the forks parameter in Ansible is limited to 5. Update the Ansible configuration to increase the value to number of hosts that are getting configured using this playbook by executing the following command.
+  
+  ```
+       # export ANSIBLE_FORKS=<number_of_hosts_present_in_the_ansible_inventory_file>
+  ```
 
-    Note: By default the forks parameter in Ansible is a very limited to 5. Update the Ansible configuration to increase the value to number of hosts that are getting configured using this playbook by executing the following command.
-      ```
-      # export ANSIBLE_FORKS=<number_of_hosts_present_in_the_ansible_inventory_file>
-      ```
+4. Execute the playbook using the following command.
+  ```
+    # ansible-playbook -i inventory prepare_host.yml --ask-vault-pass 
 
-5. Execute the playbook using the following command.
-    ```
-    # ansible-playbook -i hosts prepare_host.yml --ask-vault-pass
-    ```
+  ```
+**Note**
+	
+	* The inventory file is being generated during the OS deployment script execution based on the inputs provided in server_detail.json.In case the prepare host script needs to be executed on other servers ,the inventory file present in BASE_DIR/prepare_hpecp_hosts can be updated manually with the corresponding server details.
+	
+	* During the playbook execution, while installing the packageHub Module it might throw an error in the first attempt. This is a known issue from SUSE and is being taken care by re-installing the module,link for reference https://www.suse.com/support/kb/doc/?id=000019505
+  
+	* In case the script fails while checking the internet connection from the hosts, kindly cross verify the internet from the hosts and then re-run the script.
+
+	* While checking the apparmor service the error is expected as it verifies the apparmor service status on the hosts and if it is running, it will stop and disable the same.
+	
+	
+
+  

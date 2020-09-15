@@ -1,0 +1,140 @@
+###
+## Copyright (2020) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Get the host URI using the name/ip address.
+    command: epicctl api get -u /api/v2/worker/k8shost -n {{ common.name }} -p {{ common.platform }} --jsonpath "._embedded.k8shosts" -o /tmp/get-response.json
+    register: res
+    failed_when: res.rc != 0
+
+  - name: Check if response file exists.
+    stat:
+      path: /tmp/get-response.json
+    register: output
+
+  - name: Parse json to retrieve the tenant URI.
+    set_fact:
+      k8s_hosts: "{{ lookup('file', '/tmp/get-response.json') | from_json }}"
+    when: output.stat.exists == True
+  
+  - name: Set host name that needs to deleted
+    set_fact:
+      host_to_deleted: "{{ item.host }}"
+  
+  - name: Set persistent disks name that needs to deleted
+    set_fact:
+      persistent_disks: "{{ k8shosts.persistent_disks }}"
+  
+  - name: Set the k8shost_uri variable.
+    set_fact:
+      k8shost_uri: "{{ item._links.self.href }}"
+    with_items: "{{ k8s_hosts }}"
+    when: item.ipaddr  == host_to_deleted
+
+  - debug:
+      msg: "{{ k8shost_uri }}"
+    failed_when: k8shost_uri is undefined
+
+  - name: Get the storage_commission_status log
+    command: epicctl api get -u "{{ k8shost_uri }}" -a -n {{ common.name }} -p {{ common.platform }} -o /tmp/get-response.json
+    register: result
+
+  - name: Get the storage_commission_status
+    command: grep -i "storage_commission_status" /tmp/get-response.json
+    register: storage_status
+    ignore_errors: true
+
+  - set_fact:
+      scs: yes
+    when: storage_status.stdout | length > 0
+
+
+  # TODO: if servers are added in the error state,
+  # get response doesn't have commission state, need to handle this
+  - name: Get the storage_commission_status status
+    command: epicctl api get -u "{{ k8shost_uri }}" -a -n {{ common.name }} -p {{ common.platform }} --jsonpath ".storage_commission_status" -o /tmp/get-response.json
+    register: result
+    when: storage_status.stdout | length > 0
+    failed_when: result.rc != 0
+
+  - name: Set the decomminssion status to variable
+    set_fact:
+      decomm_status: "{{ result.stdout | from_json }}"
+    when: storage_status.stdout | length > 0
+
+  - name: create decommission request
+    copy:
+      content: '{"op": "decommission"}'
+      dest: "/tmp/k8shost-decomm.json"
+      mode: 0644
+    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
+
+  - name: Make request to decommission a k8s host.
+    command: epicctl api post -u "{{ k8shost_uri }}" -f /tmp/k8shost-decomm.json -n "{{ common.name }}" -p {{ common.platform }} -o /tmp/k8s-host-decomm-response.json
+    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"] 
+    register: res
+    failed_when: res.rc != 0
+
+  - pause:
+      seconds: 45
+    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
+
+  - name: Poll the status of host decommission process by making get call to /api/v2/k8shost/k8shost_id
+    command: epicctl api get -u "{{ k8shost_uri }}" -a -n {{ common.name }} -p {{ common.platform }} --jsonpath ".storage_commission_status" -o /tmp/get-response.json
+    register : res
+    vars:
+      getResp: "{{ res.stdout | from_json }}"
+    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
+    failed_when: res.rc != 0
+    changed_when: false
+    retries: 30
+    delay: 30
+    until:  '"Decommissioning" != getResp'
+
+  - debug:
+      msg: "{{ res.stdout }}"
+    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
+
+  - debug:
+      msg: "polling of host decommission task finished"
+    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
+
+  - name: Delete k8s host with epicctl and rest api.
+    command: epicctl api delete -u "{{ k8shost_uri }}" -a -n "{{ common.name }}" -p {{ common.platform }} -o /tmp/delete-response.json
+    register: res
+    failed_when: res.rc != 0
+
+  - debug:
+     msg: "{{ res.stdout }}"
+
+  - pause:
+      seconds: 45
+
+  - name: Poll the status of host delete process by making get call to /api/v2/k8shost/k8shost_id
+    command: epicctl api get -u "{{ k8shost_uri }}" -a -n {{ common.name }} -p {{ common.platform }} --jsonpath ".status" -o /tmp/get-response.json
+    register: res
+    vars:
+      getResp: "{{ res.stdout | from_json }}"
+    when: res.rc != 404
+    ignore_errors: yes # last call returns 403, above templating fails, so ignoring the error forcibly
+    failed_when: false
+    changed_when: false
+    retries: 20
+    delay: 30
+    until:  '"deleting" != getResp'
+
+  - debug:
+      msg: "polling of host delete task finished"
+  
