@@ -1,24 +1,24 @@
-**# HPE Container Platform on HPE Synergy**
+# HPE Container Platform on HPE Synergy
 
-**## Overview**
+## Overview
 
 This folder consists of ansible playbooks developed to automate the tasks such as uploading firmware baseline iso package to OneView, creating server profile template & server profiles in HPE OneView. These playbooks are meant to be used in conjunction with the deployment guide for ***\*HPE Container Platform on HPE Synergy\****
 
-**## Prerequisites**
+## Prerequisites
 
 \- Ansible engine with Ansible 2.9.x and Python 3.6.x
 
-\- ***\*Python module for HPE OneView\****: hpOneView is the Python SDK for the OneView API that allows you to manage OneView functionalities. Download the python repository at https://github.com/HewlettPackard/oneview-python.
+\- **Python module for HPE OneView**: hpOneView is the Python SDK for the OneView API that allows you to manage OneView functionalities. Download the python repository at https://github.com/HewlettPackard/oneview-python.
 
-\- ***\*Ansible module for HPE OneView\****: OneView-ansible is the Ansible Module for HPE OneView which utilizes the python SDK to enable infrastructure as a code. Download the repository at https://github.com/HewlettPackard/oneview-ansible/.
+\- **Ansible module for HPE OneView**: OneView-ansible is the Ansible Module for HPE OneView which utilizes the python SDK to enable infrastructure as a code. Download the repository at https://github.com/HewlettPackard/oneview-ansible/.
 
-\- ***\*Ansible configuration file\****: By default,the **forks** parameter in **Ansible** is limited to 5, please increase the value to number of hosts that are getting configured using this playbook.
+\- **Ansible configuration file**: By default,the **forks** parameter in **Ansible** is limited to 5, please increase the value to number of hosts that are getting configured using this playbook.
 
 For more information on running the playbooks, see Installer machine section in the deployment guide at:
 
 https://hewlettpackard.github.io/hpe-solutions-hpecp/
 
-**## Software requirements** 
+## Software requirements
 
 | Software            | Version |
 
@@ -30,7 +30,7 @@ https://hewlettpackard.github.io/hpe-solutions-hpecp/
 
 
 
-**## Usage**
+## Usage
 
 \- Execute the following command to switch to infrastructure directory.
 
@@ -135,7 +135,7 @@ If the firmware is already available in the composer and there is no requirement
 ```
 
  
-**## Deatils of playbook**
+## Deatils of playbook
 
 **Using firmware bundle:** 
 
