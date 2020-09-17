@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deploying WordPress application using Nimble persistent volume | HPE Deployment Guide for HPE Ezmeral Container Platform on HPE Synergy </title>
+    <meta name="generator" content="VuePress 1.5.4">
+    
+    <meta name="description" content="">
+    <link rel="preload" href="/hpe-solutions-hpecp/5.0/assets/css/0.styles.d5074086.css" as="style"><link rel="preload" href="/hpe-solutions-hpecp/5.0/assets/js/app.9e57fa5b.js" as="script"><link rel="preload" href="/hpe-solutions-hpecp/5.0/assets/js/2.ca577d1f.js" as="script"><link rel="preload" href="/hpe-solutions-hpecp/5.0/assets/js/16.4724e478.js" as="script"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/10.7653ac4a.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/11.03b59ef5.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/12.4053d4ed.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/13.10e37ced.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/14.6593624f.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/15.abd6c11c.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/17.cc499619.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/18.55c184dc.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/19.d4c727d2.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/3.11053c91.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/4.c1ef1af0.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/5.b9f3fa98.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/6.84dca2fa.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/7.044c1ac8.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/8.9c411008.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.0/assets/js/9.047e217f.js">
+    <link rel="stylesheet" href="/hpe-solutions-hpecp/5.0/assets/css/0.styles.d5074086.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/hpe-solutions-hpecp/5.0/" class="home-link router-link-active"><!----> <span class="site-name">HPE Deployment Guide for HPE Ezmeral Container Platform on HPE Synergy </span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/hpe-solutions-hpecp/5.0/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="http://www.hpe.com/info/ra" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  RA Library
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/hpe-solutions-hpecp/5.0/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="http://www.hpe.com/info/ra" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  RA Library
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/hpe-solutions-hpecp/5.0/Introduction/Introduction.html" class="sidebar-link">Introduction</a></li><li><a href="/hpe-solutions-hpecp/5.0/Solution overview/Solution overview.html" class="sidebar-link">Solution overview</a></li><li><a href="/hpe-solutions-hpecp/5.0/Solution components/Solution components.html" class="sidebar-link">Solution components</a></li><li><a href="/hpe-solutions-hpecp/5.0/Physical environment configuration/Physical environment configuration.html" class="sidebar-link">Physical environment configuration</a></li><li><a href="/hpe-solutions-hpecp/5.0/Worker-node-configuration/Worker-node-configuration.html" class="sidebar-link">Worker node configuration</a></li><li><a href="/hpe-solutions-hpecp/5.0/Deploy HPE Ezmeral Container Platform/Deploy HPE Ezmeral Container Platform.html" class="sidebar-link">Deploy HPE Ezmeral Container Platform</a></li><li><a href="/hpe-solutions-hpecp/5.0/Deploying Kubernetes cluster/Deploying Kubernetes cluster.html" class="sidebar-link">Deploying Kubernetes cluster</a></li><li><a href="/hpe-solutions-hpecp/5.0/Securing HPE Ezmeral Container Platform using Sysdig Secure and Sysdig Monitor/Securing HPE Ezmeral Container Platform using Sysdig Secure and Sysdig Monitor.html" class="sidebar-link">Securing HPE Ezmeral Container Platform using Sysdig Secure and Sysdig Monitor</a></li><li><a href="/hpe-solutions-hpecp/5.0/Validate HPE Ezmeral Container Platform deployment/Validate HPE Ezmeral Container Platform deployment.html" class="sidebar-link">Validate HPE Ezmeral Container Platform deployment</a></li><li><a href="/hpe-solutions-hpecp/5.0/HPE CSI driver installation/HPE CSI driver installation.html" class="sidebar-link">HPE CSI driver installation</a></li><li><a href="/hpe-solutions-hpecp/5.0/Configuration/Configuration.html" class="sidebar-link">Configuration</a></li><li><a href="/hpe-solutions-hpecp/5.0/Deploying WordPress application using Nimble persistent volume/Deploying WordPress application using Nimble persistent volume.html" class="active sidebar-link">Deploying WordPress application using Nimble persistent volume</a></li><li><a href="/hpe-solutions-hpecp/5.0/Resources and additional links/Resources and additional links.html" class="sidebar-link">Resources and additional links</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="deploying-wordpress-application-using-nimble-persistent-volume"><a href="#deploying-wordpress-application-using-nimble-persistent-volume" class="header-anchor">#</a> Deploying WordPress application using Nimble persistent volume</h1> <p>Create the required PVC for the deployment.</p> <blockquote><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl create --f mariadb-pvc.yaml wordpress-pvc.yaml
+</code></pre></div></blockquote> <p>Sample pvc files are as follows.</p> <blockquote><div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolumeClaim
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> data<span class="token punctuation">-</span>my<span class="token punctuation">-</span>wordpress<span class="token punctuation">-</span>mariadb<span class="token punctuation">-</span><span class="token number">0</span>
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> ReadWriteOnce
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+    <span class="token key atrule">requests</span><span class="token punctuation">:</span>
+      <span class="token key atrule">storage</span><span class="token punctuation">:</span> 50Gi
+  <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> hpe<span class="token punctuation">-</span>standard
+</code></pre></div></blockquote> <p>PVC for the Wordpress application.</p> <blockquote><div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolumeClaim
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>wordpress
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> ReadWriteOnce
+  <span class="token key atrule">resources</span><span class="token punctuation">:</span>
+    <span class="token key atrule">requests</span><span class="token punctuation">:</span>
+      <span class="token key atrule">storage</span><span class="token punctuation">:</span> 20Gi
+  <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> hpe<span class="token punctuation">-</span>standard
+</code></pre></div></blockquote> <p>Use Helm to deploy WordPress using the PVC created previously. When WordPress is deployed, the volume will be attached, formatted, and mounted.</p> <ol><li>Add the WordPress chart.</li></ol> <blockquote><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> helm repo <span class="token function">add</span> bitnami https://charts.bitnami.com/bitnami
+<span class="token operator">&gt;</span> helm repo update
+</code></pre></div></blockquote> <ol start="2"><li>Deploy WordPress by setting persistence.existingClaim=&lt;existing_PVC&gt; to the PVC  <strong>my-wordpress</strong> created in the previous step.</li></ol> <blockquote><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> helm <span class="token function">install</span> my-wordpress bitnami/wordpress --version <span class="token number">9.2</span>.1 --set service.type<span class="token operator">=</span>ClusterIP,wordpressUsername<span class="token operator">=</span>admin,wordpressPassword<span class="token operator">=</span>adminpassword,mariadb.mariadbRootPassword<span class="token operator">=</span>secretpassword,persistence.existingClaim<span class="token operator">=</span>my-wordpress,allowEmptyPassword<span class="token operator">=</span>false
+<span class="token operator">&gt;</span>kubectl get pods
+NAME READY STATUS RESTARTS AGE
+my-wordpress-69b7976c85-9mfjv <span class="token number">1</span>/1 Running <span class="token number">0</span> 2m
+my-wordpress-mariadb-0 <span class="token number">1</span>/1 Running <span class="token number">0</span> 2m
+
+<span class="token operator">&gt;</span> kubectl describe svc wordpress
+Name: wordpress
+Namespace: default
+Labels: <span class="token assign-left variable">app</span><span class="token operator">=</span>wordpress
+hpecp.hpe.com/hpecp-internal-gateway<span class="token operator">=</span>true
+Annotations: hpecp-internal-gateway/80: hcpgw1.twentynet.local:10003
+Selector: <span class="token assign-left variable">app</span><span class="token operator">=</span>wordpress,tier<span class="token operator">=</span>frontend
+Type: NodePort
+IP: <span class="token number">10.96</span>.129.177
+Port: <span class="token operator">&lt;</span>unset<span class="token operator">&gt;</span> <span class="token number">80</span>/TCP
+TargetPort: <span class="token number">80</span>/TCP
+NodePort: <span class="token operator">&lt;</span>unset<span class="token operator">&gt;</span> <span class="token number">31535</span>/TCP
+Endpoints: <span class="token number">10.192</span>.0.164:80
+Session Affinity: None
+External Traffic Policy: Cluster
+Events: <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+</code></pre></div></blockquote> <p>Open a browser on your workstation to hcpgw1.twentynet.local:10003 and you should see, <strong>&quot;Hello World!&quot;</strong>.</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/hpe-solutions-hpecp/5.0/Configuration/Configuration.html" class="prev">
+        Configuration
+      </a></span> <span class="next"><a href="/hpe-solutions-hpecp/5.0/Resources and additional links/Resources and additional links.html">
+        Resources and additional links
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/hpe-solutions-hpecp/5.0/assets/js/app.9e57fa5b.js" defer></script><script src="/hpe-solutions-hpecp/5.0/assets/js/2.ca577d1f.js" defer></script><script src="/hpe-solutions-hpecp/5.0/assets/js/16.4724e478.js" defer></script>
+  </body>
+</html>

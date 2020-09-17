@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Physical worker node labeling in HPE Ezmeral Container Platform | HPE EZMERAL CONTAINER PLATFORM 5.1 AND HPE EZMERAL DATA FABRIC ON HPE SYNERGY AND HPE APOLLO 4200 GEN10 SERVERS</title>
+    <meta name="generator" content="VuePress 1.5.4">
+    
+    <meta name="description" content="">
+    <link rel="preload" href="/hpe-solutions-hpecp/5.1/assets/css/0.styles.ad965169.css" as="style"><link rel="preload" href="/hpe-solutions-hpecp/5.1/assets/js/app.ef59d087.js" as="script"><link rel="preload" href="/hpe-solutions-hpecp/5.1/assets/js/2.d85522de.js" as="script"><link rel="preload" href="/hpe-solutions-hpecp/5.1/assets/js/13.0680d9b2.js" as="script"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/10.06af00e2.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/11.b5cb4c34.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/12.a84126ed.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/14.795ea125.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/15.33cac8ca.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/16.88e99b7e.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/17.e57d4413.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/18.f9325bb2.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/19.de5eb1f0.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/20.be5877b8.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/21.01285221.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/22.4f2e2874.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/23.22cda737.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/24.a2a5f581.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/3.2cb330c1.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/4.e3f72e24.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/5.a6146132.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/6.062d4e39.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/7.8414efd9.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/8.41db8db4.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.1/assets/js/9.164e8e89.js">
+    <link rel="stylesheet" href="/hpe-solutions-hpecp/5.1/assets/css/0.styles.ad965169.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/hpe-solutions-hpecp/5.1/" class="home-link router-link-active"><!----> <span class="site-name">HPE EZMERAL CONTAINER PLATFORM 5.1 AND HPE EZMERAL DATA FABRIC ON HPE SYNERGY AND HPE APOLLO 4200 GEN10 SERVERS</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>HPE Ezmeral Container Platform 5.1</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Solution Overview</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Solution Components</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Solution Deployment</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Additional Features and Functionality</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Deploying Stateful Application using KubeDirector.html" class="sidebar-link">Deploying a 3-Tier Application using KubeDirector</a></li><li><a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Role Based Access Control.html" class="sidebar-link">HPE Ezmeral Container Platform - Role-Based Access Control</a></li><li><a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Worker Node Labelling.html" class="active sidebar-link">Physical worker node labeling in HPE Ezmeral Container Platform</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Worker Node Labelling.html#introduction" class="sidebar-link">Introduction</a></li><li class="sidebar-sub-header"><a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Worker Node Labelling.html#high-level-process-flow-diagram-for-node-labeling" class="sidebar-link">High level process flow diagram for Node Labeling</a></li><li class="sidebar-sub-header"><a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Worker Node Labelling.html#scripts-for-labeling-worker-nodes" class="sidebar-link">Scripts for labeling worker nodes</a></li></ul></li><li><a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Securing HPE Synergy Composer.html" class="sidebar-link">Securing HPE Synergy Composer powered by HPE OneView</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Resources and additional links</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="physical-worker-node-labeling-in-hpe-ezmeral-container-platform"><a href="#physical-worker-node-labeling-in-hpe-ezmeral-container-platform" class="header-anchor">#</a> Physical worker node labeling in HPE Ezmeral Container Platform</h1> <h2 id="introduction"><a href="#introduction" class="header-anchor">#</a> Introduction</h2> <p>Discovering the node properties and advertising them through node labels can be used to control workload placement in a Kubernetes cluster. With the HPE Ezmeral Container Platform running on HPE server platforms, organizations can automate the discovery of hardware properties and use that information to schedule workloads that benefit from the different capabilities that the underlying hardware provides. Using HPE iLO and its REST or Redfish API- based discovery capabilities (proliantutils), the following properties can be discovered about the nodes:</p> <ul><li><p>Presence of GPUs</p></li> <li><p>Underlying RAID configurations</p></li> <li><p>Presence of disks by type</p></li> <li><p>Persistent-memory availability</p></li> <li><p>Status of CPU virtualization features</p></li> <li><p>SR-IOV capabilities</p></li> <li><p>CPU architecture</p></li> <li><p>CPU core count</p></li> <li><p>Platform information including model, iLO and BIOS versions</p></li> <li><p>Memory capacity</p></li> <li><p>UEFI Security settings</p></li> <li><p>Health status of compute, storage, and network components</p></li></ul> <p>After these properties are discovered for the physical worker nodes, HPE Ezmeral Container Platform node labeling can be applied to group nodes based on the underlying features of the nodes. By default, every node will have its node name as a label.</p> <p>The following properties can be used to label nodes:</p> <ol><li><p>Overall health status of the node.</p> <p>If current status of &quot;BIOS, Fans, Temperature Sensors, Battery, Processor, Memory, Network, and Storage&quot; is ok, node health status is labeled as &quot;Ok&quot;. Otherwise it will appear as &quot;Degraded&quot;.</p></li> <li><p>Overall security status of the node.</p> <p>If the current status of the following BIOS configuration items (which are important for security) are as expected, then security status of the node is &quot;Ok&quot;. Otherwise, they will be labeled as &quot;Degraded&quot;.</p></li></ol> <div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>Based on the HPE Gen10 Security Reference Guide, the recommended values for the chosen parameters are as follows.</p> <ul><li><p>Secure Boot: Enabled</p></li> <li><p>Asset tag: Locked</p></li> <li><p>UEFI Shell Script Verification: Enabled</p></li> <li><p>UEFI Shell Startup: Disabled</p></li> <li><p>Processor AES: Enabled</p></li></ul> <p>For more information, refer HPE Gen10 Security Reference Guide at <a href="https://support.hpe.com/hpesc/public/docDisplay?docId=a00018320en_us" target="_blank" rel="noopener noreferrer">https://support.hpe.com/hpesc/public/docDisplay?docId=a00018320en_us<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p></div> <ol start="3"><li><p>Custom Labeling.</p> <p>User defined labels (key, value) are assigned to desired physical worker nodes. Users can use these Python scripts to retrieve the properties of the underlying hardware and then decide on required labels that should be assigned to each physical worker nodes.</p></li></ol> <h2 id="high-level-process-flow-diagram-for-node-labeling"><a href="#high-level-process-flow-diagram-for-node-labeling" class="header-anchor">#</a> High level process flow diagram for Node Labeling</h2> <p>Node labeling can be broken down into 4 main phases:</p> <ul><li>Setting up of the installer VM environment</li> <li>Updating the input files with the server information</li> <li>Execution of the Python scripts</li> <li>Verification of the pod scheduling</li></ul> <p>Figure 63 shows the high level flow for Node Labeling.
+<img src="/hpe-solutions-hpecp/5.1/assets/img/Figure63.c8988266.png" alt=""></p> <p><strong>Figure</strong> <strong>63.</strong> Process flow for Node Labeling</p> <h2 id="scripts-for-labeling-worker-nodes"><a href="#scripts-for-labeling-worker-nodes" class="header-anchor">#</a> Scripts for labeling worker nodes</h2> <p>To label the physical worker node in HPE Ezmeral Container Platform, use the repository located at the HPE Ezmeral Container Platform Solutions GitHub at <a href="https://github.com/hewlettpackard/hpe-solutions-hpecp" target="_blank" rel="noopener noreferrer">https://github.com/hewlettpackard/hpe-solutions-hpecp<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>. The Scripts for HPE Ezmeral Container Platform 5.1 Physical Worker Node labeling are available in GitHub under <strong>/scripts/physical_worker_node_labeling/</strong>. This folder contains Python scripts to automate the labeling of physical worker nodes by discovering the physical node properties in an HPE Ezmeral Container Platform 5.1 deployment and advertising them through node labels. Node labels can be targeted for deployment using node selectors.</p> <h3 id="contents-of-the-repository"><a href="#contents-of-the-repository" class="header-anchor">#</a> Contents of the repository</h3> <ol><li><p><strong>config.json</strong>: This file contains variables holding information about the HPE Ezmeral Container Platform specific environment variables.</p> <ul><li><strong>kubeconfig_path</strong>: Specifies the path of kubeconfig and this path is used by the &quot;kubectl&quot; command at runtime.</li></ul></li> <li><p><strong>hosts.json</strong>: This is the encrypted inventory file which will be used by HPE Ezmeral Container Platform installer VM to reference physical worker nodes and user-defined labels.</p> <ul><li><p><strong>host_fqdn</strong>: Specifies the physical worker node fully qualified domain name or IP.</p></li> <li><p><strong>ilo_ip</strong>: iLO IP of the physical worker node.</p></li> <li><p><strong>username</strong>: Username used to log in to the iLO of the physical worker node.</p></li> <li><p><strong>password</strong>: Password to log in to the iLO of the physical worker node.</p></li> <li><p><strong>custom_label_required</strong>: The value is &quot;yes&quot; if the user wishes to use custom labels. Otherwise, it should be set to &quot;no&quot;.</p></li> <li><p><strong>custom_labels</strong>: Specify the custom labels key and value.</p></li></ul></li></ol> <ul><li>To edit this vault file use the following command and provide the default &quot;ansible vault&quot; password ('changeme').<div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> ansible-vault edit hosts.json
+</code></pre></div></li></ul> <div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>Information inside hosts.json is available in a nested JSON format, which means user can add any number of physical worker node by creating the sections as &quot;server1, server2, server3, ...servern&quot; and can also add any number of &quot;custom labels&quot; as &quot;label1, label2, label3 and labeln&quot;.</p></div> <ol start="3"><li><p><strong>json_parser.py</strong>: This file contains the logic to derive value of any standalone key or nested keys from the json file.</p></li> <li><p><strong>physical_node_labelling.py</strong>: This file contains the logic to derive the physical hardware properties and label of the HPE Ezmeral Container Platform physical worker nodes based on properties and user-defined label names. To extract hardware properties, Python module &quot;proliantutils&quot; is used in this script.</p></li></ol> <div class="custom-block warning"><p class="custom-block-title">Prerequisites</p> <ul><li><p>Ansible engine with Ansible 2.9.x, ansible-vault and Python  3.6.x</p></li> <li><p>HPE Ezmeral Container Platform 5.1 is up and running.</p></li> <li><p>The HPE Ezmeral Container Platform 5.1 must have physical worker node(s) to use the &quot;Node labeling&quot; functionality.</p></li> <li><p>Ensure there is connectivity to the iLO IP's of the physical node servers (ping the iLO's and check if they are reachable, because the script needs to talk to the iLO to retrieve information of the servers)</p></li> <li><p>The scripts under this repository need to be run from the installer machine with the Python Virtual Environment setup as mentioned in the <a href="/hpe-solutions-hpecp/5.1/Solution-Deployment/Host-Configuration.html#installer-machine">Installer Machine</a> section of the Deployment Guide.</p></li> <li><p>Ensure that the <strong>kubectl</strong> tool is available in the path along with the <strong>kubeconfig</strong> file of the cluster in $HOME/.kube/ directory (eg /root/.kube/config)</p></li> <li><p>The kubeconfig file can be obtained in two ways:</p> <ul><li>From the HPE Ezmeral Container Platform GUI - &gt; Navigate to the Clusters section -&gt; Download Admin Kubeconfig from the options available on the cluster.</li> <li>Copying the config file from the master node from the $HOME/.kube/ location on to the installer machine.</li></ul></li> <li><p>Ensure that the kubeconfig file is named as 'config' and placed in the $HOME/.kube/ location( eg. /root/.kube/config) of the installer machine.</p></li> <li><p>Python module &quot;proliantutils&quot; is required</p> <ul><li><p>&quot;proliantutils&quot; is a set of utility libraries for interfacing and managing various components (like iLO) for HPE Proliant Servers.</p></li> <li><p>Use the following command to install proliantutils</p></li></ul> <div class="language- extra-class"><pre class="language-text"><code>&gt; pip3 install proliantutils==2.9.2
+</code></pre></div><ul><li>Verify the version of proliantutils</li></ul> <div class="language- extra-class"><pre class="language-text"><code>&gt; pip3 freeze | grep proliantutils
+</code></pre></div><ul><li>Output:</li></ul> <div class="language- extra-class"><pre class="language-text"><code>proliantutils==2.9.2
+</code></pre></div></li> <li><p>Install the &quot;sushy&quot; python library. In case &quot;sushy&quot; module is already installed, please make sure its version is 3.0.0</p> <ul><li>Use the following command to install sushy module.</li></ul> <div class="language- extra-class"><pre class="language-text"><code>&gt; pip3 install sushy==3.0.0
+</code></pre></div><ul><li>Verify the version of proliantutils</li></ul> <div class="language- extra-class"><pre class="language-text"><code>&gt; pip freeze | grep sushy
+</code></pre></div><ul><li>Output:</li></ul> <div class="language- extra-class"><pre class="language-text"><code>sushy==3.0.0
+</code></pre></div></li></ul> <div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>Master nodes have kubectl tool and kubeconfig file by default, hence the scripts can also be run from the master nodes after setting up the python environment, installing the required modules and setting up of the repositories.</p></div></div> <h3 id="executing-the-playbooks"><a href="#executing-the-playbooks" class="header-anchor">#</a> Executing the playbooks</h3> <ol><li><p>Login to the installer VM.</p></li> <li><p>Activate the Python 3 virtual environment as mentioned in the section <a href="/hpe-solutions-hpecp/5.1/Solution-Deployment/Host-Configuration.html#installer-machine">Installer machine</a> in this document.</p></li> <li><p>Execute the following command and navigate to the directory physical-worker labeling.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> <span class="token builtin class-name">cd</span> BASE_DIR/platform/physical_worker_node_labeling/
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>BASE_DIR is defined and set in installer machine section in deployment guide</p></div></li> <li><p>Update the <em>config.json</em> and <em>hosts.json</em> files with appropriate values.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> <span class="token function">vi</span> config.json
+
+<span class="token operator">&gt;</span> ansible-vault edit hosts.json
+</code></pre></div></li> <li><p>After the files mentioned in step 4 are updated, execute the script using the following command.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> python physical_node_labelling.py
+</code></pre></div></li> <li><p>The user will be prompted to enter the ansible vault password/key. This credential is the default &quot;ansible vault&quot; password that is 'changeme'.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token comment"># Enter key for encrypted variables:</span>
+</code></pre></div></li> <li><p>The installation user will see the output similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>1: Get the physical worker node details that user wishes to configure.
+
+2: Get current health status of the physical worker node
+
+3: Get security parameters of the physical worker node
+
+4: Label the physical worker with health status
+
+5: Label the physical worker with security status
+
+6: Custom labels
+
+7: Display current labels on the node
+
+8: Quit
+
+Enter the choice number:
+</code></pre></div></li> <li><p>Select option 1 to retrieve the physical worker node details. The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>Enter the choice number: 1
+
+{'server1': {'host_fqdn': 'pworkerphysical2.pranav.twentynet.local', 'ilo_ip': '10.0.3.64',
+ 'username': 'admin', 'password': 'admin123', 'custom_label_required': 'yes',
+  'custom_labels': {'label1': {'label_name': 'RESOURCES', 'label_val': 'MAX'},
+   'label2': {'label_name': 'NODEAFFINITY', 'label_val': 'TEST'}}}}
+
+</code></pre></div></li> <li><p>Select option 2 to retrieve the current health status of the physical worker node. The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>Enter the choice number: 2
+
+{'pworkerphysical2.pranav.twentynet.local': 'OK'}
+
+</code></pre></div></li> <li><p>Select option 3 to retrieve the security parameters of the physical worker node. The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>Enter the choice number: 3
+
+{'pworkerphysical2.pranav.twentynet.local': 'Degraded'}
+
+</code></pre></div></li> <li><p>Select option 4 to label the physical worker with its current hardware health status. The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>Enter the choice number: 4
+
+NAME                                      STATUS   ROLES    AGE    VERSION   LABELS
+pworkerphysical2.pranav.twentynet.local   Ready    worker   3d1h   v1.17.4   beta.Kubernetes.io/arch=amd64,
+
+beta.Kubernetes.io/os=linux,health=OK,hpe.com/compute=true,hpe.com/dataplatform=false,
+
+hpe.com/exclusivecluster=none,hpe.com/usenode=true,Kubernetes.io/arch=amd64,
+
+Kubernetes.io/hostname=pworkerphysical2.pranav.twentynet.local,Kubernetes.io/os=linux,
+
+node-role.Kubernetes.io/worker=
+
+Verified - Label  health=OK is added to the node pworkerphysical2.pranav.twentynet.local
+
+b''
+
+</code></pre></div></li> <li><p>Select option 5 to label the physical worker with security status. The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code> Enter the choice number: 5
+
+NAME                                      STATUS   ROLES    AGE    VERSION   LABELS
+pworkerphysical2.pranav.twentynet.local   Ready    worker   3d1h   v1.17.4   beta.Kubernetes.io/arch=amd64,
+
+beta.Kubernetes.io/os=linux,health=OK,hpe.com/compute=true,hpe.com/dataplatform=false,
+
+hpe.com/exclusivecluster=none,hpe.com/usenode=true,Kubernetes.io/arch=amd64,
+
+Kubernetes.io/hostname=pworkerphysical2.pranav.twentynet.local,Kubernetes.io/os=linux,
+
+node-role.Kubernetes.io/worker=,security=Degraded
+
+Verified - Label  security=Degraded is added to the node pworkerphysical2.pranav.twentynet.local
+
+b''
+
+
+</code></pre></div></li> <li><p>Select option 6 to define custom labels. The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>Enter the choice number: 6
+
+NAME                                      STATUS   ROLES    AGE    VERSION   LABELS
+pworkerphysical2.pranav.twentynet.local   Ready    worker   3d2h   v1.17.4   RESOURCES=MAX,
+
+beta.Kubernetes.io/arch=amd64,beta.Kubernetes.io/os=linux,health=OK,hpe.com/compute=true,
+
+hpe.com/dataplatform=false,hpe.com/exclusivecluster=none,hpe.com/usenode=true,Kubernetes.io/arch=amd64,
+
+Kubernetes.io/hostname=pworkerphysical2.pranav.twentynet.local,Kubernetes.io/os=linux,
+
+node-role.Kubernetes.io/worker=,security=Degraded
+
+Verified - Label RESOURCES=MAX is added the node pworkerphysical2.pranav.twentynet.local
+
+
+NAME                                      STATUS   ROLES    AGE    VERSION   LABELS
+pworkerphysical2.pranav.twentynet.local   Ready    worker   3d2h   v1.17.4   NODEAFFINITY=TEST,RESOURCES=MAX,
+beta.Kubernetes.io/arch=amd64,beta.Kubernetes.io/os=linux,health=OK,hpe.com/compute=true,
+
+hpe.com/dataplatform=false,hpe.com/exclusivecluster=none,hpe.com/usenode=true,Kubernetes.io/arch=amd64,
+
+Kubernetes.io/hostname=pworkerphysical2.pranav.twentynet.local,Kubernetes.io/os=linux,
+
+node-role.Kubernetes.io/worker=,security=Degraded
+
+Verified - Label NODEAFFINITY=TEST is added the node pworkerphysical2.pranav.twentynet.local
+
+b''
+</code></pre></div></li> <li><p>Select option 7 to display current labels on the node. The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>Enter the choice number: 7
+
+NAME                                      STATUS   ROLES    AGE    VERSION   LABELS
+pworkerphysical2.pranav.twentynet.local   Ready    worker   3d2h   v1.17.4   NODEAFFINITY=TEST,RESOURCES=MAX,
+
+beta.Kubernetes.io/arch=amd64,beta.Kubernetes.io/os=linux,health=OK,hpe.com/compute=true,
+
+hpe.com/dataplatform=false,hpe.com/exclusivecluster=none,hpe.com/usenode=true,Kubernetes.io/arch=amd64,
+
+Kubernetes.io/hostname=pworkerphysical2.pranav.twentynet.local,Kubernetes.io/os=linux,
+
+node-role.Kubernetes.io/worker=,security=Degraded
+
+</code></pre></div></li> <li><p>Select option 8 to quit the script. The output is shown as follows.</p> <div class="language- extra-class"><pre class="language-text"><code>Enter the choice number: 8
+
+Exiting!!
+</code></pre></div></li></ol> <h3 id="verify-scheduling-of-pods-using-nodeselector"><a href="#verify-scheduling-of-pods-using-nodeselector" class="header-anchor">#</a> Verify scheduling of pods using NodeSelector</h3> <ol><li><p>Execute the following command to get all the nodes in the HPE Ezmeral Container Platform installation.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl get nodes
+</code></pre></div><p>The output is similar to the following.</p> <div class="language-bash extra-class"><pre class="language-bash"><code>NAME                                      STATUS     ROLES    AGE     VERSION
+pmaster.pranav.twentynet.local            Ready      master   17d     v1.17.4
+
+pworker1.pranav.twentynet.local           Ready      worker   17d     v1.17.4
+
+pworker2.pranav.twentynet.local           Ready      worker   17d     v1.17.4
+
+pworker3.pranav.twentynet.local           Ready      worker   17d     v1.17.4
+
+pworkerphysical2.pranav.twentynet.local   Ready      worker   3d2h    v1.17.4
+
+sumslesf1b1.twentynet.local               Ready      worker   3d20h   v1.17.4
+
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>Node “pworkerphysical2.pranav.twentynet.local” and &quot;sumslesf1b1.twentynet.local&quot; are the physical worker nodes and other worker nodes are virtual machines.</p></div></li> <li><p>Execute the following command to see the labels of all the nodes.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl get nodes --show-labels
+</code></pre></div><p>The output is similar to the following.</p> <div class="language-bash extra-class"><pre class="language-bash"><code>NAME                                      STATUS     ROLES    AGE     VERSION   LABELS
+pmaster.pranav.twentynet.local            Ready      master   17d     v1.17.4   beta.Kubernetes.io/arch<span class="token operator">=</span>amd64,
+beta.Kubernetes.io/os<span class="token operator">=</span>linux,Kubernetes.io/arch<span class="token operator">=</span>amd64,
+Kubernetes.io/hostname<span class="token operator">=</span>pmaster.pranav.twentynet.local,Kubernetes.io/os<span class="token operator">=</span>linux,
+node-role.Kubernetes.io/master<span class="token operator">=</span>
+
+pworker1.pranav.twentynet.local           Ready      worker   17d     v1.17.4   beta.Kubernetes.io/arch<span class="token operator">=</span>amd64,
+beta.Kubernetes.io/os<span class="token operator">=</span>linux,hpe.com/compute<span class="token operator">=</span>true,hpe.com/dataplatform<span class="token operator">=</span>false,
+hpe.com/exclusivecluster<span class="token operator">=</span>none,hpe.com/usenode<span class="token operator">=</span>true,Kubernetes.io/arch<span class="token operator">=</span>amd64,
+Kubernetes.io/hostname<span class="token operator">=</span>pworker1.pranav.twentynet.local,Kubernetes.io/os<span class="token operator">=</span>linux,
+node-role.Kubernetes.io/worker<span class="token operator">=</span>
+
+pworker2.pranav.twentynet.local           Ready      worker   17d     v1.17.4   beta.Kubernetes.io/arch<span class="token operator">=</span>amd64,
+beta.Kubernetes.io/os<span class="token operator">=</span>linux,hpe.com/compute<span class="token operator">=</span>true,hpe.com/dataplatform<span class="token operator">=</span>false,
+hpe.com/exclusivecluster<span class="token operator">=</span>none,hpe.com/usenode<span class="token operator">=</span>true,Kubernetes.io/arch<span class="token operator">=</span>amd64,
+Kubernetes.io/hostname<span class="token operator">=</span>pworker2.pranav.twentynet.local,Kubernetes.io/os<span class="token operator">=</span>linux,
+node-role.Kubernetes.io/worker<span class="token operator">=</span>
+
+pworker3.pranav.twentynet.local           Ready      worker   17d     v1.17.4   beta.Kubernetes.io/arch<span class="token operator">=</span>amd64,
+beta.Kubernetes.io/os<span class="token operator">=</span>linux,hpe.com/compute<span class="token operator">=</span>true,hpe.com/dataplatform<span class="token operator">=</span>false,
+hpe.com/exclusivecluster<span class="token operator">=</span>none,hpe.com/usenode<span class="token operator">=</span>true,Kubernetes.io/arch<span class="token operator">=</span>amd64,
+Kubernetes.io/hostname<span class="token operator">=</span>pworker3.pranav.twentynet.local,Kubernetes.io/os<span class="token operator">=</span>linux,
+node-role.Kubernetes.io/worker<span class="token operator">=</span>
+
+pworkerphysical2.pranav.twentynet.local   Ready      worker   3d2h    v1.17.4   <span class="token assign-left variable">NODEAFFINITY</span><span class="token operator">=</span>TEST,RESOURCES<span class="token operator">=</span>MAX,
+beta.Kubernetes.io/arch<span class="token operator">=</span>amd64,beta.Kubernetes.io/os<span class="token operator">=</span>linux,health<span class="token operator">=</span>OK,hpe.com/compute<span class="token operator">=</span>true,
+hpe.com/dataplatform<span class="token operator">=</span>false,hpe.com/exclusivecluster<span class="token operator">=</span>none,hpe.com/usenode<span class="token operator">=</span>true,
+Kubernetes.io/arch<span class="token operator">=</span>amd64,Kubernetes.io/hostname<span class="token operator">=</span>pworkerphysical2.pranav.twentynet.local,
+Kubernetes.io/os<span class="token operator">=</span>linux,node-role.Kubernetes.io/worker<span class="token operator">=</span>,security<span class="token operator">=</span>Degraded
+
+sumslesf1b1.twentynet.local               Ready      worker   3d20h   v1.17.4   <span class="token assign-left variable">HPECP</span><span class="token operator">=</span>EZMERAL,PRANAV<span class="token operator">=</span>NODE_LABELLING,
+beta.Kubernetes.io/arch<span class="token operator">=</span>amd64,beta.Kubernetes.io/os<span class="token operator">=</span>linux,health<span class="token operator">=</span>Degraded,
+hpe.com/compute<span class="token operator">=</span>true,hpe.com/dataplatform<span class="token operator">=</span>false,hpe.com/exclusivecluster<span class="token operator">=</span>none,
+hpe.com/usenode<span class="token operator">=</span>true,Kubernetes.io/arch<span class="token operator">=</span>amd64,Kubernetes.io/hostname<span class="token operator">=</span>sumslesf1b1.twentynet.local,
+Kubernetes.io/os<span class="token operator">=</span>linux,node-role.Kubernetes.io/worker<span class="token operator">=</span>,security<span class="token operator">=</span>Degraded
+
+</code></pre></div></li> <li><p>Execute the following commands to create a new application pod in the default namespace.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> <span class="token function">vi</span> nginx.yaml
+</code></pre></div><p>Fill up the contents of the yaml file as follows:</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Pod
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">env</span><span class="token punctuation">:</span> test
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> nginx
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> nginx
+    <span class="token key atrule">imagePullPolicy</span><span class="token punctuation">:</span> IfNotPresent
+  <span class="token key atrule">nodeSelector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">health</span><span class="token punctuation">:</span> OK
+
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl create -f nginx.yaml
+</code></pre></div><p>The output is similar to the following.</p> <div class="language-bash extra-class"><pre class="language-bash"><code>pod/nginx created
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>Here the nodeSelector parameter selects the node that matches
+the label &quot;health=OK&quot; and deploys the pod on that node.</p> <p>In this case the node with label &quot;health=OK&quot; is
+&quot;pworkerphysical2.pranav.twentynet.local&quot;</p></div></li> <li><p>Execute the following command to get the pods for the newly created application.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl get pods -o wide
+</code></pre></div><p>The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>NAME    READY   STATUS    RESTARTS   AGE   IP             NODE                                      NOMINATED NODE   READINESS GATES
+nginx   1/1     Running   0          3d    10.192.2.131   pworkerphysical2.pranav.twentynet.local   &lt;none&gt;           &lt;none&gt;
+
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>Here we see the pod is deployed on the node &quot;pworkerphysical2.pranav.twentynet.local&quot;
+as expected since the node has the label &quot;health=OK&quot;</p></div></li> <li><p>Execute the following command to describe the application pod.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl describe pod nginx
+</code></pre></div><p>The output is similar to the following.</p> <div class="language- extra-class"><pre class="language-text"><code>Name:         nginx
+Namespace:    default
+Priority:     0
+Node:         pworkerphysical2.pranav.twentynet.local/20.0.15.12
+Start Time:   Fri, 31 Jul 2020 08:16:38 -0400
+Labels:       env=test
+Annotations:  cni.projectcalico.org/podIP: 10.192.2.131/32
+            Kubernetes.io/psp: 00-privileged
+Status:       Running
+IP:           10.192.2.131
+IPs:
+IP:  10.192.2.131
+Containers:
+nginx:
+    Container ID:   docker://f36bf7b0c237431cfdbde575f3f825a0c49f73dc821d34a31c1bcd1c9e13fa02
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:0e188877aa60537d1a1c6484b8c3929cfe09988145327ee47e8e91ddf6f76f5c
+    Port:           &lt;none&gt;
+    Host Port:      &lt;none&gt;
+    State:          Running
+    Started:      Fri, 31 Jul 2020 08:16:39 -0400
+    Ready:          True
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+    /var/run/secrets/Kubernetes.io/serviceaccount from default-token-qz4zk (ro)
+Conditions:
+Type              Status
+Initialized       True
+Ready             True
+ContainersReady   True
+PodScheduled      True
+Volumes:
+default-token-qz4zk:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-qz4zk
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  health=OK
+Tolerations:     node.Kubernetes.io/not-ready:NoExecute for 300s
+                node.Kubernetes.io/unreachable:NoExecute for 300s
+Events:          &lt;none&gt;
+
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>Here we see the Node-Selectors key with &quot;health=OK&quot; label.</p></div></li></ol> <div class="custom-block tip"><p class="custom-block-title">NOTE</p> <p>These scripts have been tested on HPE Ezmeral Container Platform 5.1 with the following configuration parameters:</p> <ul><li><p>Worker nodes are running SLESOS as the operating system</p></li> <li><p>Installer VM OS Version: CentOS 7.6</p></li> <li><p>Python: 3.6.9</p></li> <li><p>proliantutils: 2.9.2</p></li> <li><p>sushy: 3.0.0</p></li></ul></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Role Based Access Control.html" class="prev">
+        HPE Ezmeral Container Platform - Role-Based Access Control
+      </a></span> <span class="next"><a href="/hpe-solutions-hpecp/5.1/Additional Features and Functionality/Securing HPE Synergy Composer.html">
+        Securing HPE Synergy Composer powered by HPE OneView
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/hpe-solutions-hpecp/5.1/assets/js/app.ef59d087.js" defer></script><script src="/hpe-solutions-hpecp/5.1/assets/js/2.d85522de.js" defer></script><script src="/hpe-solutions-hpecp/5.1/assets/js/13.0680d9b2.js" defer></script>
+  </body>
+</html>
