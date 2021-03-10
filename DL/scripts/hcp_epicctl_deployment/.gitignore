@@ -1,3 +1,0 @@
-group_vars/all/vars.yml
-group_vars/all/vault.yml
-ansible.log
