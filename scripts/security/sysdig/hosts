@@ -1,3 +1,0 @@
-# the host where the kubernetes cluster is accessible to run the commands, that means kubectl and kubeconfig files are available and accessible. 
-[installer_machine_ip]
-x.x.x.x
