@@ -1,0 +1,22 @@
+#gateway config
+---
+op: GatewaySetup
+platform: {{ common.platform }}
+parameters:
+  config:
+    gateway_set_hostname: {{ gateway_set_hostname }}
+  host:
+    host_ip: {{ gateway_ip }}
+  yum_update: {{ os.value}}
+  ssh:
+    password: {{ credentials.ssh.password }}
+    username: {{ credentials.ssh.username }}
+---
+op: GatewayConfig
+platform: {{ common.platform }}
+parameters:
+  config:
+    gateway_set_hostname: {{ gateway_set_hostname }}
+  host:
+    internal_ip: {{ gateway_ip }}
+

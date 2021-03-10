@@ -1,0 +1,70 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Get the latest log
+    shell: ls /tmp/ | grep "bds-[0-9]*.log$" | tail -n 1
+    register: filename
+
+  - name: Get the master ip
+    set_fact:
+      masterip: "{{ item.host }}"
+    with_items: "{{ k8scluster.host_pools }}"
+    when: item.role == "master"
+ 
+  - name: Set the datafabric facts.
+    set_fact:
+      tagname: "{{ k8scluster.tagname }}"
+      tagvalue: "{{ k8scluster.tagvalue }}"
+      logfilename: "{{ filename.stdout }}"
+
+  - name: run datafabric register commands
+    shell:  "{{ item }}"
+    with_items:
+      - LOG_FILE_PATH=/tmp/dftenants MASTER_NODE_IP="{{masterip}}" /opt/bluedata/bundles/hpe-cp-*/startscript.sh --action prepare_dftenants
+      - echo yes | LOG_FILE_PATH=/tmp/dfconfig MASTER_NODE_IP="{{masterip}}" /opt/bluedata/bundles/hpe-cp-*/startscript.sh  --action configure_dftenants
+    when: tagname != "" and tagvalue != ""
+    
+  - name: install expect package
+    command: zypper install -y expect 
+    when: tagname != "" and tagvalue != ""
+  
+  - name: Creating a file with content for datafabric node register
+    copy:
+      dest: "/root/nodecommand.sh"
+      mode: 0777
+      content: |
+        #!/bin/bash
+        LOG_FILE_PATH=/tmp/noderegister MASTER_NODE_IP="{{masterip}}" /opt/bluedata/bundles/hpe-cp-*/startscript.sh --action register_dftenants
+    when: tagname != "" and tagvalue != ""
+
+  - name: Creating a file with content for pass username and password for datafabric node register
+    copy:
+      dest: "/root/register.sh"
+      mode: 0777
+      content: |
+        #!/usr/bin/expect -f
+        set timeout -1
+        spawn ./nodecommand.sh
+        expect "Enter Site Admin username:"
+        send -- "admin\r"
+        expect "Enter Site Admin password:"
+        send -- "admin123\r"
+        expect eof
+    when: tagname != "" and tagvalue != ""
+
+  - name: Running register.sh script on controller node
+    command: ./register.sh
+    when: tagname != "" and tagvalue != ""

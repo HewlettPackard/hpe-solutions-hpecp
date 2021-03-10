@@ -1,0 +1,19 @@
+---
+op: WorkerSetup
+parameters:
+  host:
+    host_ip: {{ worker_ip }}
+  yum_update: {{ os.value}}
+  ssh:
+    password: {{ credentials.ssh.password }}
+    username: {{ credentials.ssh.username }}
+platform: {{ common.platform }}
+---
+op: WorkerConfig
+platform: {{ common.platform }}
+parameters:
+  config:
+    hdfs_disks: {{ epicworkers.hdfs_disks }}
+    node_disks: {{ epicworkers.node_disks }}
+  host:
+    internal_ip: {{ worker_ip }}

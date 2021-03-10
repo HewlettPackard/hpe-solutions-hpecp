@@ -1,0 +1,48 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Create k8s cluster with epicctl and rest api.
+    command: epicctl api post -u "/api/v2/k8scluster/" -f /tmp/create_k8scluster.json -n {{ common.name }} -p {{ common.platform }} -o /tmp/post-response.json
+    register: res
+    failed_when: res.rc != 0
+
+  - debug:
+     msg: "{{ res.stdout }}"
+  
+  - name: Check if response file exists.
+    stat:
+      path: /tmp/post-response.json
+    register: output
+
+  - name: Read response json file created during cluster creation
+    set_fact:
+      jsonResp: "{{ (lookup('file', '/tmp/post-response.json') | from_json)['location'] }}"
+    when: output.stat.exists == True
+
+  - name: Poll the status of cluster creation by making get call to /api/v2/k8scluster/k8scluster_id
+    command: epicctl api get -u {{ jsonResp }} -n {{ common.name }} -p {{ common.platform }} -o /tmp/get-response.json
+    vars:
+      getResp: "{{ (lookup('file', '/tmp/get-response.json') | from_json)['status'] }}"
+    register : res
+    failed_when: res.rc != 0
+    changed_when: false
+    retries: 30
+    delay: 120
+    until:  '"ready" == getResp'
+
+  - debug:
+      msg: "polling task finished"
+

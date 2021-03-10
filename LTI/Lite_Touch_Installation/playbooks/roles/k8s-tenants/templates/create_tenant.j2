@@ -1,0 +1,30 @@
+{
+  "label": {
+    "name": "{{ k8stenant.name }}",
+    "description": "{{ k8stenant.description }}"
+  },
+  "tenant_type_info": {
+    "map_services_to_gateway": {{ k8stenant.tenant_type_info.map_services_to_gateway | bool | lower }},
+    "specified_namespace_name": "{{ k8stenant.tenant_type_info.specified_namespace_name }}",
+    "is_namespace_owner": {{ k8stenant.tenant_type_info.is_namespace_owner | bool | lower }},
+    "adopt_existing_namespace": {{ k8stenant.tenant_type_info.adopt_existing_namespace | bool | lower }}
+  },
+  "tenant_type": "{{ k8stenant.tenant_type }}",
+  "features": {
+    "ml_project": {{ k8stenant.features.ml_project | bool | lower }}
+  },
+  "is_namespace_owner": {{ k8stenant.is_namespace_owner | bool | lower }},
+  "quota": {
+    "memory": {{ k8stenant.quota.memory }},
+    "persistent": {{ k8stenant.quota.persistent }},
+    "gpus": "{{ k8stenant.quota.gpus }}",
+    "cores": {{ k8stenant.quota.cores }},
+    "disk": {{ k8stenant.quota.disk }},
+    "tenant_storage": {{ k8stenant.quota.tenant_storage }}
+  },
+  "k8s_cluster": "{{ k8s_cluster }}",
+  "specified_namespace_name": "{{ k8stenant.specified_namespace_name }}",
+  "map_services_to_gateway": {{ k8stenant.map_services_to_gateway | bool | lower }},
+  "adopt_existing_namespace": {{ k8stenant.adopt_existing_namespace | bool | lower }},
+  "krb_enc_types": {{ k8stenant.krb_enc_types }}
+}

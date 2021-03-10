@@ -1,0 +1,7 @@
+{
+    "CryptographicMode":  "<Accepted values are Legacy, FIPS, CNSA>",
+    "enforceComplexPasswordEnabled": <Accepted values are true or false>,
+    "technicianEnabled": <Accepted values are true or false>,
+    "allowSshAccess": <Accepted values are true or false>,
+    "ServiceConsoleAccess": <Accepted values are true or false>
+}
