@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deploying HPE CSI Driver for Nimble Storage on HPECP Container Platform 5.3 | HPE EZMERAL CONTAINER PLATFORM 5.3 AND HPE EZMERAL DATA FABRIC ON DL SERVERS</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="Hewlett Packard Enterprise">
+    
+    <link rel="preload" href="/hpe-solutions-hpecp/5.3-DL/assets/css/0.styles.0080ec46.css" as="style"><link rel="preload" href="/hpe-solutions-hpecp/5.3-DL/assets/js/app.0bf5fbdc.js" as="script"><link rel="preload" href="/hpe-solutions-hpecp/5.3-DL/assets/js/2.e4aa28f4.js" as="script"><link rel="preload" href="/hpe-solutions-hpecp/5.3-DL/assets/js/14.f3739c20.js" as="script"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/10.3e35ae29.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/11.7a78ade3.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/12.29c9290c.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/13.3abab25a.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/15.7b65d052.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/16.aa61a115.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/17.e177a705.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/18.bf4d6486.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/19.821c324b.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/20.34cb7e9e.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/21.6efa84b0.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/22.e25ab30f.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/23.10836832.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/24.70fbad91.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/25.79eb1c09.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/26.d079eae0.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/27.1500b9ac.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/28.2ccc6020.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/29.7254040f.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/3.63bbce65.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/30.3252e07b.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/31.30b07ba7.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/32.6771f8e8.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/33.963c2f5f.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/4.939e74e1.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/5.2592712f.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/6.0eecfd8c.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/7.6c3a0600.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/8.42d5a489.js"><link rel="prefetch" href="/hpe-solutions-hpecp/5.3-DL/assets/js/9.80d6a3b4.js">
+    <link rel="stylesheet" href="/hpe-solutions-hpecp/5.3-DL/assets/css/0.styles.0080ec46.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/hpe-solutions-hpecp/5.3-DL/" class="home-link router-link-active"><!----> <span class="site-name">HPE EZMERAL CONTAINER PLATFORM 5.3 AND HPE EZMERAL DATA FABRIC ON DL SERVERS</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/hpe-solutions-hpecp/5.3-DL/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="http://www.hpe.com/info/ra" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  RA Library
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/hpe-solutions-hpecp/5.3-DL/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="http://www.hpe.com/info/ra" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  RA Library
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>HPE EZMERAL CONTAINER PLATFORM 5.3 on HPE DL Servers</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Solution Overview</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Solution Components</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Solution Deployment</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Additional Features and Functionality</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Lite-Touch-Installation.html" class="sidebar-link">Lite Touch Installation (LTI)</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Deploying-HPE-CSI-Driver-For-Nimble.html" aria-current="page" class="active sidebar-link">Deploying HPE CSI Driver for Nimble Storage on HPECP Container Platform 5.3</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Creating-Data-Fabric-Cluster-On-HPECP.html" class="sidebar-link">Creating Data Fabric Cluster on HPE Ezmeral Container Platform 5.3</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Deploying-Stateful-Application-Using-KubeDirector.html" class="sidebar-link">Deploying a 3-Tier Application using KubeDirector</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Role-Based-Access-Control.html" class="sidebar-link">HPE Ezmeral Container Platform - Role Based Access Control</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Physical-Worker-Node-Labeling.html" class="sidebar-link">Physical Worker Node Labeling in HPE Ezmeral Container Platform</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Istio-With-Kiali-Dashboard.html" class="sidebar-link">Istio with Kiali dashboard deployment on HPECP</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Kasten-Deployment-On-HPECP.html" class="sidebar-link">Kasten deployment on HPECP</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Kibana-Setup-On-HPECP.html" class="sidebar-link">Kibana Setup on HPECP</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Importing-Plain-K8s-Cluster.html" class="sidebar-link">Importing plain K8s cluster into HPECP cluster</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Deploying-Falco-On-HPECP-Cluster.html" class="sidebar-link">Deploying Falco on HPECP cluster</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Expand-And-Shrink-Cluster.html" class="sidebar-link">Expanding and Shrinking of a Compute Cluster</a></li><li><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/External-Load-Balancing-Using-NGINX.html" class="sidebar-link">External Load Balancing using NGINX</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Resosurces and Additional Links</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="deploying-hpe-csi-driver-for-nimble-storage-on-hpecp-container-platform-5-3"><a href="#deploying-hpe-csi-driver-for-nimble-storage-on-hpecp-container-platform-5-3" class="header-anchor">#</a> Deploying HPE CSI Driver for Nimble Storage on HPECP Container Platform 5.3</h1> <p>Prior to Container Storage Integration (CSI), Kubernetes provided in-tree plugins to support volume. This posed a problem as storage vendors had to align to the Kubernetes release process to fix a bug or to release new features. This also means every storage vendor had their own process to present volume to Kubernetes.</p> <p>CSI was developed as a standard for exposing block and file storage systems to containerized workloads on Container Orchestrator Systems (COS) like Kubernetes. Container Storage Interface (CSI) is an initiative to unify the storage interface of COS combined with storage vendors. This means, implementing a single CSI for a storage vendor is guaranteed to work with all COS. With the introduction of CSI, there is a clear benefit for the COS and storage vendors. Due to its well-defined interfaces, it also helps developers and future COS to easily implement and test CSI. Volume plugins served the storage needs for container workloads in case of Kubernetes, before CSI existed.</p> <p>The HPE CSI Driver is a multi-vendor and multi-backend driver where each implementation has a Container Storage Provider (CSP). The HPE CSI Driver for Kubernetes uses CSP to perform data management operations on storage resources such as searching for a logical unit number (lun) and so on. Using the CSP specification, the HPE CSI Driver allows any vendor or project to develop its own CSP, which makes it very easy for third- parties to integrate their storage solution into Kubernetes as all the intricacies are taken care of by the HPE CSI Driver. This document contains details on how to configure the HPE CSI Driver storage for Nimble on an existing HPECP Container Platform 5.3.</p> <h3 id="configuring-csi-driver"><a href="#configuring-csi-driver" class="header-anchor">#</a> Configuring CSI Driver</h3> <p>Prior to configuring the HPE CSI driver, the following prerequisites needs to be met.</p> <div class="custom-block warning"><p class="custom-block-title">Pre-requisites</p> <ol><li><p>HPECP Container Platform 5.3 must be successfully deployed.</p></li> <li><p>Additional iSCSI network interfaces must be configured on Kubernetes Comupte Cluster (physical and virtual)</p></li></ol></div> <h4 id="installing-csi-drivers"><a href="#installing-csi-drivers" class="header-anchor">#</a> Installing CSI Drivers</h4> <p>These object configuration files are common for version of Kubernetes.</p> <p>Worker node IO settings:</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl create -f <span class="token operator">&lt;</span>https://raw.githubusercontent.com/hpe-storage/co-deployments/master/yaml/csi-driver/v1.3.0/hpe-linux-config.yaml<span class="token operator">&gt;</span>
+</code></pre></div><p>Container Storage Provider:</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl create -f <span class="token operator">&lt;</span>https://raw.githubusercontent.com/hpe-storage/co-deployments/master/yaml/csi-driver/v1.3.0/nimble-csp.yaml<span class="token operator">&gt;</span>
+</code></pre></div><p>Kubernetes 1.18</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl create -f <span class="token operator">&lt;</span>https://raw.githubusercontent.com/hpe-storage/co-deployments/master/yaml/csi-driver/v1.3.0/hpe-csi-k8s-1.18.yaml<span class="token operator">&gt;</span>
+</code></pre></div><h4 id="add-a-hpe-storage-backend"><a href="#add-a-hpe-storage-backend" class="header-anchor">#</a> Add a HPE storage backend</h4> <p>Once the CSI driver is deployed, two additional objects needs to be created to get started with dynamic provisioning of persistent storage, a Secret and a StorageClass.</p> <h4 id="secret-parameters"><a href="#secret-parameters" class="header-anchor">#</a> Secret parameters</h4> <p>All parameters are mandatory and described below.</p> <table><thead><tr><th>Parameter</th> <th>Description</th></tr></thead> <tbody><tr><td>serviceName</td> <td>This hostname or IP address where the Container Storage Provider (CSP) is running, usually a Kubernetes Service, such as &quot;nimble-csp-svc&quot; or &quot;primera3par-csp-svc&quot;</td></tr> <tr><td>servicePort</td> <td>This is port the serviceName is listening to.</td></tr> <tr><td>Backend</td> <td>This is the management hostname or IP address of the actual backend storage system, such as a Nimble or 3PAR array.</td></tr> <tr><td>Username</td> <td>Backend storage system username with the correct privileges to perform storage management.</td></tr> <tr><td>Password</td> <td>Backend storage system password.</td></tr></tbody></table> <h4 id="create-the-secret"><a href="#create-the-secret" class="header-anchor">#</a> Create the secret</h4> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> <span class="token function">vi</span> custom-secret.yaml
+</code></pre></div><div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Secret
+
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">name</span><span class="token punctuation">:</span> custom<span class="token punctuation">-</span>secret
+
+<span class="token key atrule">namespace</span><span class="token punctuation">:</span> kube<span class="token punctuation">-</span>system
+
+<span class="token key atrule">stringData</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">serviceName</span><span class="token punctuation">:</span> nimble<span class="token punctuation">-</span>csp<span class="token punctuation">-</span>svc
+
+<span class="token key atrule">servicePort</span><span class="token punctuation">:</span> <span class="token string">&quot;8080&quot;</span>
+
+<span class="token key atrule">backend</span><span class="token punctuation">:</span> 10.x.x.x
+
+<span class="token key atrule">username</span><span class="token punctuation">:</span> xxxxx
+
+<span class="token key atrule">password</span><span class="token punctuation">:</span> xxxxx
+</code></pre></div><p>create the secret using kubectl</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl create -f custom-secret.yaml
+</code></pre></div><p>We can see the secret in the &quot;kube-system&quot; Namespace</p> <p><img src="/hpe-solutions-hpecp/5.3-DL/assets/img/AF-Nimble1.a4fe3b69.png" alt=""></p> <h4 id="create-the-storageclass-with-the-custom-secret"><a href="#create-the-storageclass-with-the-custom-secret" class="header-anchor">#</a> Create the StorageClass with the custom Secret</h4> <p>To use the new Secret &quot;custom-secret&quot;, create a new StorageClass using the Secret and the necessary StorageClass parameters.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> <span class="token function">vi</span> StorageClass.yaml
+</code></pre></div><div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> storage.k8s.io/v1
+
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> StorageClass
+
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">name</span><span class="token punctuation">:</span> hpe<span class="token punctuation">-</span>custom
+
+<span class="token key atrule">provisioner</span><span class="token punctuation">:</span> csi.hpe.com
+
+<span class="token key atrule">parameters</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">csi.storage.k8s.io/fstype</span><span class="token punctuation">:</span> xfs
+
+<span class="token key atrule">csi.storage.k8s.io/controller-expand-secret-name</span><span class="token punctuation">:</span> custom<span class="token punctuation">-</span>secret
+
+<span class="token key atrule">csi.storage.k8s.io/controller-expand-secret-namespace</span><span class="token punctuation">:</span> kube<span class="token punctuation">-</span>system
+
+<span class="token key atrule">csi.storage.k8s.io/controller-publish-secret-name</span><span class="token punctuation">:</span> custom<span class="token punctuation">-</span>secret
+
+<span class="token key atrule">csi.storage.k8s.io/controller-publish-secret-namespace</span><span class="token punctuation">:</span> kube<span class="token punctuation">-</span>system
+
+<span class="token key atrule">csi.storage.k8s.io/node-publish-secret-name</span><span class="token punctuation">:</span> custom<span class="token punctuation">-</span>secret
+
+<span class="token key atrule">csi.storage.k8s.io/node-publish-secret-namespace</span><span class="token punctuation">:</span> kube<span class="token punctuation">-</span>system
+
+<span class="token key atrule">csi.storage.k8s.io/node-stage-secret-name</span><span class="token punctuation">:</span> custom<span class="token punctuation">-</span>secret
+
+<span class="token key atrule">csi.storage.k8s.io/node-stage-secret-namespace</span><span class="token punctuation">:</span> kube<span class="token punctuation">-</span>system
+
+<span class="token key atrule">csi.storage.k8s.io/provisioner-secret-name</span><span class="token punctuation">:</span> custom<span class="token punctuation">-</span>secret
+
+<span class="token key atrule">csi.storage.k8s.io/provisioner-secret-namespace</span><span class="token punctuation">:</span> kube<span class="token punctuation">-</span>system
+
+<span class="token key atrule">description</span><span class="token punctuation">:</span> &quot;Volume created by using a custom Secret with the HPE CSI
+Driver for Kubernetes&quot;
+
+<span class="token key atrule">reclaimPolicy</span><span class="token punctuation">:</span> Delete
+
+<span class="token key atrule">allowVolumeExpansion</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl create -f StorageClass.yaml
+</code></pre></div><p><img src="/hpe-solutions-hpecp/5.3-DL/assets/img/AF-Nimble2.b4ecf712.png" alt=""></p> <h4 id="create-the-persistentvolumeclaim"><a href="#create-the-persistentvolumeclaim" class="header-anchor">#</a> Create the PersistentVolumeClaim</h4> <p>Create a PersistentVolumeClaim. This object declaration ensures a PersistentVolume is created and provisioned.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> <span class="token function">vi</span> PersistentVolumeClaim.yaml
+</code></pre></div><div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> PersistentVolumeClaim
+
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>first<span class="token punctuation">-</span>pvc
+
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
+
+<span class="token punctuation">-</span> ReadWriteOnce
+
+<span class="token key atrule">resources</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">requests</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">storage</span><span class="token punctuation">:</span> 32Gi
+
+<span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> hpe<span class="token punctuation">-</span>custom
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> kubectl create -f **PersistentVolumeClaim.yaml
+</code></pre></div><p><img src="/hpe-solutions-hpecp/5.3-DL/assets/img/AF-Nimble3.16d21fde.png" alt=""></p> <h4 id="create-the-pods"><a href="#create-the-pods" class="header-anchor">#</a> Create the Pods</h4> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> <span class="token function">vi</span> Pods.yaml
+</code></pre></div><div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">kind</span><span class="token punctuation">:</span> Pod
+
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>pod
+
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">containers</span><span class="token punctuation">:</span>
+
+<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> pod<span class="token punctuation">-</span>datelog<span class="token punctuation">-</span><span class="token number">1</span>
+
+<span class="token key atrule">image</span><span class="token punctuation">:</span> nginx
+
+<span class="token key atrule">command</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;bin/sh&quot;</span><span class="token punctuation">]</span>
+
+<span class="token key atrule">args</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;-c&quot;</span><span class="token punctuation">,</span> &quot;while true; do date <span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span> /data/mydata.txt; sleep 1;
+done&quot;<span class="token punctuation">]</span>
+
+<span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+
+<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> export1
+
+<span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /data
+
+<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> pod<span class="token punctuation">-</span>datelog<span class="token punctuation">-</span><span class="token number">2</span>
+
+<span class="token key atrule">image</span><span class="token punctuation">:</span> debian
+
+<span class="token key atrule">command</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;bin/sh&quot;</span><span class="token punctuation">]</span>
+
+<span class="token key atrule">args</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;-c&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;while true; do date &gt;&gt; /data/mydata.txt; sleep 1; done&quot;</span><span class="token punctuation">]</span>
+
+<span class="token key atrule">volumeMounts</span><span class="token punctuation">:</span>
+
+<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> export1
+
+<span class="token key atrule">mountPath</span><span class="token punctuation">:</span> /data
+
+<span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+
+<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> export1
+
+<span class="token key atrule">persistentVolumeClaim</span><span class="token punctuation">:</span>
+
+<span class="token key atrule">claimName</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>first<span class="token punctuation">-</span>pvc
+</code></pre></div><p>Once the pods are deployed we can list the running pods.</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token operator">&gt;</span> Kubectl get pods
+</code></pre></div><p>These pods will be using the above created pv's for their data storage which reside on HPE Nimble Storage in the backend.</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Lite-Touch-Installation.html" class="prev">
+        Lite Touch Installation (LTI)
+      </a></span> <span class="next"><a href="/hpe-solutions-hpecp/5.3-DL/Additional-Features-and-Functionality/Creating-Data-Fabric-Cluster-On-HPECP.html">
+        Creating Data Fabric Cluster on HPE Ezmeral Container Platform 5.3
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/hpe-solutions-hpecp/5.3-DL/assets/js/app.0bf5fbdc.js" defer></script><script src="/hpe-solutions-hpecp/5.3-DL/assets/js/2.e4aa28f4.js" defer></script><script src="/hpe-solutions-hpecp/5.3-DL/assets/js/14.f3739c20.js" defer></script>
+  </body>
+</html>
