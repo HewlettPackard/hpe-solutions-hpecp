@@ -1,0 +1,100 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+
+---
+
+- hosts: localhost
+  vars_files:
+    - Drivers_details.yaml
+
+  tasks:
+
+  - name: Installing worker node configuration files
+    command: kubectl create -f {{ Worker_node }}
+
+  - name: Installing  Container Storage Provider
+    command: kubectl create -f {{ Nimble }}
+
+  - name: Installing Backend HPE Storage
+    command: kubectl create -f {{ CSI_Drivers }}
+
+  - name: Switching Namespace to hpecp
+    command: kubectl config set-context --current --namespace=hpecp
+
+  - name: configuring objects in k8
+    command: "{{ item }}"
+    loop:
+       - kubectl create -f Custom-Secret.yaml
+       - kubectl create -f StorageClass.yaml
+       - kubectl create -f PersistentVolume.yaml
+       - kubectl create -f Pods.yaml
+
+  - name: waiting for pod to be deployed
+    pause: seconds=60
+
+  - name: getting Pod status
+    command: kubectl get pods my-pod -o json
+    register: Pod_output
+
+  - name: Copying the output to json file
+    copy:
+      content: "{{ Pod_output.stdout }}"
+      dest: "podlog.json"
+
+  - name: Reading json file
+    vars:
+      pod_log: "{{ lookup('file','podlog.json') }}"  
+    set_fact:
+      pod_status: "{{ pod_log.status.phase }}"
+
+  - name: Gathering pod logs
+    command: kubectl describe pod my-pod
+    register: output
+    when: "'{{ pod_status }}' == 'Pending'"
+
+  - name: Copying the output to a log file
+    copy:
+      content: "{{ output.stdout }}"
+      dest: "/tmp/my-pod.log"
+    when: "'{{ pod_status }}' == 'Pending'"
+
+  - name: Reverting back the server to the Previous state as required volume for pod couldn't be found
+    command: "{{ item }}"
+    loop:
+       - kubectl delete pod my-pod
+       - kubectl delete pvc my-first-pvc
+       - kubectl delete sc hpe-custom
+       - kubectl delete secret custom-secret
+       - kubectl delete -f {{ Worker_node }}
+       - kubectl delete -f {{ Nimble }}
+       - kubectl delete -f {{ CSI_Drivers }}
+    when: "'{{ pod_status }}' == 'Pending'"
+
+  - fail:
+          msg: "Kindly check the Nimble connectivity and the Credentials.For detailed logs,kindly check /tmp/my-pod.log file"
+    when: "'{{ pod_status }}' == 'Pending'"
+
+  - name: Performing the final configuration
+    command: "{{ item }}"
+    loop:
+      - kubectl delete pod my-pod
+      - rm -rf Custom-Secret.yaml
+      - rm -rf podlog.json
+    when: "'{{ pod_status }}' == 'Running'"
+  
+  - debug:
+        msg: "Kubernetes cluster integration with Nimble is successful"
+    when: "'{{ pod_status }}' == 'Running'"

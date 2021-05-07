@@ -1,0 +1,428 @@
+<?xml version="1.0"?>
+<!DOCTYPE profile>
+<profile xmlns="http://www.suse.com/1.0/yast2ns"
+  xmlns:config="http://www.suse.com/1.0/configns">
+  <add-on>
+    <add_on_others config:type="list"/>
+    <add_on_products config:type="list">
+      <listentry>
+        <media_url><![CDATA[cd:/?devices=/dev/disk/by-id/usb-iLO_Virtual_DVD-ROM-0:0]]></media_url>
+        <product>sle-module-basesystem</product>
+        <product_dir>/Module-Basesystem</product_dir>
+      </listentry>
+    </add_on_products>
+  </add-on>
+  <general>
+    <mode>
+      <confirm config:type="boolean">false</confirm>
+      <second_stage config:type="boolean">false</second_stage>
+      <final_reboot config:type="boolean">true</final_reboot>
+    </mode>
+<signature-handling>
+      <accept_file_without_checksum config:type="boolean">true</accept_file_without_checksum>
+      <accept_non_trusted_gpg_key config:type="boolean">true</accept_non_trusted_gpg_key>
+      <accept_unknown_gpg_key config:type="boolean">true</accept_unknown_gpg_key>
+      <accept_unsigned_file config:type="boolean">true</accept_unsigned_file>
+      <accept_verification_failed config:type="boolean">false</accept_verification_failed>
+      <import_gpg_key config:type="boolean">true</import_gpg_key>
+    </signature-handling>
+  </general>
+
+  <partitioning config:type="list">
+    <drive>
+      <device>/dev/system</device>
+      <enable_snapshots config:type="boolean">false</enable_snapshots>
+      <initialize config:type="boolean">false</initialize>
+      <partitions config:type="list">
+        <partition>
+          <create config:type="boolean">true</create>
+          <filesystem config:type="symbol">xfs</filesystem>
+          <format config:type="boolean">false</format>
+          <lv_name>home</lv_name>
+          <mount>/home</mount>
+          <mountby config:type="symbol">device</mountby>
+          <pool config:type="boolean">false</pool>
+          <resize config:type="boolean">false</resize>
+          <size>26843545600</size>
+          <stripes config:type="integer">1</stripes>
+          <stripesize config:type="integer">0</stripesize>
+        </partition>
+        <partition>
+          <create config:type="boolean">true</create>
+          <filesystem config:type="symbol">ext4</filesystem>
+          <format config:type="boolean">false</format>
+          <fstopt>acl,user_xattr</fstopt>
+          <lv_name>root</lv_name>
+          <mount>/</mount>
+          <mountby config:type="symbol">device</mountby>
+          <pool config:type="boolean">false</pool>
+          <resize config:type="boolean">false</resize>
+          <size>161061273600</size>
+          <stripes config:type="integer">1</stripes>
+          <stripesize config:type="integer">0</stripesize>
+        </partition>
+        <partition>
+          <create config:type="boolean">true</create>
+          <filesystem config:type="symbol">ext4</filesystem>
+          <format config:type="boolean">false</format>
+          <fstopt>data=ordered,acl,user_xattr</fstopt>
+          <lv_name>var</lv_name>
+          <mount>/var</mount>
+          <mountby config:type="symbol">device</mountby>
+          <pool config:type="boolean">false</pool>
+          <resize config:type="boolean">false</resize>
+          <size>107374182400</size>
+          <stripes config:type="integer">1</stripes>
+          <stripesize config:type="integer">0</stripesize>
+        </partition>
+        <partition>
+          <create config:type="boolean">true</create>
+          <filesystem config:type="symbol">swap</filesystem>
+          <format config:type="boolean">false</format>
+          <lv_name>swap</lv_name>
+          <mount>swap</mount>
+          <mountby config:type="symbol">device</mountby>
+          <pool config:type="boolean">false</pool>
+          <resize config:type="boolean">false</resize>
+          <size>67545071616</size>
+          <stripes config:type="integer">1</stripes>
+          <stripesize config:type="integer">0</stripesize>
+        </partition>
+        <partition>
+          <create config:type="boolean">true</create>
+          <filesystem config:type="symbol">ext4</filesystem>
+          <format config:type="boolean">false</format>
+          <fstopt>data=ordered,acl,user_xattr</fstopt>
+          <lv_name>srv</lv_name>
+          <mount>/srv</mount>
+          <mountby config:type="symbol">device</mountby>
+          <pool config:type="boolean">false</pool>
+          <resize config:type="boolean">false</resize>
+          <size>107374182400</size>
+          <stripes config:type="integer">1</stripes>
+          <stripesize config:type="integer">0</stripesize>
+        </partition>
+      </partitions>
+      <pesize>4194304</pesize>
+      <type config:type="symbol">CT_LVM</type>
+    </drive>
+    <drive>
+      <device>/dev/sda</device>
+      <disklabel>gpt</disklabel>
+      <enable_snapshots config:type="boolean">false</enable_snapshots>
+      <initialize config:type="boolean">false</initialize>
+      <partitions config:type="list">
+        <partition>
+          <create config:type="boolean">true</create>
+          <filesystem config:type="symbol">vfat</filesystem>
+          <format config:type="boolean">true</format>
+          <mount>/boot/efi</mount>
+          <mountby config:type="symbol">uuid</mountby>
+          <partition_id config:type="integer">259</partition_id>
+          <partition_nr config:type="integer">1</partition_nr>
+          <resize config:type="boolean">false</resize>
+          <size>524288000</size>
+        </partition>
+        <partition>
+          <create config:type="boolean">true</create>
+          <format config:type="boolean">false</format>
+          <lvm_group>system</lvm_group>
+          <partition_id config:type="integer">142</partition_id>
+          <partition_nr config:type="integer">2</partition_nr>
+          <resize config:type="boolean">false</resize>
+          <size>536345558528</size>
+        </partition>
+      </partitions>
+      <type config:type="symbol">CT_DISK</type>
+      <use>all</use>
+    </drive>
+  </partitioning>
+  <language>
+    <language>en_US</language>
+  </language>
+  <timezone>
+    <hwclock>UTC</hwclock>
+    <timezone>America/New_York</timezone>
+  </timezone>
+  <keyboard>
+    <keymap>english-us</keymap>
+  </keyboard>
+  <services-manager>
+    <default_target>multi-user</default_target>
+    <services>
+      <disable config:type="list"/>
+      <enable config:type="list">
+        <service>YaST2-Firstboot</service>
+        <service>YaST2-Second-Stage</service>
+        <service>auditd</service>
+        <service>btrfsmaintenance-refresh</service>
+        <service>cron</service>
+        <service>firewalld</service>
+        <service>wickedd-auto4</service>
+        <service>wickedd-dhcp4</service>
+        <service>wickedd-dhcp6</service>
+        <service>wickedd-nanny</service>
+        <service>getty@tty1</service>
+        <service>haveged</service>
+        <service>irqbalance</service>
+        <service>issue-generator</service>
+        <service>kbdsettings</service>
+        <service>kdump</service>
+        <service>kdump-early</service>
+        <service>wicked</service>
+        <service>postfix</service>
+        <service>purge-kernels</service>
+        <service>rollback</service>
+        <service>sshd</service>
+        <service>systemd-fsck-root</service>
+      </enable>
+      <on_demand config:type="list"/>
+    </services>
+  </services-manager>
+  <software>
+    <image/>
+    <install_recommended config:type="boolean">true</install_recommended>
+    <instsource/>
+    <packages config:type="list">
+      <package>yast2</package>
+      <package>wicked</package>
+      <package>sles-release</package>
+      <package>sle-module-basesystem-release</package>
+      <package>shim</package>
+      <package>openssh</package>
+      <package>numactl</package>
+      <package>mokutil</package>
+      <package>kexec-tools</package>
+      <package>kdump</package>
+      <package>irqbalance</package>
+      <package>grub2-x86_64-efi</package>
+      <package>glibc</package>
+      <package>firewalld</package>
+      <package>e2fsprogs</package>
+      <package>dosfstools</package>
+      <package>autoyast2</package>
+    </packages>
+    <patterns config:type="list">
+      <pattern>base</pattern>
+      <pattern>minimal_base</pattern>
+    </patterns>
+    <products config:type="list">
+      <product>SLES</product>
+    </products>
+  </software>
+  <firewall>
+    <default_zone>public</default_zone>
+    <enable_firewall config:type="boolean">true</enable_firewall>
+    <log_denied_packets>off</log_denied_packets>
+    <start_firewall config:type="boolean">true</start_firewall>
+    <zones config:type="list">
+      <zone>
+        <description>Unsolicited incoming network packets are rejected. Incoming packets that are related to outgoing network connections are accepted. Outgoing network connections are allowed.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">false</masquerade>
+        <name>block</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list"/>
+        <short>Block</short>
+        <target>%%REJECT%%</target>
+      </zone>
+      <zone>
+        <description>For computers in your demilitarized zone that are publicly-accessible with limited access to your internal network. Only selected incoming connections are accepted.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">false</masquerade>
+        <name>dmz</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list">
+          <service>ssh</service>
+        </services>
+        <short>DMZ</short>
+        <target>default</target>
+      </zone>
+      <zone>
+        <description>Unsolicited incoming network packets are dropped. Incoming packets that are related to outgoing network connections are accepted. Outgoing network connections are allowed.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">false</masquerade>
+        <name>drop</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list"/>
+        <short>Drop</short>
+        <target>DROP</target>
+      </zone>
+      <zone>
+        <description>For use on external networks. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">true</masquerade>
+        <name>external</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list">
+          <service>ssh</service>
+        </services>
+        <short>External</short>
+        <target>default</target>
+      </zone>
+      <zone>
+        <description>For use in home areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">false</masquerade>
+        <name>home</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list">
+          <service>ssh</service>
+          <service>mdns</service>
+          <service>samba-client</service>
+          <service>dhcpv6-client</service>
+        </services>
+        <short>Home</short>
+        <target>default</target>
+      </zone>
+      <zone>
+        <description>For use on internal networks. You mostly trust the other computers on the networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">false</masquerade>
+        <name>internal</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list">
+          <service>ssh</service>
+          <service>mdns</service>
+          <service>samba-client</service>
+          <service>dhcpv6-client</service>
+        </services>
+        <short>Internal</short>
+        <target>default</target>
+      </zone>
+      <zone>
+        <description>For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">false</masquerade>
+        <name>public</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list">
+          <service>ssh</service>
+          <service>dhcpv6-client</service>
+        </services>
+        <short>Public</short>
+        <target>default</target>
+      </zone>
+      <zone>
+        <description>All network connections are accepted.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">false</masquerade>
+        <name>trusted</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list"/>
+        <short>Trusted</short>
+        <target>ACCEPT</target>
+      </zone>
+      <zone>
+        <description>For use in work areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces config:type="list"/>
+        <masquerade config:type="boolean">false</masquerade>
+        <name>work</name>
+        <ports config:type="list"/>
+        <protocols config:type="list"/>
+        <services config:type="list">
+          <service>ssh</service>
+          <service>dhcpv6-client</service>
+        </services>
+        <short>Work</short>
+        <target>default</target>
+      </zone>
+    </zones>
+  </firewall>
+<services-manager>
+  <default_target>multi-user</default_target>
+  <services>
+     <enable config:type="list">
+      <service>sshd</service>
+    </enable>
+     </services>
+</services-manager>
+
+  <networking>
+    <dhcp_options>
+      <dhclient_client_id/>
+      <dhclient_hostname_option>AUTO</dhclient_hostname_option>
+    </dhcp_options>
+<setup_before_proposal config:type="boolean">true</setup_before_proposal>
+
+    <dns>
+      <dhcp_hostname config:type="boolean">false</dhcp_hostname>
+      <hostname>{server[Hostname]}</hostname>
+      <nameservers config:type="list">
+        <nameserver>{server[Host_DNS]}</nameserver>
+      </nameservers>
+      <resolv_conf_policy>auto</resolv_conf_policy>
+      <searchlist config:type="list">
+        <search>{server[Host_Search]}</search>
+      </searchlist>
+      <write_hostname config:type="boolean">false</write_hostname>
+    </dns>
+    <interfaces config:type="list">
+      <interface>
+        <bonding_master>yes</bonding_master>
+        <bonding_module_opts>mode=active-backup miimon=100</bonding_module_opts>
+        <bonding_slave0>{server[Bonding_Interface1]}</bonding_slave0>
+        <bonding_slave1>{server[Bonding_Interface2]}</bonding_slave1>
+        <bootproto>static</bootproto>
+        <device>bond0</device>
+        <ipaddr>{server[Host_IP]}</ipaddr>
+        <netmask>{server[Host_Netmask]}</netmask>
+        
+        <startmode>auto</startmode>
+      </interface>
+      <interface>
+        <bootproto>none</bootproto>
+        <device>{server[Bonding_Interface1]}</device>
+        <startmode>hotplug</startmode>
+      </interface>
+      <interface>
+        <bootproto>none</bootproto>
+        <device>{server[Bonding_Interface2]}</device>
+        <startmode>hotplug</startmode>
+      </interface>
+         </interfaces>
+    <ipv6 config:type="boolean">true</ipv6>
+    <keep_install_network config:type="boolean">true</keep_install_network>
+    <managed config:type="boolean">false</managed>
+    <net-udev config:type="list">
+      <rule>
+        <name>{server[Bonding_Interface1]}</name>
+        <rule>KERNELS</rule>
+      </rule>
+      <rule>
+        <name>{server[Bonding_Interface2]}</name>
+        <rule>KERNELS</rule>
+      </rule>
+    </net-udev>
+    <routing>
+      <ipv4_forward config:type="boolean">false</ipv4_forward>
+      <ipv6_forward config:type="boolean">false</ipv6_forward>
+      <routes config:type="list">
+        <route>
+          <destination>default</destination>
+          <device>-</device>
+          <gateway>{server[Host_Gateway]}</gateway>
+          <netmask>-</netmask>
+        </route>
+      </routes>
+    </routing>
+  </networking>
+  <users config:type="list">
+    <user>
+      <username>root</username>
+      <user_password>{server[Host_Password]}</user_password>
+      <encrypted config:type="boolean">false</encrypted>
+    </user>
+  </users>
+  <!-- Add suse license content here -->
+</profile>
+
+

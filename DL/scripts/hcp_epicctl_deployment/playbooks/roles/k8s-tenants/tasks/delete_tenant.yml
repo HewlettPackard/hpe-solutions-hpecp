@@ -1,0 +1,64 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Get the tenant URI using the tenant name.
+    command: epicctl api get -u /api/v1/tenant -n {{ common.name }} -p {{ common.platform }} --jsonpath "._embedded.tenants" -o /tmp/get-response.json
+    register: res
+    failed_when: res.rc != 0
+
+  - name: Check if response file exists.
+    stat:
+      path: /tmp/get-response.json
+    register: output
+
+  - name: Parse json to retrieve the tenant URI.
+    set_fact:
+      tenants: "{{ lookup('file', '/tmp/get-response.json') | from_json }}"
+    when: output.stat.exists == True
+
+  - name: Set the tenant_uri variable.
+    set_fact:
+      tenant_uri: "{{ item._links.self.href }}"
+    with_items: "{{ tenants }}"
+    when: item.label.name  == "{{ k8stenant.name }}"
+
+  - debug:
+      msg: "{{ tenant_uri }}"
+
+  - name: Delete k8s tenant with epicctl and rest api.
+    command: epicctl api delete -u "{{ tenant_uri }}" -n "{{ common.name }}" -p {{ common.platform }} -o /tmp/delete-response.json
+    register: res
+    failed_when: res.rc != 0
+
+  - debug:
+     msg: "{{ res.stdout }}"
+
+  # TODO: check: deleteing tenant doesn't take much time,
+  # instead of polling , it is good idea to check http status code for 204
+
+  # - name: Poll the status of tenant delete by making get call to /api/v1/tenant/tenant_id
+  #   command: epicctl api get -u "/api/v1/tenant/{{ k8stenant.tenant_delete_id }}" -n "OnPremSetup" -p {{ common.platform }} -o /tmp/get-response.json
+  #   vars:
+  #     getResp: "{{ (lookup('file', '/tmp/get-response.json') | from_json)['status'] }}"
+  #   register : res
+  #   failed_when: false # when resource is deleted, last get call returns 404, don't want to fail it
+  #   changed_when: false
+  #   retries: 30
+  #   delay: 10
+  #   until:  '"deleting" != getResp'
+
+  # - debug:
+  #     msg: "{{ res.stdout }}"
