@@ -1,4 +1,4 @@
-# Physical Worker Node Labelling in HPE Ezmeral Container Platform 5.2.
+# Physical Worker Node Labelling in HPE Ezmeral Container Platform 5.3.
 
 ### Description
 
@@ -18,13 +18,13 @@
  
  - Ansible engine with Ansible 2.9.x and Python  3.6.x
 
- - HPE Ezmeral Container Platform 5.2 is up and running. 
+ - HPE Ezmeral Container Platform 5.3 is up and running. 
 
- - The HPE Ezmeral Container Platform 5.2 must have physical worker node(s) to use the "Node labeling" functionality.
+ - The HPE Ezmeral Container Platform 5.3 must have physical worker node(s) to use the "Node labeling" functionality.
 
  - Ensure there is connectivity to the iLO IP's of the physical node servers (ping the iLO's and check if they are reachable, because the script needs to talk to the iLO to retrieve information of the servers)
  
- - The scripts under this repository need to be run from the installer machine with the Python Virtual Environment setup as mentioned in the [Installer Machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of the Deployment Guide.
+ - The scripts under this repository need to be run from the installer machine with the Python Virtual Environment setup as mentioned in the [Installer Machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of the Deployment Guide.
  
  - Ensure that the "kubectl" tool is available in the path along with the "kubeconfig" file of the cluster in $HOME/.kube/ directory (eg /root/.kube/config)
 
@@ -72,9 +72,9 @@
 
 
 ### Input Files
- - The Scripts for HPE Ezmeral Container Platform 5.2 Physical Worker Node labeling are available under $BASE_DIR/physical_worker_node_labeling/
+ - The Scripts for HPE Ezmeral Container Platform 5.3 Physical Worker Node labeling are available under $BASE_DIR/physical_worker_node_labeling/
 
-**NOTE** BASE_DIR is defined and set in [installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of the deployment guide. 
+**NOTE** BASE_DIR is defined and set in [installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of the deployment guide. 
 
  - It is mandatory to update all the input files with appropriate values before running the scripts available in this repository.
 	
@@ -112,7 +112,7 @@
     > cd $BASE_DIR/platform/physical_worker_node_labeling/
     > python physical_node_labeling.py
     ```
-	**NOTE** BASE_DIR is defined and set in [installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section in deployment guide
+	**NOTE** BASE_DIR is defined and set in [installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section in deployment guide
 	
 	Next the user will be prompted to enter the ansible vault password/key. This credential is the default "ansible vault" password that is 'changeme'.
     ```
@@ -167,7 +167,7 @@
 
 ### Summary
 
-These scripts have been tested on HPE Ezmeral Container Platform 5.2 with the following configuration parameters:
+These scripts have been tested on HPE Ezmeral Container Platform 5.3 with the following configuration parameters:
 
 - Worker nodes are running SLESOS as the operating system
 

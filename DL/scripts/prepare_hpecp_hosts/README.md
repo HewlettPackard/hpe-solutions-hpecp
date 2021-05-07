@@ -2,7 +2,7 @@
 
 ## Prerequisites 
 - Centos 7 Installer machine with the following configurations is essential.
-1. Enable Python3 and Ansible Environment as mentioned in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of deployment guide.
+1. Enable Python3 and Ansible Environment as mentioned in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of deployment guide.
 2. Passwordless SSH is configured to target hosts from the installer machine. Steps for configuring passwordless SSH is as follows:
   - Execute the following command on installer machine to generate a new SSH key pair.
     ```
@@ -78,13 +78,13 @@
 
 
 ## Installation
-1. Enable Python3 and Ansible Environment as mentioned in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of deployment guide.
+1. Enable Python3 and Ansible Environment as mentioned in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of deployment guide.
 2. Change the current working directory to "prepare_hpecp_hosts" using the following command
   ```
    # cd $BASE_DIR/prepare_hpecp_hosts
   ```
   **Note**
-  * BASE_DIR is defined and set in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section in deployment guide.
+  * BASE_DIR is defined and set in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section in deployment guide.
   
    
 3. Execute the copy.sh script to copy the ssh keys to the SLES hosts.

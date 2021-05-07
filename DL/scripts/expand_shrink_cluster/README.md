@@ -4,7 +4,7 @@ This README describes the process required to expand or shrink an existing compu
 
 ## PREREQUISITES
 
-1. Refer to [Installer Machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section to set up the required python and ansible environment.
+1. Refer to [Installer Machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section to set up the required python and ansible environment.
 
 2. Python module 'requests'.
 

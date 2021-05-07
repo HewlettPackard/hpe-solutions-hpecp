@@ -18,11 +18,11 @@ This folder consists of scripts to deploy operating system over bare-metal serve
    * Boot order - Hard disk
    * Secure Boot - disabled 
 
-**NOTE:** Please refer to the [Installer Machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section in deployment guide.
+**NOTE:** Please refer to the [Installer Machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section in deployment guide.
 
 ## Installation
 
-1. Enable Python3 and Ansible Environment as mentioned in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of deployment guide.
+1. Enable Python3 and Ansible Environment as mentioned in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of deployment guide.
 
 2. Setup the installer machine.
    ```

@@ -14,7 +14,7 @@ The following versions are used during developing the ansible code
 
 PRE-REQUISITES:-
 --------------
-1. Python virtual environment (please refer [Installer section](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) for creating python virtual environment in the Deployment Guide)
+1. Python virtual environment (please refer [Installer section](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) for creating python virtual environment in the Deployment Guide)
 2. Ansible must be running
 
 STEPS:-

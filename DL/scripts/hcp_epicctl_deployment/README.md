@@ -21,7 +21,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Container Platform is autom
 
 ### Prerequisites
 
--   Linux machine with Ansible 2.9.x and python 3.x as mentioned in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of deployment guide.
+-   Linux machine with Ansible 2.9.x and python 3.x as mentioned in [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of deployment guide.
 
 -   Minimum five (5) nodes with SLES 15 SP2 (nodes can be VMs or bare metal).
 
