@@ -1,7 +1,0 @@
-
-      {
-         "HTTP_server_base_url"  :   "http://10.0.x.x/",
-         "HTTP_file_path"        :   "/usr/share/nginx/html/",
-         "OS_type"               :   "sles15",
-         "OS_image_name"         :   "SLE-15-SP2-Installer-DVD-x86_64-GM-DVD1.iso"
-      }
