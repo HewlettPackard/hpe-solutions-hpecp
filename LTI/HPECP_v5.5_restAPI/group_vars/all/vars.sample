@@ -134,7 +134,6 @@ Mode: 2
 
 Email: jim.****@abc.com           # User Email-id which will be used for server registration.
 base_code: 88B***********         # Registration code which will be used for server registration.
-caas_code: 21E***********         # Registration code for caas module.
 ha_code: BD3FE***********         # Registration code for ha module
 
 RMT_URL: http://20.**.**.**/

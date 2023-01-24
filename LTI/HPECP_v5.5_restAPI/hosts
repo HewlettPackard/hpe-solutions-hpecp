@@ -1,5 +1,5 @@
 [sles_os]
-new.haritha.local GPU_Host=yes
+node1.ecp.local GPU_Host=yes
 
 [controller]
 
