@@ -1,0 +1,48 @@
+--- 
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: 
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
+
+  - name: Fetch location header
+    set_fact: 
+      session_token="{{ token.location }}"
+
+  - name: Fetch token 
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug: 
+      msg="{{ token }}"
+
+  - name: Put ERE in lock down mode
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/lock
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      method: POST
+      body_format: json
+      body:
+        reason: "To enable controller ha"
+      status_code:
+        - 201
+    register: response
+
+  - debug:
+      msg: response.stdout

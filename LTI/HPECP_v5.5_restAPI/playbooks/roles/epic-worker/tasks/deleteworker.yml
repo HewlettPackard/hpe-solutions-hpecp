@@ -1,0 +1,97 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: 
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
+
+  - name: Fetch location header
+    set_fact: 
+      session_token="{{ token.location }}"
+
+  - name: Fetch token 
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug: 
+      msg="{{ token }}"
+  
+  - name: Get worker host id info
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/workers
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: GET
+      status_code:
+        - 200
+    register: output
+  
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      epicworker_id_info: "{{ output.content }}"
+  
+  - name: Set host name that needs to deleted
+    set_fact:
+      host_to_deleted: "{{ item.worker }}"
+
+  - name: Set the epicworker_uri variable.
+    set_fact:
+      epicworker_uri: "{{ item._links.self.href }}"
+    with_items: "{{ epicworker_id_info._embedded.workers }}"
+    when: item.ip  == host_to_deleted
+
+  - debug:
+      msg: "{{ epicworker_uri }}"
+    failed_when: epicworker_uri is undefined
+
+  - name: Delete epic worker with rest api
+    uri:
+      url: http://{{ controller.host_ip }}:8080{{ epicworker_uri }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+      method: DELETE
+      status_code:
+        - 204
+    register: res
+
+  - debug:
+      msg: res
+  
+  - name: Sleep for 60 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 60
+
+  

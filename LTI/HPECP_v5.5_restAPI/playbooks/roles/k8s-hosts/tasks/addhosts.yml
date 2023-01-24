@@ -1,0 +1,121 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Set the host ip variable
+    set_fact:
+      k8shost_ip: "{{ item.host }}"
+
+  - name: Set the datafabric varible for master
+    set_fact:
+      tagname: "{{ item.tagname }}"
+    
+  - name: Set the datafabric  variable
+    set_fact:
+      tagvalue: "{{ item.tagvalue }}"
+
+  - name: Set the presistent variable
+    set_fact:
+      persistent_disks: "{{ item.persistent_disks }}"
+  
+  - debug:
+      msg: "{{ item }}"
+
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body:
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
+
+  - name: Fetch location header
+    set_fact:
+      session_token="{{ token.location }}"
+
+  - name: Fetch token
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug:
+      msg="{{ token }}"
+
+  - name: Setting up k8s hosts.
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: POST
+      body_format: json
+      body: "{\"ipaddr\":\"{{ k8shost_ip }}\",\"credentials\":{\"type\":\"password_access\",\"password\":\"{{credentials.ssh.password}}\"}}"
+      status_code:
+        - 201
+    register: res
+
+
+  - debug:
+      msg: res.stdout
+
+  - name: Sleep for 300 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 300
+
+  - name: Fetch k8s host id location
+    set_fact:
+      id_location="{{ res.location }}"
+  
+  - name: Fetch epic-worker id
+    set_fact:
+      hostid: "{{id_location.split('/')[7]}}"
+
+  - debug:
+      msg="{{ hostid }}"
+  
+  - name: To configure k8s hosts storage
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost/{{ hostid }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: POST
+      body_format: json
+      body: "{\"op\":\"storage\",\"op_spec\":{\"ephemeral_disks\":[\"{{ k8shosts.ephemeral_disks }}\"],\"posix_client_type\":\"{{ common.posix_type }}\"}}"
+      status_code:
+        - 204
+    register: response
+
+  - debug:
+      msg: response.stdout
+  
+  - name: Sleep for 300 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 300
+ 
