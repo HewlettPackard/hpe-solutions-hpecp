@@ -1,0 +1,15 @@
+[sles_os]
+node1.ecp.local GPU_Host=yes
+
+[controller]
+
+[K8sclusternodes]
+
+[gateway]
+
+[epicworker]
+
+[local]
+localhost    ansible_connection=local ansible_python_interpreter=/root/hm/bin/python3
+
+[allnodes]
