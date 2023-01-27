@@ -16,4 +16,4 @@
 ---
 # tasks file for datafabric register nodes
   - include_tasks: datafabric.yml
-  
+    when: ( k8scluster.tagname != "") and ( k8scluster.tagvalue != "")
