@@ -19,8 +19,14 @@
       path: /root/ECP
       state: directory
        
+  - name: Check if bin file is copied to path
+    stat:
+      path: '/root/ECP/{{ file_name }}'
+    register: result
+
   - name: Download latest ecp bin file
     shell: wget --wait=5 "{{ url }}" -P /root/ECP
+    when: not result.stat.exists
 
   - name: Give execute permission to ecp bin file
     file:
@@ -40,10 +46,8 @@
       chdir: /root/ECP
 
   - debug:
-      msg: {{ response.stdout }}	
+      msg: response.stdout
   
   - name: Sleep for 200 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 200
-
-
