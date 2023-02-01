@@ -14,36 +14,32 @@
 ## limitations under the License.
 ####
 ---
-  - name: Create directory to copy ecp bin file
-    file: 
-      path: /root/ECP
-      state: directory
-       
+
   - name: Check if bin file is copied to path
     stat:
-      path: '/root/ECP/{{ file_name }}'
+      path: '/root/{{ file_name }}'
     register: result
 
   - name: Download latest ecp bin file
-    shell: wget --wait=5 "{{ url }}" -P /root/ECP
+    shell: wget --wait=5 "{{ url }}" -P /root/
     when: not result.stat.exists
 
   - name: Give execute permission to ecp bin file
     file:
-      path: '/root/ECP/{{ file_name }}'
+      path: '/root/{{ file_name }}'
       state: file
       mode: "0775"
 
   - name: Ensure to erase the previous install files on your local machine.
     shell: ./"{{ file_name }}" --erase
     args:
-      chdir: /root/ECP
+      chdir: /root
 
   - name: Run ecp bin file
     shell: ./"{{ file_name }}" --install --default-password={{ controller_creds.password }} --controller-public-if={{ controller.controller_public_if }} --skipeula --force
     register: response
     args:
-      chdir: /root/ECP
+      chdir: /root
 
   - debug:
       msg: response.stdout

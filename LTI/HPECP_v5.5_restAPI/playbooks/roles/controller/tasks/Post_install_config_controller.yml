@@ -59,7 +59,7 @@
     register: output
 
   - debug:
-      msg: {{ output }}
+      msg: output
 
   - name: Sleep for 400 seconds and continue with play
     ansible.builtin.wait_for:
