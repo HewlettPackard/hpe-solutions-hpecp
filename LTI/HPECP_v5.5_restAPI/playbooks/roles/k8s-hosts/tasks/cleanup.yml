@@ -31,6 +31,20 @@
     - "systemctl stop openvswitch"
     - "zypper remove -y openvswitch"
 
+  - name: Check if common sles bin file is there
+    find:
+      paths: "/tmp/"
+      use_regex: yes
+      patterns: "common-cp-*"
+      file_type: "file"
+    register: var
+
+  - name: Erase common sles release bin file
+    shell: ./common-cp-* --erase
+    when: var.files != []
+    args:
+      chdir: /tmp/
+
   - name: Disable swap
     command: swapoff -a
     tags: ['skip_ansible_lint']
