@@ -61,7 +61,7 @@
       method: POST
       body_format: json
       body:
-        reason: "To add epic-workers node in ECP"
+        reason: "To add epic-workers node in ERE"
       status_code:
         - 201
     register: response

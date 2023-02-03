@@ -61,7 +61,7 @@
       method: POST
       body_format: json
       body:
-        reason: "To add epic-workers node in ECP"
+        reason: "To enable contorller HA"
       status_code:
         - 201
     register: response
