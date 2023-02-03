@@ -26,6 +26,28 @@
 
   - debug: 
       msg="{{ token }}"
+  
+  - name: Get lock id for exit lock down mode
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/lock
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: lock_info
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      lock_id_info: "{{ lock_info.content }}"
+
+  - name: Save external lock value as a Fact
+    set_fact:
+      lock_info: "{{ lock_id_info._embedded.external_locks }}"
 
   - name: Put ERE in lock down mode
     uri:
@@ -39,10 +61,11 @@
       method: POST
       body_format: json
       body:
-        reason: "To add gateway node in ECP"
+        reason: "To add epic-workers node in ECP"
       status_code:
         - 201
     register: response
+    when: lock_info == []
 
   - debug:
       msg: response.stdout
