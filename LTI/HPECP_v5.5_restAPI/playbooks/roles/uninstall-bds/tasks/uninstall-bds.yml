@@ -25,4 +25,4 @@
     register: result
   
   - debug:
-      msg: result.stdout
+      msg: "{{ result }}"

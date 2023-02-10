@@ -14,12 +14,13 @@
 ## limitations under the License.
 ####
 ---
-# tasks file for k8s-tenants
-  - include_tasks: payload.yml
-    when: createtenant is defined
-  - include_tasks: create_tenant.yml
-    when: createtenant is defined
-  - include_tasks: get_kubeconfig.yml
-    when: get_kubeconfig is defined
-  - include_tasks: delete_tenant.yml
-    when: deletetenant is defined
+# tasks file to setup docker registry
+
+  - include_tasks: setup_dockerregistry.yml
+    when: createregistry is defined and airgap.is_airgap_env == true
+
+
+  - include_tasks: configure_dockerregistry.yml
+    when: configureregistry is defined and airgap.is_airgap_env == true
+
+    

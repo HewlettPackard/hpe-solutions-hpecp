@@ -1,0 +1,73 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: set fact for hpe utility url
+    set_fact:
+      url: "{{ airgap.airgap_utility_url}}"
+  
+  - name: set fact for file name of utility package
+    set_fact:
+      file_name: "{{ url | basename }}"
+  
+  - name: Download the airgap utility package 
+    shell: wget --wait=5 "{{ url }}" -P /root/
+    ignore_errors: true
+
+  - name: Install skopeo package
+    command: yum install -y skopeo
+
+  - name: Install the hpeairgaputil package
+    ansible.builtin.pip:
+      name: file:///root/{{ file_name }}
+  
+  - name: Copy all required and optional images to docker resgitry
+    shell: hpe-airgap-util --release "{{ airgap.ere_release_number }}" --{{ item }} --copy --dest_url "{{ airgap.registry_server_ip_address }}":5000
+    with_items:
+      - required
+      - optional
+    register: copy_images_output
+    ignore_errors: true
+  
+  - name: Sleep for 200 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 200
+
+  - name: Pull and verify docker image from docker resgitry
+    community.general.docker_image:
+      name: "{{ airgap.registry_server_ip_address }}:5000/nginx:stable-alpine"
+      source: pull
+    register: pull_image_output
+    async: 80
+  
+  - debug:
+      msg: "{{ pull_image_output }}"
+
+  - name: Inspect nginx docker image pulled from docker registry
+    docker_image_info:
+      name:
+        - "{{ airgap.registry_server_ip_address }}:5000/nginx:stable-alpine"
+    register: result
+  
+  - debug:
+      msg: "{{ result }}"
+
+  - name: Copy all required and optional images to docker resgitry
+    shell: hpe-airgap-util --release "{{ airgap.ere_release_number }}" --{{ item }} --copy --dest_url "{{ airgap.registry_server_ip_address }}":5000
+    with_items:
+      - required
+      - optional
+    when: result.images | length != 1
+  

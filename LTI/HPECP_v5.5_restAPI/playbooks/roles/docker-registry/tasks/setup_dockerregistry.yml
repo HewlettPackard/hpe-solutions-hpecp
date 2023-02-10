@@ -1,0 +1,72 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Check docker installed
+    shell: which docker
+    register: check_docker
+    ignore_errors: yes
+
+  - name: Install docker
+    shell: curl https://get.docker.com/ | sh
+    when: check_docker.rc == 1
+
+  - name: Create registry file in mnt
+    file:
+      path: /mnt/registry
+      state: touch
+
+  - name: python module to install docker
+    shell: pip install docker
+    ignore_errors: yes 
+    
+  - name: Create Docker Registry
+    docker_container:
+      name: registry
+      image: registry:2
+      state: started
+      restart_policy: always
+      volumes:
+        - /mnt/registry:/var/lib/registry
+      published_ports:
+        - "{{airgap.registry_port}}:5000"
+        
+  - name: Get infos on registry container
+    docker_container_info:
+      name: registry
+    register: result
+
+  - name: Does container exist?
+    debug:
+      msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
+
+  - name: Print information about container
+    debug:
+      msg: "The container status is {{ result.container['State']['Status'] }}"
+    when: result.exists
+
+  - name: Access to the local docker registry
+    copy: 
+      dest: /etc/docker/daemon.json
+      content: |
+        {
+          "insecure-registries" : ["{{ airgap.registry_server_ip_address }}:5000"]
+        }
+  
+  - name: Restart docker
+    ansible.builtin.service:
+      name: docker
+      state: restarted
+

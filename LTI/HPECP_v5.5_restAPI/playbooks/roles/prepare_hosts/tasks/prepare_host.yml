@@ -143,9 +143,9 @@
   - name: Rebooting the hosts
     reboot:
   
-  - name: Enabling firewall
-    command: systemctl enable firewalld
+  - name: Disable firewall
+    command: systemctl disable firewalld
     
-  - name: Starting firewall service
-    command: systemctl start firewalld
+  - name: Stop firewall service
+    command: systemctl stop firewalld
      

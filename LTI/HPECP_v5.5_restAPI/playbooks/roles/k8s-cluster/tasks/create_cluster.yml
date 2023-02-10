@@ -58,6 +58,82 @@
         - 201
     register: output
 
-  - name: Sleep for 300 seconds and continue with play
+  - debug:
+      msg: "{{ output }}"
+
+  - name: Fetch k8s cluster status 
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/k8scluster
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: GET
+      status_code:
+        - 200
+    register: k8scluster_info
+
+  - debug: 
+      msg: "{{ k8scluster_info }}"
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      k8scluster_content: "{{ k8scluster_info.content }}"
+
+  - name: Set the k8s_cluster status info
+    set_fact:
+      k8s_cluster_status: "{{ item.status }}"    # here item refers to json response array
+    with_items: "{{ k8scluster_content._embedded.k8sclusters }}"
+  
+  - debug: 
+      msg: "k8s cluster failed"
+    when: k8s_cluster_status == "error"
+    
+  - debug:
+      msg: "k8s cluster successfully created"
+    when: k8s_cluster_status == "ready"
+
+  - debug:
+      msg: "k8s cluster is getting created"
+    when: k8s_cluster_status == "creating"
+  
+  - name: Sleep for 1800 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 300
+      timeout: 1800
+
+  - name: Fetch k8s cluster status 
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/k8scluster
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: GET
+      status_code:
+        - 200
+    register: k8scluster_info_creating
+  
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      k8scluster_content_info: "{{ k8scluster_info_creating.content }}"
+
+  - name: Set the k8s_cluster status info
+    set_fact:
+      k8s_cluster_status_new: "{{ item.status }}"    # here item refers to json response array
+    with_items: "{{ k8scluster_content_info._embedded.k8sclusters }}"
+  
+  - debug:
+      msg: "{{ k8s_cluster_status_new }}"
+    
+  - debug: 
+      msg: "k8s cluster failed"
+    when: k8s_cluster_status_new == "error"
+    
+  - debug:
+      msg: "k8s cluster successfully created"
+    when: k8s_cluster_status_new == "ready"
+  

@@ -42,7 +42,7 @@
       chdir: /root
 
   - debug:
-      msg: response.stdout
+      msg: "{{ response }}"
   
   - name: Sleep for 200 seconds and continue with play
     ansible.builtin.wait_for:

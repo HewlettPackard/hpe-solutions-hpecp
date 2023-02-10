@@ -68,6 +68,6 @@
   - debug:
       msg: "{{ res }}"
 
-  - name: Sleep for 200 seconds and continue with play
+  - name: Sleep for 250 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 200
+      timeout: 250

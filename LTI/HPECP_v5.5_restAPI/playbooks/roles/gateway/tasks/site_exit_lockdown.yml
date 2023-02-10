@@ -80,4 +80,4 @@
     register: response
 
   - debug:
-      msg: response.stdout
+      msg: "{{ response }}"

@@ -13,13 +13,5 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 ####
----
-# tasks file for k8s-tenants
-  - include_tasks: payload.yml
-    when: createtenant is defined
-  - include_tasks: create_tenant.yml
-    when: createtenant is defined
-  - include_tasks: get_kubeconfig.yml
-    when: get_kubeconfig is defined
-  - include_tasks: delete_tenant.yml
-    when: deletetenant is defined
+localhost
+

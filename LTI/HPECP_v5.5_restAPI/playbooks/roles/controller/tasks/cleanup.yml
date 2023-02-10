@@ -51,7 +51,7 @@
   #     path: "/srv/bluedata/catalog"
   #     state: directory
   #     mode: 777
-  #     recurse: yes
+  #     recurse: yes 
   #   when: airgap.is_airgap_env == true
 
   # - name: copying feed.json file into controller node

@@ -18,11 +18,11 @@
     set_fact:
       k8shost_ip: "{{ item.host }}"
 
-  - name: Set the datafabric varible for master
+  - name: Set the datafabric varible name
     set_fact:
-      tagname: "{{ item.tagname }}"
+      tagname: "/api/v2/tag/{{ item.tagname }}"
     
-  - name: Set the datafabric  variable
+  - name: Set the datafabric variable value
     set_fact:
       tagvalue: "{{ item.tagvalue }}"
 
@@ -61,7 +61,7 @@
   - debug:
       msg="{{ token }}"
 
-  - name: Setting up k8s hosts.
+  - name: Setting up k8s hosts without datafabric
     uri:
       url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost
       return_content: yes
@@ -75,20 +75,46 @@
       body: "{\"ipaddr\":\"{{ k8shost_ip }}\",\"credentials\":{\"type\":\"password_access\",\"password\":\"{{credentials.ssh.password}}\"}}"
       status_code:
         - 201
-    register: res
-
+    register: res_without_edf
+    when: tagname == ""
 
   - debug:
-      msg: res.stdout
+      msg: "{{ res_without_edf }}"
+
+  - name: Setting up k8s hosts with datafabric
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: POST
+      body_format: json
+      body: "{\"ipaddr\":\"{{ k8shost_ip }}\",\"credentials\":{\"type\":\"password_access\",\"password\":\"{{credentials.ssh.password}}\"},\"tags\":[{\"tag_id\":\"{{ tagname }}\",\"tag_value\":\"{{ tagvalue }}\"}]}"
+      status_code:
+        - 201
+    register: res_with_edf
+    when: tagname != ""
+
+  - debug:
+      msg: "{{ res_without_edf }}"
 
   - name: Sleep for 300 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 300
 
-  - name: Fetch k8s host id location
+  - name: Fetch k8s host id location for host without edf
     set_fact:
-      id_location="{{ res.location }}"
-  
+      id_location="{{ res_without_edf.location }}"
+    when: tagname == ""
+
+  - name: Fetch k8s host id location for host with edf
+    set_fact:
+      id_location="{{ res_with_edf.location }}"
+    when: tagname != ""
+
   - name: Fetch epic-worker id
     set_fact:
       hostid: "{{id_location.split('/')[7]}}"
@@ -107,15 +133,15 @@
         Content-Type: "application/json"
       method: POST
       body_format: json
-      body: "{\"op\":\"storage\",\"op_spec\":{\"ephemeral_disks\":[\"{{ k8shosts.ephemeral_disks }}\"],\"posix_client_type\":\"{{ common.posix_type }}\"}}"
+      body: "{\"op\":\"storage\",\"op_spec\":{\"ephemeral_disks\":[\"{{ k8shosts.ephemeral_disks }}\"],\"persistent_disks\":[\"{{ persistent_disks }}\"],\"posix_client_type\":\"{{ common.posix_type }}\"}}"
       status_code:
         - 204
     register: response
 
   - debug:
-      msg: response.stdout
+      msg: "{{ response }}"
   
-  - name: Sleep for 300 seconds and continue with play
+  - name: Sleep for 400 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 300
+      timeout: 400
  

@@ -21,4 +21,3 @@
       - role: k8s-tenants
         vars:
           deletetenant: yes
-          get_kubeconfig: yes

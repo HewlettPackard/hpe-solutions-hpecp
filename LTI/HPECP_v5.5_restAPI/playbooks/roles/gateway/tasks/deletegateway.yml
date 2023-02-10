@@ -63,6 +63,11 @@
   - name: Set host name that needs to deleted
     set_fact:
       host_to_deleted: "{{ item.gateway }}"
+  
+  - name: Set gateway ip to delete 
+    set_fact:
+      gateway_ip_info: "{{ item.ip }}"
+    with_items: "{{ gateways._embedded.workers }}"
 
   - name: debug host name
     debug:
@@ -81,6 +86,7 @@
 
   - ansible.builtin.debug:
       msg: "{{ gateway_uri }}"
+    when: gateway_ip_info == host_to_deleted
 
   - name: Delete gateway with epicctl and rest api.
     uri:
@@ -94,10 +100,13 @@
       status_code:
         - 204
     register: res
+    when: gateway_ip_info == host_to_deleted
 
   - debug:
-      msg: res.stdout
+      msg: "{{ res }}"
+    when: gateway_ip_info == host_to_deleted
 
   - name: Sleep for 60 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 60
+    when: gateway_ip_info == host_to_deleted

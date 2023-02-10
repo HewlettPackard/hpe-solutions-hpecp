@@ -59,11 +59,11 @@
     register: output
 
   - debug:
-      msg: output
+      msg: "{{ output }}"
 
-  - name: Sleep for 400 seconds and continue with play
+  - name: Sleep for 600 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 400
+      timeout: 600
 
   - name: Add registry server deatils to the platform
     uri:

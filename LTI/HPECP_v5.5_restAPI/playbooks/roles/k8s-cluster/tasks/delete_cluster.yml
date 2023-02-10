@@ -84,8 +84,8 @@
     register: res
 
   - debug:
-      msg: res.stdout
+      msg: "{{ res }}"
 
-  - name: Sleep for 300 seconds and continue with play
+  - name: Sleep for 400 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 300
+      timeout: 400

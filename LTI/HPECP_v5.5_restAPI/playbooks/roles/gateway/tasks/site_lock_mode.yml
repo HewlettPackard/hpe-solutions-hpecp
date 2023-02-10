@@ -68,4 +68,4 @@
     when: lock_info == []
 
   - debug:
-      msg: response.stdout
+      msg: "{{ response }}"

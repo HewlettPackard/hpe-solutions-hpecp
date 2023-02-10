@@ -59,6 +59,11 @@
   - name: save the Json data to a Variable as a Fact
     set_fact:
       epicworker_id_info: "{{ output.content }}"
+
+  - name: save ip as variable to delete epic worker
+    set_fact:
+       epic_worker_ip_info: "{{ item.ip}}"
+    with_items: "{{ epicworker_id_info._embedded.workers }}"
   
   - name: Set host name that needs to deleted
     set_fact:
@@ -72,7 +77,7 @@
 
   - debug:
       msg: "{{ epicworker_uri }}"
-    failed_when: epicworker_uri is undefined
+    when: epic_worker_ip_info == host_to_deleted
 
   - name: Delete epic worker with rest api
     uri:
@@ -86,12 +91,15 @@
       status_code:
         - 204
     register: res
+    when: epic_worker_ip_info == host_to_deleted
 
   - debug:
-      msg: res
+      msg: "{{ res }}"
+    when: epic_worker_ip_info == host_to_deleted
   
   - name: Sleep for 60 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 60
+    when: epic_worker_ip_info == host_to_deleted
 
   

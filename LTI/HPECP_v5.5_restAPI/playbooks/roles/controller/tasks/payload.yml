@@ -30,6 +30,6 @@
     register: output
 
   - debug:
-      msg: output.stdout
+      msg: "{{ output }}"
   
       
