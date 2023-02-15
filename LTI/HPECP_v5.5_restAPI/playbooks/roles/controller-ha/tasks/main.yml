@@ -17,6 +17,9 @@
 # tasks file for enable-ha
   - include_tasks: site_lockdown.yml
 
+  - include_tasks: payload.yml
+    when: enableha is defined
+    
   - include_tasks: enable_ha.yml
     when: enableha is defined
  

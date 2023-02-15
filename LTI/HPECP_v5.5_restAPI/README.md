@@ -34,14 +34,13 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Container Platform is autom
    3. Ansible 2.9.x and python 3.x and above should be installed. Please refer to the [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-Synergy/Solution-Deployment/Host-Configuration.html#installer-machine section of the deployment guide 
             
    4. Setup the installer machine to configure the nginx, development tools and other python packages required for LTI installation.
-      Navigate to the directory, $BASE_DIR/Lite_Touch_Installation/playbooks/roles/os_deployment/tasks and run the below command. 
+      Navigate to the directory, $BASE_DIR/HPECP_v5.5_restAPI/playbooks/roles/os_deployment/tasks and run the below command. 
 
         ```
          sh setup.sh
         
         ```
     
-
      **NOTE**
      * While the script is running if it is not able to clone the mksusecd repo and  gets failed, kindly re-run the script and ensure the repo is cloned successfully.
          
@@ -52,6 +51,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Container Platform is autom
       * SLES ISO should be present under /usr/share/nginx/html/
   
    6. Ensure that SELinux status is disabled.
+
    7. SSH Key pair should be there on the installer machine, if not kindly generate a new SSH key pair using the below command.
 
         ```
@@ -60,7 +60,14 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Container Platform is autom
       **NOTE**  
       Ensure that in the known hosts file of installer machine, the entries of HPECP host should not be present.
 
-   8. The script downloads the hpecp bin file from the S3 bucket or the bin file can be downloaded the from the url and placed locally on the installer machine.The same needs to be updated in the vars.yml file.
+   8. The script downloads the hpecp bin file from the S3 bucket or the bin file can be downloaded the from the url and placed locally to root directory on the controller machine.The same needs to be updated in the vars.yml file.
+
+   9. Ensure to setup docker registry on installer if airgap is set to true in vars.yml file. To setup docker regsitry update the same in vars.yml and run below command.
+
+         ```
+            ansible-playbook  playbooks/setup_docker_registry.yml --ask-vault-pass
+         ```
+   Note: Incase of timeout,retries and connection errors while copying docker images to docker regsitry re run the playbook again since copying images requires lot of time.
 
 ### HPECP Nodes Prerequisite
    
@@ -116,10 +123,9 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Container Platform is autom
 
 -   Update the values in *vars.yml* according to your environment.
 
--   Navigate to the base directory $BASE_DIR/Lite_Touch_Installation and Use following command to edit *vars.yml* file
+-   Navigate to the base directory $BASE_DIR/HPECP_v5.5_restAPI and Use following command to edit *vars.yml* file
 
 **NOTE** The value for the constant "$BASE_DIR" referred to is /opt/hpe/solutions/hpecp/hpe-solutions-hpecp/LTI/
-
 
 ```
 	ansible-vault edit group_vars/all/vars.yml 
@@ -127,7 +133,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Container Platform is autom
 - The hosts file is being generated in the backend during the OS deployment process.User can  edit the hosts file if required according to their requirement.
   
   ```
-   vi $BASE_DIR/Lite_Touch_Installation/hosts
+   vi $BASE_DIR/HPECP_v5.5_restAPI/hosts
   ```
 
 **NOTE**
@@ -137,7 +143,7 @@ Sample vars.yml can be found in the following path ```group_vars/all/vars.sample
 
 ### Installation
 
-1. HPE Ezmeral Container Platform can be deployed by running ```site.yml``` or by running individual playbooks. Each playbook description can be found     further in this document
+1. HPE Ezmeral Container Platform can be deployed by running ```site.yml``` or by running individual playbooks. Each playbook description can be found further in this document
 
 Run the below command to execute the Lite Touch Installation.
 
@@ -183,20 +189,13 @@ In case if there is no requirement of controller ha, user can skip ```playbooks/
 
 - This playbook downloads the below tools under ```/usr/local/bin``` in the installer machine and provides executable permissions.
 
-	* epicctl  
-	* kubectl 
-	* kubectl-hpecp plugin
 	* jq
-
 	  
 **NOTE**
 
 In case of facing any issues while running download-tools.yml playbook, Download tools manually from the following links, place it under 
 ``` /usr/local/bin ``` and change executable permissions.
  
-- epicctl (https://my-epicctl.s3-us-west-2.amazonaws.com/epicctl)
-- kubectl (https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_cli_version }}/bin/linux/amd64/kubectl)
-- kubectl-hpecp plugin (https://bluedata-releases.s3.amazonaws.com/kubectl-epic/3.2/162/linux/kubectl-hpecp)
 - jq (https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64)
 
 Update {{ kubectl_cli_version }} with the version which user want to download. Please make sure the version is compatible with the the version which HPECP supports. Recommended to use 1.17.5.

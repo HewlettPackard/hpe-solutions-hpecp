@@ -77,12 +77,23 @@
   - debug:
       msg= "{{ epiworker_urls }}"
 
-  - name: Shadow id
+  - name: Load enable-ha json file
+    include_vars:
+      file: /tmp/payload_ha.json
+      name: enable_ha
+
+  - name: Update shadow key in json file
     set_fact:
-      shadow_id: "{{ epiworker_urls[1] }}"
-  - name: Arbiter id
+      enable_ha: "{{ enable_ha | default({}) | combine({ 'shadow': epiworker_urls[1]}) }}"
+
+  - name: Update arbiter key in json file
     set_fact:
-      arbiter_id: "{{ epiworker_urls[0] }}"
+      enable_ha: "{{ enable_ha | default({}) | combine({ 'arbiter': epiworker_urls[0]}) }}"
+
+  - name: Write enable-ha file back to disk.
+    copy:
+      content: "{{ enable_ha | to_nice_json }}"
+      dest: /tmp/payload_ha.json
 
   - name: Enable HA on epic-workers
     uri:
@@ -95,7 +106,7 @@
         Content-Type: "application/json"
       method: PUT
       body_format: json
-      body: "{\"clusterip\":\"{{ controllerha.clusterip }}\",\"cluster_dns_name\":\"{{ controllerha.cluster_dns_name}}\",\"shadow\":\"{{ shadow_id }}\",\"arbiter\":\"{{ arbiter_id }}\"}"
+      body: "{{ lookup('file','/tmp/payload_ha.json') }}"
       status_code:
         - 204
     register: res_ha_status

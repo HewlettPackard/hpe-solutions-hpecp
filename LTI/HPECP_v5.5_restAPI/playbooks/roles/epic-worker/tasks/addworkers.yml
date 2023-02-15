@@ -50,6 +50,20 @@
   - debug:
       msg="{{ token }}"
 
+  - name: Load add worker payload json file
+    include_vars:
+      file: /tmp/payload_add_epic.json
+      name: add_epic
+
+  - name: Update ip in json file
+    set_fact:
+      add_epic: "{{ add_epic | default({}) | combine({ 'ip': worker_ip }) }}"
+
+  - name: Write add-epic file back to disk.
+    copy:
+      content: "{{ add_epic | to_nice_json }}"
+      dest: /tmp/payload_add_epic.json
+
   - name: Add epic-worker nodes
     uri:
       url: http://{{ controller.host_ip }}:8080/api/v1/workers
@@ -60,7 +74,7 @@
         Accept-Charset: "UTF-8"
       method: POST
       body_format: json
-      body: "{\"ip\":\"{{ worker_ip }}\",\"purpose\":\"worker\",\"credentials\":{\"type\":\"password_access\",\"password\":\"{{ credentials.ssh.password }}\"},\"tags\":[]}"
+      body: "{{ lookup('file','/tmp/payload_add_epic.json') }}"
       status_code:
         - 201
     register: res
@@ -83,6 +97,28 @@
   - debug:
       msg="{{ id }}"
 
+  - name: Load configure worker payload json file
+    include_vars:
+      file: /tmp/payload_configure_epic.json
+      name: configure_epic
+
+  - name: Update id in json file
+    set_fact:
+      configure_epic: "{{ configure_epic | default({}) | combine({ 'id': id }) }}"
+  
+  - name: Update name in json file
+    set_fact:
+      configure_epic: "{{ configure_epic | default({}) | combine({ 'name': worker_ip }) }}"
+
+  - name: Update containerdisks in json file
+    set_fact:
+      configure_epic: "{{ configure_epic | default({}) | combine({ 'containerdisks': worker_node_disk ]}) }}"
+
+  - name: Write add-epic file back to disk.
+    copy:
+      content: "{{ configure_epic | to_nice_json }}"
+      dest: /tmp/payload_configure_epic.json
+
   - name: Configure epic-workers storage
     uri:
       url: http://{{ controller.host_ip }}:8080/api/v1/install/?install_alter
@@ -94,7 +130,7 @@
         Content-Type: "application/json"
       method: PUT
       body_format: json
-      body: "{\"workers\":[{\"containerdisks\":[\"{{ worker_node_disk }}\"],\"hdfsdisks\":[],\"id\":\"{{ id }}\",\"name\":\"{{ worker_ip }}\"}]}"
+      body: "{{ lookup('file','/tmp/payload_configure_epic.json') }}"
       status_code:
         - 204
     register: response

@@ -19,7 +19,10 @@
     when: cleanup is defined
   
   - include_tasks: site_lock_mode.yml
-    
+  
+  - include_tasks: payload.yml
+    when: addgateway is defined
+
   - include_tasks: addgateways.yml
     when: addgateway is defined
     with_items: "{{ gateway.host_pools }}"

@@ -1,0 +1,55 @@
+---
+  - name: creating payload json file for adding k8s hosts without edf 
+    copy:
+      dest: "/tmp/payload_add_host_without_edf.json"
+      content: |
+        {
+          "ipaddr": "",
+          "credentials": {
+            "type": "password_access",
+            "password": "{{ credentials.ssh.password }}"
+          },
+          "tags": []
+        }
+    register: output
+
+  - debug:
+      msg: "{{ output }}"
+
+  - name: creating payload json file for adding k8s hosts with edf 
+    copy:
+      dest: "/tmp/payload_add_host_with_edf.json"
+      content: |
+        {
+          "ipaddr": "",
+          "credentials": {
+            "type": "password_access",
+            "password": "{{ credentials.ssh.password }}"
+          },
+          "tags": 
+            [
+              "tag_id": "",
+              "tag_value": ""
+            ]
+        }
+    register: output
+
+  - debug:
+      msg: "{{ output }}"
+
+  - name: creating payload json file for configuring k8s hosts storage
+    copy:
+      dest: "/tmp/payload_configure_k8s_host.json"
+      content: |
+        {
+          "op": "storage",
+          "op_spec": {
+            "ephemeral_disks": ["{{ k8shosts.ephemeral_disks }}"],
+            "persistent_disks": "",
+            "posix_client_type": "{{ common.posix_type }}"
+          }
+        }
+    register: output
+
+  - debug:
+      msg: "{{ output }}"

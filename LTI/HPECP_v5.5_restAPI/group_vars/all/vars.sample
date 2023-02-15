@@ -186,7 +186,7 @@ init:
   host_ip: 20.x.x.x # provide controller node ip
 
 controller:
-  #url_bin_path: local:///tmp/hpe-cp-sles-release-5.2-3020.bin
+  #url_bin_path: local:///root/hpe-cp-sles-release-5.2-3020.bin
   url_bin_path: https://my.s3.amazonaws.com/hpe-cp-bundle.bin # Make sure to change this url to correct bundle file or point to the local downloaded bin file path with executable permission ( ex:local:///root/hpe-cp-bundle.bin.)
   host_ip: 20.x.x.x # Provide controller node ip
   bd_domain: bddomain # No need to change

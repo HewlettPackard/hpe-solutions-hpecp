@@ -15,6 +15,9 @@
 ####
 ---
   - include_tasks: site_lock_mode.yml
+  
+  - include_tasks: payload.yml
+    when: addworkers is defined
 
   - include_tasks: addworkers.yml
     when: addworkers is defined
