@@ -5,7 +5,7 @@
       content: |
         {
           "ip": "",
-          "proxy_nodes_hostname": ""
+          "proxy_nodes_hostname": "",
           "purpose": "proxy",
           "credentials": {
             "type": "password_access",

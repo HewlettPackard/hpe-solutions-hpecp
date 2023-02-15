@@ -29,8 +29,6 @@
       - role: controller
         vars:
           provision: yes
-          url: "{{ controller.url_bin_path }}"
-          file_name: "{{ url | basename }}"
   
   - name: Post install configuration of controller nodes
     hosts: localhost

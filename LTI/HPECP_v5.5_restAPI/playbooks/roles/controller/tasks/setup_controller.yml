@@ -14,6 +14,13 @@
 ## limitations under the License.
 ####
 ---
+  - name: set fact for ere bin file url
+    set_fact:
+      url: "{{ controller.url_bin_path }}"
+  
+  - name: set fact for file name of ere package
+    set_fact:
+      file_name: "{{ url | basename }}"
 
   - name: Check if bin file is copied to path
     stat:

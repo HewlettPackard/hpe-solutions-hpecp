@@ -61,9 +61,9 @@
   - debug:
       msg: "{{ output }}"
 
-  - name: Sleep for 600 seconds and continue with play
+  - name: Sleep for 800 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 600
+      timeout: 800
 
   - name: Add registry server deatils to the platform
     uri:
@@ -76,9 +76,12 @@
         Accept-Charset: "UTF-8"
       method: PUT
       body_format: json
-      body: {"platform":{"container_repo_password":"","container_repo_username":"","container_repo_url":"{{ airgap.registry_server }}","is_secure_container_repo":false},"caas_registry":{"rpm_gpg_key":"","baseurl":"","repo_gpg_key":""}}
+      body: "{{ lookup('file','/tmp/payload_regsitry.json') }}"
       status_code:
         - 204
     register: res
     when: airgap.is_airgap_env == true
+
+  - debug:
+      msg: "{{ res }}"
   

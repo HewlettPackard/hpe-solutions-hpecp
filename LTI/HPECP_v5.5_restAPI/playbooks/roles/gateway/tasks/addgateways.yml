@@ -63,7 +63,7 @@
     set_fact:
       add_gateway: "{{ add_gateway | default({}) | combine({ 'proxy_nodes_hostname': gateway_set_hostname }) }}"
 
-  - name: Write configure-epic file back to disk.
+  - name: Write add-gateway file back to disk.
     copy:
       content: "{{ add_gateway | to_nice_json }}"
       dest: /tmp/payload_add_gateway.json

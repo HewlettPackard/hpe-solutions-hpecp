@@ -31,5 +31,27 @@
 
   - debug:
       msg: "{{ output }}"
+
+  - name: creating payload json file 
+    copy:
+      dest: "/tmp/payload_regsitry.json"
+      content: |
+        {
+          "platform": {
+              "container_repo_password": "",
+              "container_repo_username": "",
+              "container_repo_url": "{{ airgap.registry_server }}",
+              "is_secure_container_repo": "false"
+          },
+          "caas_registry": {
+              "rpm_gpg_key": "",
+              "baseurl": "",
+              "repo_gpg_key": ""
+          }  
+        }
+    register: output
+
+  - debug:
+      msg: "{{ output }}"
   
       

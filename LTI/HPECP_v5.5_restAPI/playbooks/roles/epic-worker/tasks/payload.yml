@@ -16,3 +16,23 @@
 
   - debug:
       msg: "{{ output }}"
+
+  - name: creating payload json file for configuring epic workers 
+    copy:
+      dest: "/tmp/payload_configure_epic.json"
+      content: |
+        {
+          "workers": [
+              {
+                  "containerdisks": "",
+                  "hdfsdisks": [],
+                  "id": "",
+                  "name": ""
+              }
+          ]
+        }
+    register: output
+
+  - debug:
+      msg: "{{ output }}"
+
