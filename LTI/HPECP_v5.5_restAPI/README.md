@@ -2,7 +2,7 @@
 
 ### Overview 
 
-Usage of Ansible playbooks to deploy the HPE Ezmeral Container Platform is automated and eliminates manual intervention. Ansible playbooks provides the following functionalities for the installation user to deploy HPE Ezmeral Container Platform.
+Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is automated and eliminates manual intervention. Ansible playbooks provides the following functionalities for the installation user to deploy HPE Ezmeral Container Platform.
 
 -   Install the SLES OS on bare metal servers
   
@@ -62,12 +62,6 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Container Platform is autom
 
    8. The script downloads the hpecp bin file from the S3 bucket or the bin file can be downloaded the from the url and placed locally to root directory on the controller machine.The same needs to be updated in the vars.yml file.
 
-   9. Ensure to setup docker registry on installer if airgap is set to true in vars.yml file. To setup docker regsitry update the same in vars.yml and run below command.
-
-         ```
-            ansible-playbook  playbooks/setup_docker_registry.yml --ask-vault-pass
-         ```
-   Note: Incase of timeout,retries and connection errors while copying docker images to docker regsitry re run the playbook again since copying images requires lot of time.
 
 ### HPECP Nodes Prerequisite
    
@@ -283,7 +277,19 @@ Run the following command to delete gateway.
 	ansible-playbook  playbooks/gateway-delete.yml --ask-vault-pass
 ```
 
+# ERE deployment through air-gapped environment
 
+If user want ERE deployment through airgap mode then perform below steps:
+
+- To setup docker registry update the details under airgap section in vars.yml and run below command to setup docker registry (registry server).
+
+   ```
+      ansible-playbook -i hosts playbooks/setup_docker_registry.yml --ask-vault-pass
+   ```
+Note: User can use installer as docker-registry server run above playbook on installer itself.
+Incase of timeout,retries and connection errors while copying docker images to docker regsitry re run the playbook again since copying images needs more time than expected.
+
+- After docker-registry setup is ready run the playbooks shown in installtion block above, follow same process which will deploy ERE through airgap environment.
 
 
 

@@ -84,4 +84,5 @@
 
   - debug:
       msg: "{{ res }}"
+    when: airgap.is_airgap_env == true
   
