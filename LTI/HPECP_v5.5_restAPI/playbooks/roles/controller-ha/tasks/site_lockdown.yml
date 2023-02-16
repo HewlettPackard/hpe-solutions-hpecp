@@ -61,7 +61,7 @@
       method: POST
       body_format: json
       body:
-        reason: "To enable contorller HA"
+        reason: "To enable controller HA"
       status_code:
         - 201
     register: response

@@ -76,7 +76,7 @@
         Accept-Charset: "UTF-8"
       method: PUT
       body_format: json
-      body: "{{ lookup('file','/tmp/payload_regsitry.json') }}"
+      body: "{{ lookup('file','/tmp/payload_registry.json') }}"
       status_code:
         - 204
     register: res

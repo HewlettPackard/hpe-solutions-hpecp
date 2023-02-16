@@ -34,7 +34,7 @@
 
   - name: creating payload json file 
     copy:
-      dest: "/tmp/payload_regsitry.json"
+      dest: "/tmp/payload_registry.json"
       content: |
         {
           "platform": {
