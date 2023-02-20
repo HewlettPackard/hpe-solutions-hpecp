@@ -18,7 +18,7 @@
     set_fact:
       k8shost_ip: "{{ item.host }}"
 
-  - name: Set the datafabric varible name
+  - name: Set the datafabric variable name
     set_fact:
       tagname: "/api/v2/tag/{{ item.tagname }}"
     
@@ -26,7 +26,7 @@
     set_fact:
       tagvalue: "{{ item.tagvalue }}"
 
-  - name: Set the presistent variable
+  - name: Set the persistent variable
     set_fact:
       persistent_disks: "{{ item.persistent_disks }}"
   
@@ -145,9 +145,9 @@
   - debug:
       msg: "{{ res_with_edf }}"
 
-  - name: Sleep for 300 seconds and continue with play
+  - name: Sleep for 250 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 300
+      timeout: 250
 
   - name: Fetch k8s host id location for host without edf
     set_fact:
@@ -202,4 +202,44 @@
   - name: Sleep for 400 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 400
+
+  - name: Get call to /api/v2/worker/k8shost to get k8shosts json response
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: workers_info
+  
+  - debug:
+      msg="{{ workers_info }}" 
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      worker_info: "{{ workers_info.content }}"
+  
+  - debug:
+      msg="{{ workers_info }}" 
+  
+  - name: Set the k8s_host_status variable.
+    set_fact:
+      status: "{{ item.status }}"    # here item refers to json response array
+    with_items: "{{ worker_info._embedded.k8shosts }}"
+    when: item.ipaddr == k8shost_ip
+
+  - debug: 
+      msg: "K8s host is ready"
+    when: status == "ready"
+  
+  - debug:
+      msg: "K8s host adding is failed"
+    when: status == "storage_error" or status == "error"
+
+  
  

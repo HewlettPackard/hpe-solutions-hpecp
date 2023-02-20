@@ -141,3 +141,36 @@
   - name: Sleep for 400 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 400
+
+  - name: Get epic-workers info
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/workers
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: epic_workers_info
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      worker_info: "{{ epic_workers_info.content }}"
+
+  - name: Get valid worker status
+    set_fact:
+      worker_hrefs: "{{ item.status}}"
+    with_items: "{{worker_info._embedded.workers }}"
+    when: item.ipaddr == worker_ip
+  
+  - debug: 
+      msg: "epic worker is ready"
+    when: status == "installed"
+  
+  - debug:
+      msg: "epic worker adding is failed"
+    when: status == "storage_error" or status == "error"
+

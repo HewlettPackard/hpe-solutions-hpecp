@@ -2,11 +2,13 @@
 
 ### Overview 
 
-Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is automated and eliminates manual intervention. Ansible playbooks provides the following functionalities for the installation user to deploy HPE Ezmeral Container Platform.
+Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is automated and eliminates manual intervention. Ansible playbooks provides the following functionalities for the installation user to deploy HPE Ezmeral Runtime Enterprise.
 
 -   Install the SLES OS on bare metal servers
   
 -   Prepare the hosts for HPECP implementation.
+
+-   Setup docker-registry to deploy ere through air-gapped environment
   
 -   Install the controller node.
 
@@ -91,7 +93,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
       * root , size = 150G
       * srv , size = 100G
       * swap , size = 62.96G
-      * var , size = 100G
+      * var , size = 120G
       * home , size = 25G
       
    
@@ -124,7 +126,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 ```
 	ansible-vault edit group_vars/all/vars.yml 
 ```
-- The hosts file is being generated in the backend during the OS deployment process.User can  edit the hosts file if required according to their requirement.
+- The hosts file is being generated in the backend during the OS deployment process.User can edit the hosts file if required according to their requirement.
   
   ```
    vi $BASE_DIR/HPECP_v5.5_restAPI/hosts
@@ -166,7 +168,7 @@ In case if there is no requirement of controller ha, user can skip ```playbooks/
 
 **site.yml**
 
-- This playbook contains the script to deploy HPE Ezmeral Container platform starting from the OS_deployment until tenant configuration. 
+- This playbook contains the script to deploy HPE Ezmeral Runtime Enterprise starting from the OS_deployment until tenant configuration. 
 
 
 **OS_deployment.yml**
@@ -286,10 +288,25 @@ If user want ERE deployment through airgap mode then perform below steps:
    ```
       ansible-playbook -i hosts playbooks/setup_docker_registry.yml --ask-vault-pass
    ```
-Note: User can use installer as docker-registry server run above playbook on installer itself.
-Incase of timeout,retries and connection errors while copying docker images to docker regsitry re run the playbook again since copying images needs more time than expected.
 
-- After docker-registry setup is ready run the playbooks shown in installtion block above, follow same process which will deploy ERE through airgap environment.
+**NOTE**
+
+1, User can utilize installer as docker-registry server and run above playbook on installer itself.
+2, Incase of timeout,retries and connection errors while copying docker images to docker registry re run the playbook again since copying images takes more time than expected.
+   or
+copy all images using hpe utility tool to docker-registry server manually, Please check below commands and url to copy images manually to docker registry.
+
+```
+hpe-airgap-util --release <ere-release-number> --required --copy --dest_url <docker-registry-server>:5000
+hpe-airgap-util --release <ere-release-number> --optional --copy --dest_url <docker-registry-server>:5000
+```
+
+- hpeutility url(https://support.hpe.com/hpesc/public/docDisplay?docId=a00ecp55hen_us&page=reference/deploying-the-platform/phase-4/using-the-air-gap-utility-script.html)
+
+Update {{ ere-release-number }} and {{ docker-registry-server }} with the version and registry server which user want to copy images and run above commands on server where you are configured registry server.
+
+- After docker-registry setup is ready run the playbooks shown in installation block above, follow same process which will deploy ERE through airgap environment.
+
 
 
 

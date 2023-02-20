@@ -88,7 +88,7 @@
       msg: "{{ gateway_uri }}"
     when: gateway_ip_info == host_to_deleted
 
-  - name: Delete gateway with epicctl and rest api.
+  - name: Delete gateway with rest api.
     uri:
       url: http://{{ controller.host_ip }}:8080{{ gateway_uri }}
       return_content: yes

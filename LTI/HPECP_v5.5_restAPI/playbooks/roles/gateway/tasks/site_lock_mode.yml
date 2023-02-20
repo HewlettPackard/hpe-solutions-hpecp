@@ -27,7 +27,7 @@
   - debug: 
       msg="{{ token }}"
   
-  - name: Get lock id 
+  - name: Get lock id if available
     uri:
       url: http://{{ controller.host_ip }}:8080/api/v1/lock
       return_content: yes

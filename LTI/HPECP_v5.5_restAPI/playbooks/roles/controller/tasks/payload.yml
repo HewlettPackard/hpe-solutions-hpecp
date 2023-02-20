@@ -32,7 +32,7 @@
   - debug:
       msg: "{{ output }}"
 
-  - name: creating payload json file 
+  - name: creating payload json file for airgap registry
     copy:
       dest: "/tmp/payload_registry.json"
       content: |
