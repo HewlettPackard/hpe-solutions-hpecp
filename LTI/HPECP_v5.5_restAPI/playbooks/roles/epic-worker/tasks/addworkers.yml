@@ -162,15 +162,16 @@
 
   - name: Get valid worker status
     set_fact:
-      worker_hrefs: "{{ item.status}}"
+      worker_hrefs: "{{ item.state}}"
     with_items: "{{worker_info._embedded.workers }}"
-    when: item.ipaddr == worker_ip
+    when: item.ip == worker_ip
   
   - debug: 
       msg: "epic worker is ready"
-    when: status == "installed"
+    when: worker_hrefs == "installed"
   
   - debug:
       msg: "epic worker adding is failed"
-    when: status == "storage_error" or status == "error"
+    failed_when: worker_hrefs == "storage_error" or worker_hrefs == "error"
+    when: worker_hrefs != "installed"
 

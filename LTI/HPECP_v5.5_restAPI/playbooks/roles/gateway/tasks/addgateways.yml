@@ -110,15 +110,16 @@
 
   - name: Get valid worker status
     set_fact:
-      worker_hrefs: "{{ item.status}}"
+      worker_hrefs_state: "{{ item.state}}"
     with_items: "{{worker_info._embedded.workers }}"
-    when: item.ipaddr == gateway_ip
+    when: item.ip == gateway_ip
   
   - debug: 
       msg: "gateway worker is ready"
-    when: status == "installed"
+    when: worker_hrefs_state == "installed"
   
   - debug:
       msg: "gateway worker adding is failed"
-    when: status == "storage_error" or status == "error"
+    failed_when: worker_hrefs_state == "prechecks_error" or worker_hrefs_state == "error"
+    when: worker_hrefs_state != "installed"
 

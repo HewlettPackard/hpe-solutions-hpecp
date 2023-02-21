@@ -225,7 +225,7 @@
       worker_info: "{{ workers_info.content }}"
   
   - debug:
-      msg="{{ workers_info }}" 
+      msg="{{ worker_info }}" 
   
   - name: Set the k8s_host_status variable.
     set_fact:
@@ -239,7 +239,8 @@
   
   - debug:
       msg: "K8s host adding is failed"
-    when: status == "storage_error" or status == "error"
+    failed_when: status == "storage_error" or status == "error"
+    when: status != "ready"
 
   
  
