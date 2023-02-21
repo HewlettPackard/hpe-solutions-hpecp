@@ -288,6 +288,9 @@ If user want ERE deployment through airgap mode then perform below steps:
    ```
       ansible-playbook -i hosts playbooks/setup_docker_registry.yml --ask-vault-pass
    ```
+**setup_docker_registry.yml**
+
+- This playbook contains the script to create,configure docker registry and also copy all required docker images based on the configuaration details provided in the vars.yml file. 
 
 **NOTE**
 
