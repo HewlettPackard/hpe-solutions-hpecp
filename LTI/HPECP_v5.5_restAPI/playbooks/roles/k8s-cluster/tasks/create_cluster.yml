@@ -131,8 +131,9 @@
     
   - debug: 
       msg: "k8s cluster failed"
-    when: k8s_cluster_status_new == "error"
-    
+    failed_when: k8s_cluster_status_new == "error"
+    when: k8s_cluster_status_new != "ready"
+
   - debug:
       msg: "k8s cluster successfully created"
     when: k8s_cluster_status_new == "ready"

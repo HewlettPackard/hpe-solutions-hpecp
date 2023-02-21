@@ -218,14 +218,14 @@
     register: workers_info
   
   - debug:
-      msg="{{ workers_info }}" 
+      msg: "{{ workers_info }}" 
 
   - name: save the Json data to a Variable as a Fact
     set_fact:
       worker_info: "{{ workers_info.content }}"
   
   - debug:
-      msg="{{ worker_info }}" 
+      msg: "{{ worker_info }}" 
   
   - name: Set the k8s_host_status variable.
     set_fact:
