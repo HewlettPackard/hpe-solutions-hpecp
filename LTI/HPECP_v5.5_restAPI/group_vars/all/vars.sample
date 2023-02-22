@@ -175,7 +175,7 @@ common:
 
 airgap:
   is_airgap_env: true  #set the value to true for deploying ECP in restricted environment otherwise false.
-  feed_json_url: https://s3.amazonaws.com/bluedata-catalog/bundles/catalog/external/docker/CP-5.2/feeds/feed.json  # Make sure this url is pointing to t
+  feed_json_url: https://s3.amazonaws.com/bluedata-catalog/bundles/catalog/external/docker/CP-5.2/feeds/feed.json  # Make sure this url is pointing to the right vesrion of hpcp build.
   registry_server: 10.0.x.x:5000 #  provide registry server ip and port number (ex:20.xx.xx.xx:5000)
   registry_port: 5000 # provide registry server port number (ex: 5000)
   registry_server_ip_address: 10.0.x.x # provide registry server ip
@@ -186,8 +186,8 @@ init:
   host_ip: 20.x.x.x # provide controller node ip
 
 controller:
-  #url_bin_path: local:///root/hpe-cp-sles-release-5.2-3020.bin
-  url_bin_path: https://my.s3.amazonaws.com/hpe-cp-bundle.bin # Make sure to change this url to correct bundle file or point to the local downloaded bin file path with executable permission ( ex:local:///root/hpe-cp-bundle.bin.)
+  #url_bin_path: local:///root/hpe-cp-sles-release-5.5.0-3081.bin
+  url_bin_path:  https://ezmeral-platform-releases.s3.amazonaws.com/5.5.0/3081/hpe-cp-sles-release-5.5.0-3081.bin # Make sure to change this url to correct bundle file or point to the local downloaded bin file path with executable permission ( ex:local:///root/hpe-cp-bundle.bin.)
   host_ip: 20.x.x.x # Provide controller node ip
   bd_domain: bddomain # No need to change
   bd_prefix: bluedata # No need to change
