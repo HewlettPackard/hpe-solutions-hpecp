@@ -106,7 +106,7 @@
     ansible.builtin.wait_for:
       timeout: 60
 
-  - name: Get call to /api/v21/tenant to get tenant json response
+  - name: Get call to /api/v1/tenant to get tenant json response
     uri:
       url: http://{{ controller.host_ip }}:8080/api/v1/tenant
       return_content: yes
