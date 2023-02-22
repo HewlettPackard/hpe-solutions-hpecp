@@ -1,59 +1,4 @@
----
-  - name: Get session token to connect controller
-    uri:
-      url: http://{{ controller.host_ip }}:8080/api/v1/login
-      return_content: yes
-      validate_certs: false
-      headers:
-        Content-Type: "application/json"
-        Accept-Charset: "UTF-8"
-      method: POST
-      body_format: json
-      body:
-        name: "{{ controller_creds.name }}"
-        password: "{{ controller_creds.password }}"
-      status_code:
-        - 201
-    register: login_response
-
-  - name: Fetch location header
-    set_fact:
-      session_token="{{ login_response.location }}"
-
-  - name: Fetch token
-    set_fact:
-      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
-
-  - debug:
-      msg="{{ token }}"
-
-  - name: Get k8s cluster info
-    uri:
-      url: http://{{ controller.host_ip }}:8080/api/v2/k8scluster
-      return_content: yes
-      validate_certs: false
-      headers:
-        X-BDS-SESSION: "{{ token }}"
-        Content-Type: "application/json"
-        Accept-Charset: "UTF-8"
-      method: GET
-      status_code:
-        - 200
-    register: cluster_info
-  
-  - name: save the Json data to a Variable as a Fact
-    set_fact:
-      cluster_info: "{{ cluster_info.content }}"
-
-  - name: Set the k8s_cluster variable
-    set_fact:
-      k8s_cluster: "{{ item._links.self.href }}"
-    with_items: "{{cluster_info._embedded.k8sclusters }}"
-    when: item.label.name == "{{ k8stenant.k8s_cluster }}"
-  
-  - debug:
-      msg: "{{ k8s_cluster }}"
-      
+---    
   - name: creating payload json file 
     copy:
       dest: "/tmp/payload_tenant.json"
@@ -82,7 +27,7 @@
             "disk": {{ k8stenant.quota.disk }},
             "tenant_storage": "{{ k8stenant.quota.tenant_storage }}"
           },
-          "k8s_cluster": "{{ k8s_cluster }}",
+          "k8s_cluster": "",
           "specified_namespace_name": "{{ k8stenant.specified_namespace_name }}",
           "map_services_to_gateway": {{ k8stenant.map_services_to_gateway | bool | lower }},
           "adopt_existing_namespace": {{ k8stenant.adopt_existing_namespace | bool | lower }},
@@ -91,4 +36,4 @@
     register: output
 
   - debug:
-      msg: output.stdout
+      msg: "{{ output }}"

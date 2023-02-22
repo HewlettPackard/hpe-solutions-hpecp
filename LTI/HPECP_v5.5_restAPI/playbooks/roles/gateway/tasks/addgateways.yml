@@ -90,7 +90,7 @@
     ansible.builtin.wait_for:
       timeout: 250
 
-  - name: Get epic-workers info
+  - name: Get gateway info
     uri:
       url: http://{{ controller.host_ip }}:8080/api/v1/workers
       return_content: yes

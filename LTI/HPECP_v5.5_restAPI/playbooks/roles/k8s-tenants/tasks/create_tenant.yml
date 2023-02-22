@@ -41,6 +41,47 @@
 
   - debug:
       msg="{{ token }}"
+
+  - name: Get k8s cluster info
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/k8scluster
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: GET
+      status_code:
+        - 200
+    register: cluster_info
+  
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      cluster_info: "{{ cluster_info.content }}"
+
+  - name: Set the k8s_cluster variable
+    set_fact:
+      k8s_cluster: "{{ item._links.self.href }}"
+    with_items: "{{cluster_info._embedded.k8sclusters }}"
+    when: item.label.name == "{{ k8stenant.k8s_cluster }}"
+  
+  - debug:
+      msg: "{{ k8s_cluster }}"
+
+  - name: Load add tenant payload json file
+    include_vars:
+      file: /tmp/payload_tenant.json
+      name: add_tenant
+  
+  - name: Update k8s cluster info in json file
+    set_fact:
+      add_tenant: "{{ add_tenant | default({}) | combine({ 'k8s_cluster': k8s_cluster }) }}"
+
+  - name: Write add tenant file back to disk.
+    copy:
+      content: "{{ add_tenant | to_nice_json }}"
+      dest: /tmp/payload_tenant.json
   
   - name: Create k8s tenant
     uri:
@@ -64,4 +105,47 @@
   - name: Sleep for 60 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 60
+
+  - name: Get call to /api/v21/tenant to get tenant json response
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/tenant
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: tenants_info
+  
+  - debug:
+      msg: "{{ tenants_info }}" 
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      tenant_info: "{{ tenants_info.content }}"
+  
+  - debug:
+      msg: "{{ tenant_info }}" 
+  
+  - name: Set the tenant_status variable.
+    set_fact:
+      status: "{{ item.status }}"    # here item refers to json response array
+    with_items: "{{ tenant_info._embedded.tenants }}"
+    when: item.k8s_cluster == k8s_cluster
+
+  - debug: 
+      msg: "tenant is ready"
+    when: status == "ready"
+  
+  - debug:
+      msg: "tenant adding is failed"
+    failed_when: status == "error"
+    when: status != "ready"
+
+  
+ 
+
 
