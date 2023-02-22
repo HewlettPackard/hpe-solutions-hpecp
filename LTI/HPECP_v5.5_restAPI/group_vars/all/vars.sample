@@ -172,6 +172,9 @@ common:
   #certs:
   #  ssl_cert_file: /tmp/server.crt
   #  ssl_cert_key_file: /tmp/server.key
+  posix_type: basic ###provide posix_type as basic or platinum
+  custom_install_name: ERE ###provide custom install name ex:ERE
+
 
 airgap:
   is_airgap_env: true  #set the value to true for deploying ECP in restricted environment otherwise false.
