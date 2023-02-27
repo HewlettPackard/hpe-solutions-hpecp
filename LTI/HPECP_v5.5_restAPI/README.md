@@ -149,16 +149,16 @@ Run the below command to execute the Lite Touch Installation.
 In case if user want to deploy through individual playbooks. Sequence of playbooks to be followed are:
 
    ```
-      ansible-playbook  playbooks/os_deployment.yml --ask-vault-pass
-      ansible-playbook  playbooks/prepare_hosts.yml --ask-vault-pass
-      ansible-playbook  playbooks/download-tools.yml --ask-vault-pass 
-      ansible-playbook  playbooks/controller.yml --ask-vault-pass
-      ansible-playbook  playbooks/epic-workers-add.yml --ask-vault-pass 
-      ansible-playbook  playbooks/controller-ha.yml --ask-vault-pass
-      ansible-playbook  playbooks/gateway-add.yml --ask-vault-pass  
-      ansible-playbook  playbooks/k8s-add-hosts.yml --ask-vault-pass
-      ansible-playbook  playbooks/k8s-create-cluster.yml --ask-vault-pass
-      ansible-playbook  playbooks/k8s-create-tenant.yml --ask-vault-pass 
+      ansible-playbook -i hosts playbooks/os_deployment.yml --ask-vault-pass
+      ansible-playbook -i hosts playbooks/prepare_hosts.yml --ask-vault-pass
+      ansible-playbook -i hostsplaybooks/download-tools.yml --ask-vault-pass 
+      ansible-playbook -i hosts playbooks/controller.yml --ask-vault-pass
+      ansible-playbook -i hosts playbooks/epic-workers-add.yml --ask-vault-pass 
+      ansible-playbook -i hosts playbooks/controller-ha.yml --ask-vault-pass
+      ansible-playbook -i hosts playbooks/gateway-add.yml --ask-vault-pass  
+      ansible-playbook -i hosts playbooks/k8s-add-hosts.yml --ask-vault-pass
+      ansible-playbook -i hosts playbooks/k8s-create-cluster.yml --ask-vault-pass
+      ansible-playbook -i hosts playbooks/k8s-create-tenant.yml --ask-vault-pass 
    ```
 **NOTE**
 
