@@ -112,7 +112,7 @@
 
   - name: Update containerdisks in json file
     set_fact:
-      configure_epic: "{{ configure_epic | default({}) | combine({ 'containerdisks': worker_node_disk ]}) }}"
+      configure_epic: "{{ configure_epic | default({}) | combine({ 'containerdisks': worker_node_disk }) }}"
 
   - name: Write add-epic file back to disk.
     copy:
