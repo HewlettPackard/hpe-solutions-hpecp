@@ -138,12 +138,7 @@ ha_code: BD3FE***********         # Registration code for ha module
 
 RMT_URL: http://20.**.**.**/
 
- 
-
 ###Don't modify the sles_packages and zypper_pacakges as these packages are required for HPECP implementaion.Any changes made to this section may impact the installation.
-
- 
-
 
 sles_packages: [sle-module-public-cloud/15.3/x86_64,sle-module-legacy/15.3/x86_64,sle-module-python2/15.3/x86_64,sle-module-containers/15.3/x86_64,sle-module-basesystem/15.3/x86_64,PackageHub/15.3/x86_64,sle-module-desktop-applications/15.3/x86_64]
 zypper_packages: [iputils,bind-utils,autofs,libcgroup1,kernel-default-devel,gcc-c++,rsyslog,firewalld,vim,perl,pciutils]
@@ -152,7 +147,7 @@ zypper_packages: [iputils,bind-utils,autofs,libcgroup1,kernel-default-devel,gcc-
 bundle_name: hpe-cp-bundle
 tools_dir: "{{ lookup('env','HOME') }}/tools"                                               # place to store the kits like kubectl
 k8skubeconfig_dir: "{{ lookup('env','HOME') }}/k8skubeconfig"
-kubectl_cli_version: v1.18.6
+kubectl_cli_version: v1.17.13
 
 credentials:
   ssh:

@@ -69,3 +69,4 @@
 
   - debug:
       msg: "{{ response }}"
+    when: lock_info == []

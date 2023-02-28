@@ -194,7 +194,7 @@ In case of facing any issues while running download-tools.yml playbook, Download
  
 - jq (https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64)
 
-Update {{ kubectl_cli_version }} with the version which user want to download. Please make sure the version is compatible with the the version which HPECP supports. Recommended to use 1.17.5.
+Update {{ kubectl_cli_version }} with the version which user want to download. Please make sure the version is compatible with the the version which HPECP supports. Recommended to use 1.17.13.
 
 
 **controller.yml**
