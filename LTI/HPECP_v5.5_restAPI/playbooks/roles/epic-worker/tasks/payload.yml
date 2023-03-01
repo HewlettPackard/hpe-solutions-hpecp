@@ -22,14 +22,7 @@
       dest: "/tmp/payload_configure_epic.json"
       content: |
         {
-          "workers": [
-              {
-                  "containerdisks": "",
-                  "hdfsdisks": [],
-                  "id": "",
-                  "name": ""
-              }
-          ]
+          "workers": []
         }
     register: output
 

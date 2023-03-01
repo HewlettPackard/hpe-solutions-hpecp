@@ -80,7 +80,7 @@
     register: res
 
   - debug:
-      var: "{{ res }}"
+      msg: "{{ res }}"
 
   - name: Sleep for 250 seconds and continue with play
     ansible.builtin.wait_for:
@@ -95,29 +95,23 @@
       id: "/{{id_location.split('/')[3]}}/{{id_location.split('/')[4]}}/{{id_location.split('/')[5]}}/{{id_location.split('/')[6]}}"
 
   - debug:
-      msg="{{ id }}"
+      msg: "{{ id }}"
 
+  - name: Update epic workers array in the json payload
+    shell: cat /tmp/payload_configure_epic.json | jq '.workers |= . + [{{ item | to_json }}]' | tee /tmp/payload_configure_epic.json
+    with_template: epic_config.j2
+    vars:
+      containerdisks: "{{ worker_node_disk }}"
+      id: "{{ id }}"
+      name: "{{ worker_ip }}"
+  
   - name: Load configure worker payload json file
     include_vars:
       file: /tmp/payload_configure_epic.json
       name: configure_epic
-
-  - name: Update id in json file
-    set_fact:
-      configure_epic: "{{ configure_epic | default({}) | combine({ 'id': id }) }}"
   
-  - name: Update name in json file
-    set_fact:
-      configure_epic: "{{ configure_epic | default({}) | combine({ 'name': worker_ip }) }}"
-
-  - name: Update containerdisks in json file
-    set_fact:
-      configure_epic: "{{ configure_epic | default({}) | combine({ 'containerdisks': worker_node_disk }) }}"
-
-  - name: Write add-epic file back to disk.
-    copy:
-      content: "{{ configure_epic | to_nice_json }}"
-      dest: /tmp/payload_configure_epic.json
+  - debug:
+      msg: "{{ configure_epic }}"
 
   - name: Configure epic-workers storage
     uri:
