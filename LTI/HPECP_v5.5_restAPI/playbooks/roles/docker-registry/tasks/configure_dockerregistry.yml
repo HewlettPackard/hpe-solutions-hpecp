@@ -21,18 +21,26 @@
   - name: set fact for file name of utility package
     set_fact:
       file_name: "{{ url | basename }}"
-  
-  - name: Download the airgap utility package 
-    shell: wget --wait=5 "{{ url }}" -P /root/
-    ignore_errors: true
 
   - name: Install skopeo package
     command: yum install -y skopeo
 
-  - name: Install the hpeairgaputil package
-    ansible.builtin.pip:
-      name: file:///root/{{ file_name }}
+  - name: Install pip3 
+    command: yum install -y python3-pip
   
+  - name: Check if util package is already in path
+    stat:
+      path: '/root/{{ file_name }}'
+    register: result
+
+  - name: Download the airgap utility package 
+    shell: wget --wait=5 "{{ url }}" -P /root/
+    when: not result.stat.exists
+    ignore_errors: true
+
+  - name: Install the hpeairgaputil package
+    command: pip3 install "{{ file_name }}"
+
   - name: Copy all required and optional images to docker resgitry
     shell: hpe-airgap-util --release "{{ airgap.ere_release_number }}" --{{ item }} --copy --dest_url "{{ airgap.registry_server_ip_address }}":5000
     with_items:
@@ -46,7 +54,7 @@
       timeout: 200
 
   - name: Pull and verify docker image from docker resgitry
-    community.general.docker_image:
+    docker_image:
       name: "{{ airgap.registry_server_ip_address }}:5000/nginx:stable-alpine"
       source: pull
     register: pull_image_output

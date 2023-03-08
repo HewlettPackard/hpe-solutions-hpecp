@@ -23,14 +23,24 @@
     shell: curl https://get.docker.com/ | sh
     when: check_docker.rc == 1
 
+  - name: Start and enable docker service 
+    service:
+      name: "docker"
+      state: started
+      enabled: yes
+
   - name: Create registry file in mnt
     file:
       path: /mnt/registry
-      state: touch
+      state: directory
 
   - name: python module to install docker
     shell: pip install docker
     ignore_errors: yes 
+
+  - name: fetch python info
+    shell: which python
+    register: python_path
     
   - name: Create Docker Registry
     docker_container:
@@ -42,6 +52,8 @@
         - /mnt/registry:/var/lib/registry
       published_ports:
         - "{{airgap.registry_port}}:5000"
+    vars:
+      ansible_python_interpreter: "{{ python_path.stdout }}"
         
   - name: Get infos on registry container
     docker_container_info:

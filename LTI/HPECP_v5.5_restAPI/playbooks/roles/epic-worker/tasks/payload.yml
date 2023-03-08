@@ -17,15 +17,3 @@
   - debug:
       msg: "{{ output }}"
 
-  - name: creating payload json file for configuring epic workers 
-    copy:
-      dest: "/tmp/payload_configure_epic.json"
-      content: |
-        {
-          "workers": []
-        }
-    register: output
-
-  - debug:
-      msg: "{{ output }}"
-

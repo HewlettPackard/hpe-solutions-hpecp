@@ -298,7 +298,7 @@ If user want ERE deployment through airgap mode then perform below steps:
 
 2. Incase of timeout,retries and connection errors while copying docker images to docker registry re run the playbook again since copying images takes more time than expected.
    or
-copy all images using hpe utility tool to docker-registry server manually, Please check below commands and url to copy images manually to docker registry.
+copy all images using hpe utility tool to docker-registry server manually(incase if copying images is failig due to large size), Please check below commands and url to copy images manually to docker registry.
 
 ```
 hpe-airgap-util --release <ere-release-number> --required --copy --dest_url <docker-registry-server>:5000

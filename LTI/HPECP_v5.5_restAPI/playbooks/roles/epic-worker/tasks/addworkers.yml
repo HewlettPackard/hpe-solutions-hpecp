@@ -48,7 +48,7 @@
       token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
 
   - debug:
-      msg="{{ token }}"
+      msg: "{{ token }}"
 
   - name: Load add worker payload json file
     include_vars:
@@ -95,24 +95,8 @@
       id: "/{{id_location.split('/')[3]}}/{{id_location.split('/')[4]}}/{{id_location.split('/')[5]}}/{{id_location.split('/')[6]}}"
 
   - debug:
-      msg: "{{ id }}"
-
-  - name: Update epic workers array in the json payload
-    shell: cat /tmp/payload_configure_epic.json | jq '.workers |= . + [{{ item | to_json }}]' | tee /tmp/payload_configure_epic.json
-    with_template: epic_config.j2
-    vars:
-      containerdisks: "{{ worker_node_disk }}"
-      id: "{{ id }}"
-      name: "{{ worker_ip }}"
+      msg="{{ id }}"
   
-  - name: Load configure worker payload json file
-    include_vars:
-      file: /tmp/payload_configure_epic.json
-      name: configure_epic
-  
-  - debug:
-      msg: "{{ configure_epic }}"
-
   - name: Configure epic-workers storage
     uri:
       url: http://{{ controller.host_ip }}:8080/api/v1/install/?install_alter
@@ -124,7 +108,7 @@
         Content-Type: "application/json"
       method: PUT
       body_format: json
-      body: "{{ lookup('file','/tmp/payload_configure_epic.json') }}"
+      body: "{\"workers\":[{\"containerdisks\":[\"{{ worker_node_disk }}\"],\"hdfsdisks\":[],\"id\":\"{{ id }}\",\"name\":\"{{ worker_ip }}\"}]}"
       status_code:
         - 204
     register: response
@@ -135,7 +119,7 @@
   - name: Sleep for 400 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 400
-
+  
   - name: Get epic-workers info
     uri:
       url: http://{{ controller.host_ip }}:8080/api/v1/workers
@@ -166,6 +150,6 @@
   
   - debug:
       msg: "epic worker adding is failed"
-    failed_when: worker_hrefs == "storage_error" or worker_hrefs == "error"
+    failed_when: worker_hrefs == "storage_error" or worker_hrefs == "error" or worker_hrefs == "storage_config_error"
     when: worker_hrefs != "installed"
 
