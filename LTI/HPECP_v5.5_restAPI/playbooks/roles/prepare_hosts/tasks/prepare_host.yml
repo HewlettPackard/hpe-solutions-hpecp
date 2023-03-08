@@ -132,7 +132,6 @@
     lineinfile:
       path: /etc/default/grub
       regexp: 'GRUB_CMDLINE_LINUX='
-#      line: GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=0 systemd.legacy_systemd_cgroup_controller=1 apparmor=0 cgroup_enable=memory swapaccount=1 ipv6.disable=1 security=selinux selinux=1"
       line: GRUB_CMDLINE_LINUX="splash=silent mitigations=auto quiet systemd.unified_cgroup_hierarchy=0 systemd.legacy_systemd_cgroup_controller=1 apparmor=0 cgroup_enable=memory swapaccount=1 ipv6.disable=1 selinux=0"
   
   - name: Refresh bootloader parameters
