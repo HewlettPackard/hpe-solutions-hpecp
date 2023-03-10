@@ -234,7 +234,7 @@ Update {{ kubectl_cli_version }} with the version which user want to download. P
 Run below playbook to erase build on controller node.
       
 ```
-	ansible-playbook  playbooks/uninstall-bds.yml --ask-vault-pass
+	ansible-playbook -i hosts playbooks/uninstall-bds.yml --ask-vault-pass
 ```
 
 ### Other Playbooks
@@ -242,13 +242,13 @@ Run below playbook to erase build on controller node.
 Run the following command to disable controller ha.
 
 ```
-	ansible-playbook  playbooks/disable-controller-ha.yml --ask-vault-pass
+	ansible-playbook -i hosts playbooks/disable-controller-ha.yml --ask-vault-pass
 ```
 
 Run the following command to delete epic workers.
  
 ```
-	ansible-playbook  playbooks/epic-workers-delete.yml --ask-vault-pass
+	ansible-playbook -i hosts playbooks/epic-workers-delete.yml --ask-vault-pass
 ```
 **NOTE**
     - If platform **High Availability** is enabled, then the user cannot delete the Controller, Shadow Controller or Arbiter host from the ERE. 
@@ -259,25 +259,25 @@ Run the following command to delete epic workers.
 Run the following command to delete k8s hosts.
 
 ```
-	ansible-playbook  playbooks/k8s-delete-hosts.yml --ask-vault-pass
+	ansible-playbook -i hosts playbooks/k8s-delete-hosts.yml --ask-vault-pass
 ```
 
 Run the following command to delete the tenant.
 
 ```
-	ansible-playbook  playbooks/k8s-delete-tenant.yml --ask-vault-pass
+	ansible-playbook -i hosts playbooks/k8s-delete-tenant.yml --ask-vault-pass
 ```
 
 Run the following command to delete the cluster
 
 ```
-	ansible-playbook  playbooks/k8s-delete-cluster.yml --ask-vault-pass
+	ansible-playbook -i hosts playbooks/k8s-delete-cluster.yml --ask-vault-pass
 ```
 
 Run the following command to delete gateway.
  
 ```
-	ansible-playbook  playbooks/gateway-delete.yml --ask-vault-pass
+	ansible-playbook -i hosts playbooks/gateway-delete.yml --ask-vault-pass
 ```
 
 # ERE deployment through air-gapped environment
