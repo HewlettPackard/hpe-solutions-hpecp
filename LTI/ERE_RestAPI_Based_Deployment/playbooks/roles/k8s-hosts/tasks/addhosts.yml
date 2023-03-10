@@ -1,0 +1,246 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Set the host ip variable
+    set_fact:
+      k8shost_ip: "{{ item.host }}"
+
+  - name: Set the datafabric variable name
+    set_fact:
+      tagname: "/api/v2/tag/{{ item.tagname }}"
+    
+  - name: Set the datafabric variable value
+    set_fact:
+      tagvalue: "{{ item.tagvalue }}"
+
+  - name: Set the persistent variable
+    set_fact:
+      persistent_disks: "{{ item.persistent_disks }}"
+  
+  - debug:
+      msg: "{{ item }}"
+
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body:
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
+
+  - name: Fetch location header
+    set_fact:
+      session_token="{{ token.location }}"
+
+  - name: Fetch token
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug:
+      msg="{{ token }}"
+
+  - name: Load add k8s host payload json file
+    include_vars:
+      file: /tmp/payload_add_host_without_edf.json
+      name: add_host_without_edf
+    when: tagvalue == ""
+
+  - name: Update ip in json file
+    set_fact:
+      add_host_without_edf: "{{ add_host_without_edf | default({}) | combine({ 'ipaddr': k8shost_ip }) }}"
+    when: tagvalue == ""
+
+  - name: Write add k8s host file back to disk.
+    copy:
+      content: "{{ add_host_without_edf | to_nice_json }}"
+      dest: /tmp/payload_add_host_without_edf.json
+    when: tagvalue == ""
+
+  - name: Setting up k8s hosts without datafabric
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: POST
+      body_format: json
+      body: "{{ lookup('file','/tmp/payload_add_host_without_edf.json') }}"
+      status_code:
+        - 201
+    register: res_without_edf
+    when: tagvalue == ""
+
+  - debug:
+      msg: "{{ res_without_edf }}"
+
+  - name: Load add k8s host payload json file
+    include_vars:
+      file: /tmp/payload_add_host_with_edf.json
+      name: add_host_with_edf
+    when: tagvalue != ""
+
+  - name: Update ip in json file
+    set_fact:
+      add_host_with_edf: "{{ add_host_with_edf | default({}) | combine({ 'ipaddr': k8shost_ip }) }}"
+    when: tagvalue != ""
+  
+  - name: Update tagname in json file
+    set_fact:
+      add_host_with_edf: "{{ add_host_with_edf | default({}) | combine({ 'tag_id': tagname }) }}"
+    when: tagvalue != ""
+
+  - name: Update tagvalue in json file
+    set_fact:
+      add_host_with_edf: "{{ add_host_with_edf | default({}) | combine({ 'tag_value': tagvalue }) }}"
+    when: tagvalue != ""
+
+  - name: Write add k8s host file back to disk.
+    copy:
+      content: "{{ add_host_without_edf | to_nice_json }}"
+      dest: /tmp/payload_add_host_with_edf.json
+    when: tagvalue != ""
+
+  - name: Setting up k8s hosts with datafabric
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: POST
+      body_format: json
+      body: "{{ lookup('file','/tmp/payload_add_host_with_edf.json') }}"
+      status_code:
+        - 201
+    register: res_with_edf
+    when: tagvalue != ""
+
+  - debug:
+      msg: "{{ res_with_edf }}"
+
+  - name: Sleep for 250 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 250
+
+  - name: Fetch k8s host id location for host without edf
+    set_fact:
+      id_location="{{ res_without_edf.location }}"
+    when: tagvalue == ""
+
+  - name: Fetch k8s host id location for host with edf
+    set_fact:
+      id_location="{{ res_with_edf.location }}"
+    when: tagvalue != ""
+
+  - name: Fetch epic-worker id
+    set_fact:
+      hostid: "{{id_location.split('/')[7]}}"
+
+  - debug:
+      msg="{{ hostid }}"
+
+  - name: Load configure worker payload json file
+    include_vars:
+      file: /tmp/payload_configure_k8s_host.json
+      name: configure_k8s_host
+
+  - name: Update persistent disk in json file
+    set_fact:
+      configure_k8s_host: "{{ configure_k8s_host | default({}) | combine({ 'persistent_disks': persistent_disks }) }}"
+
+  - name: Write add-epic file back to disk.
+    copy:
+      content: "{{ configure_k8s_host | to_nice_json }}"
+      dest: /tmp/payload_configure_k8s_host.json
+  
+  - name: To configure k8s hosts storage
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost/{{ hostid }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: POST
+      body_format: json
+      body: "{{ lookup('file','/tmp/payload_configure_k8s_host.json') }}"
+      status_code:
+        - 204
+    register: response
+
+  - debug:
+      msg: "{{ response }}"
+  
+  - name: Sleep for 400 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 400
+
+  - name: Get call to /api/v2/worker/k8shost to get k8shosts json response
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: workers_info
+  
+  - debug:
+      msg: "{{ workers_info }}" 
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      worker_info: "{{ workers_info.content }}"
+  
+  - debug:
+      msg: "{{ worker_info }}" 
+  
+  - name: Set the k8s_host_status variable.
+    set_fact:
+      status: "{{ item.status }}"    # here item refers to json response array
+    with_items: "{{ worker_info._embedded.k8shosts }}"
+    when: item.ipaddr == k8shost_ip
+
+  - debug: 
+      msg: "K8s host is ready"
+    when: status == "ready"
+  
+  - debug:
+      msg: "K8s host adding is failed"
+    failed_when: status == "storage_error" or status == "error"
+    when: status != "ready"
+
+  
+ 

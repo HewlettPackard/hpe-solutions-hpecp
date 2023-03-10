@@ -1,0 +1,541 @@
+<?xml version="1.0"?>
+<!DOCTYPE profile>
+<profile xmlns="http://www.suse.com/1.0/yast2ns" xmlns:config="http://www.suse.com/1.0/configns">
+  <add-on>
+    <add_on_others t="list"/>
+    <add_on_products t="list">
+      <listentry>
+        <media_url><![CDATA[cd:/?devices=/dev/disk/by-id/usb-iLO_Virtual_DVD-ROM-0:0]]></media_url>	
+        <product>sle-module-basesystem</product>	
+        <product_dir>/Module-Basesystem</product_dir>
+      </listentry>
+    </add_on_products>
+  </add-on>
+  <bootloader t="map">
+    <global t="map">
+      <append>splash=silent mitigations=auto quiet crashkernel=208M,high crashkernel=72M,low</append>
+      <cpu_mitigations>auto</cpu_mitigations>
+      <gfxmode>auto</gfxmode>
+      <hiddenmenu>false</hiddenmenu>
+      <os_prober>false</os_prober>
+      <secure_boot>true</secure_boot>
+      <terminal>gfxterm</terminal>
+      <timeout t="integer">8</timeout>
+      <update_nvram>true</update_nvram>
+      <xen_kernel_append>vga=gfx-1024x768x16 crashkernel=280M\&lt;4G</xen_kernel_append>
+    </global>
+    <loader_type>grub2-efi</loader_type>
+  </bootloader>
+  <firewall t="map">
+    <default_zone>public</default_zone>
+    <enable_firewall t="boolean">false</enable_firewall>
+    <log_denied_packets>off</log_denied_packets>
+    <start_firewall t="boolean">false</start_firewall>
+    <zones t="list">
+      <zone t="map">
+        <description>Unsolicited incoming network packets are rejected. Incoming packets that are related to outgoing network connections are accepted. Outgoing network connections are allowed.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">false</masquerade>
+        <name>block</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list"/>
+        <short>Block</short>
+        <target>%%REJECT%%</target>
+      </zone>
+      <zone t="map">
+        <description>For computers in your demilitarized zone that are publicly-accessible with limited access to your internal network. Only selected incoming connections are accepted.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">false</masquerade>
+        <name>dmz</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list">
+          <service>ssh</service>
+        </services>
+        <short>DMZ</short>
+        <target>default</target>
+      </zone>
+      <zone t="map">
+        <description>All network connections are accepted.</description>
+        <interfaces t="list">
+          <interface>docker0</interface>
+        </interfaces>
+        <masquerade t="boolean">false</masquerade>
+        <name>docker</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list"/>
+        <short>docker</short>
+        <target>ACCEPT</target>
+      </zone>
+      <zone t="map">
+        <description>Unsolicited incoming network packets are dropped. Incoming packets that are related to outgoing network connections are accepted. Outgoing network connections are allowed.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">false</masquerade>
+        <name>drop</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list"/>
+        <short>Drop</short>
+        <target>DROP</target>
+      </zone>
+      <zone t="map">
+        <description>For use on external networks. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">true</masquerade>
+        <name>external</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list">
+          <service>ssh</service>
+        </services>
+        <short>External</short>
+        <target>default</target>
+      </zone>
+      <zone t="map">
+        <description>For use in home areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">false</masquerade>
+        <name>home</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list">
+          <service>dhcpv6-client</service>
+          <service>mdns</service>
+          <service>samba-client</service>
+          <service>ssh</service>
+        </services>
+        <short>Home</short>
+        <target>default</target>
+      </zone>
+      <zone t="map">
+        <description>For use on internal networks. You mostly trust the other computers on the networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">false</masquerade>
+        <name>internal</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list">
+          <service>dhcpv6-client</service>
+          <service>mdns</service>
+          <service>samba-client</service>
+          <service>ssh</service>
+        </services>
+        <short>Internal</short>
+        <target>default</target>
+      </zone>
+      <zone t="map">
+        <description>For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">false</masquerade>
+        <name>public</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list">
+          <service>dhcpv6-client</service>
+          <service>http</service>
+          <service>https</service>
+        </services>
+        <short>Public</short>
+        <target>default</target>
+      </zone>
+      <zone t="map">
+        <description>All network connections are accepted.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">false</masquerade>
+        <name>trusted</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list"/>
+        <short>Trusted</short>
+        <target>ACCEPT</target>
+      </zone>
+      <zone t="map">
+        <description>For use in work areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+        <interfaces t="list"/>
+        <masquerade t="boolean">false</masquerade>
+        <name>work</name>
+        <ports t="list"/>
+        <protocols t="list"/>
+        <services t="list">
+          <service>dhcpv6-client</service>
+          <service>ssh</service>
+        </services>
+        <short>Work</short>
+        <target>default</target>
+      </zone>
+    </zones>
+  </firewall>
+  <general t="map">
+    <mode t="map">
+      <confirm t="boolean">false</confirm>
+    </mode>
+  </general>
+  <kdump t="map">
+    <add_crash_kernel t="boolean">true</add_crash_kernel>
+    <crash_kernel t="list">
+      <listentry>208M,high</listentry>
+      <listentry>72M,low</listentry>
+    </crash_kernel>
+    <crash_xen_kernel>280M\&lt;4G</crash_xen_kernel>
+    <general t="map">
+      <KDUMPTOOL_FLAGS/>
+      <KDUMP_COMMANDLINE/>
+      <KDUMP_COMMANDLINE_APPEND/>
+      <KDUMP_CONTINUE_ON_ERROR>true</KDUMP_CONTINUE_ON_ERROR>
+      <KDUMP_COPY_KERNEL>yes</KDUMP_COPY_KERNEL>
+      <KDUMP_CPUS/>
+      <KDUMP_DUMPFORMAT>lzo</KDUMP_DUMPFORMAT>
+      <KDUMP_DUMPLEVEL>31</KDUMP_DUMPLEVEL>
+      <KDUMP_FREE_DISK_SIZE>64</KDUMP_FREE_DISK_SIZE>
+      <KDUMP_HOST_KEY/>
+      <KDUMP_IMMEDIATE_REBOOT>yes</KDUMP_IMMEDIATE_REBOOT>
+      <KDUMP_KEEP_OLD_DUMPS>5</KDUMP_KEEP_OLD_DUMPS>
+      <KDUMP_KERNELVER/>
+      <KDUMP_NETCONFIG>auto</KDUMP_NETCONFIG>
+      <KDUMP_NET_TIMEOUT>30</KDUMP_NET_TIMEOUT>
+      <KDUMP_NOTIFICATION_CC/>
+      <KDUMP_NOTIFICATION_TO/>
+      <KDUMP_POSTSCRIPT/>
+      <KDUMP_PRESCRIPT/>
+      <KDUMP_REQUIRED_PROGRAMS/>
+      <KDUMP_SAVEDIR>/var/crash</KDUMP_SAVEDIR>
+      <KDUMP_SMTP_PASSWORD/>
+      <KDUMP_SMTP_SERVER/>
+      <KDUMP_SMTP_USER/>
+      <KDUMP_TRANSFER/>
+      <KDUMP_VERBOSE>3</KDUMP_VERBOSE>
+      <KEXEC_OPTIONS/>
+    </general>
+  </kdump>
+  <networking t="map">
+    <dhcp_options t="map">
+      <dhclient_client_id/>
+      <dhclient_hostname_option>AUTO</dhclient_hostname_option>
+    </dhcp_options>
+    <dns t="map">
+      <dhcp_hostname t="boolean">false</dhcp_hostname>
+      <hostname>{server[Hostname]}</hostname>
+      <nameservers t="list">
+        <nameserver>{server[Host_DNS]}</nameserver>
+      </nameservers>
+      <resolv_conf_policy>auto</resolv_conf_policy>
+      <searchlist t="list">
+        <search>{server[Host_Search]}</search>
+      </searchlist>
+    </dns>
+    <interfaces t="list">
+      <interface t="map">
+        <bonding_module_opts>mode=active-backup miimon=100</bonding_module_opts>
+        <bonding_slave0>{server[Bonding_Interface1]}</bonding_slave0>
+        <bonding_slave1>{server[Bonding_Interface2]}</bonding_slave1>
+        <bootproto>none</bootproto>
+        <name>bond0</name>
+        <startmode>auto</startmode>
+      </interface>
+      <interface t="map">
+        <bootproto>static</bootproto>
+        <bridge>yes</bridge>
+        <bridge_forward_delay>15</bridge_forward_delay>
+        <bridge_ports>bond0</bridge_ports>
+        <bridge_stp>off</bridge_stp>
+        <ipaddr>{server[Host_IP]}</ipaddr>
+        <name>br0</name>
+        <prefixlen>{server[Host_Prefix]}</prefixlen>
+        <startmode>auto</startmode>
+      </interface>
+      <interface t="map">
+        <bootproto>none</bootproto>
+        <mtu>0</mtu>
+        <name>{server[Bonding_Interface1]}</name>
+        <startmode>auto</startmode>
+      </interface>
+      <interface t="map">
+        <bootproto>none</bootproto>
+        <name>{server[Bonding_Interface2]}</name>
+        <startmode>auto</startmode>
+      </interface>
+      <interface t="map">
+        <bootproto>dhcp</bootproto>
+        <name>usb0</name>
+        <startmode>auto</startmode>
+      </interface>
+    </interfaces>
+    <ipv6 t="boolean">true</ipv6>
+    <keep_install_network t="boolean">true</keep_install_network>
+    <managed t="boolean">false</managed>
+    <net-udev t="list">
+      <rule t="map">
+        <name>{server[Bonding_Interface2]}</name>
+        <rule>KERNELS</rule>
+      </rule>
+      <rule t="map">
+        <name>{server[Bonding_Interface1]}</name>
+        <rule>KERNELS</rule>
+      </rule>
+    </net-udev>
+    <routing t="map">
+      <ipv4_forward t="boolean">true</ipv4_forward>
+      <ipv6_forward t="boolean">false</ipv6_forward>
+      <routes t="list">
+        <route t="map">
+          <destination>default</destination>
+          <device>br0</device>
+          <gateway>{server[Host_Gateway]}</gateway>
+          <netmask>-</netmask>
+        </route>
+      </routes>
+    </routing>
+  </networking>
+  <ntp-client t="map">
+    <ntp_policy>auto</ntp_policy>
+    <ntp_servers t="list"/>
+    <ntp_sync>manual</ntp_sync>
+  </ntp-client>
+  <partitioning t="list">
+    <drive t="map">
+      <device>/dev/system</device>
+      <enable_snapshots t="boolean">false</enable_snapshots>
+      <initialize t="boolean">false</initialize>
+      <partitions t="list">
+        <partition t="map">
+          <create t="boolean">true</create>
+          <filesystem t="symbol">xfs</filesystem>
+          <format t="boolean">false</format>
+          <lv_name>home</lv_name>
+          <mount>/home</mount>
+          <mountby t="symbol">device</mountby>
+          <pool t="boolean">false</pool>
+          <resize t="boolean">false</resize>
+          <size>26843545600</size>
+          <stripes t="integer">1</stripes>
+          <stripesize t="integer">0</stripesize>
+        </partition>
+        <partition t="map">
+          <create t="boolean">true</create>
+          <filesystem t="symbol">ext4</filesystem>
+          <format t="boolean">false</format>
+	  <fstopt>acl,user_xattr</fstopt>
+	  <lv_name>root</lv_name>
+          <mount>/</mount>
+          <mountby t="symbol">device</mountby>
+          <pool t="boolean">false</pool>
+          <resize t="boolean">false</resize>
+          <size>161061273600</size>
+          <stripes t="integer">1</stripes>
+          <stripesize t="integer">0</stripesize>
+        </partition>
+        <partition t="map">
+          <create t="boolean">true</create>
+          <filesystem t="symbol">ext4</filesystem>
+          <format t="boolean">false</format>
+          <fstopt>data=ordered,acl,user_xattr</fstopt>
+          <lv_name>var</lv_name>
+          <mount>/var</mount>
+          <mountby t="symbol">device</mountby>
+          <pool t="boolean">false</pool>
+          <resize t="boolean">false</resize>
+          <size>107374182400</size>
+          <stripes t="integer">1</stripes>
+          <stripesize t="integer">0</stripesize>
+        </partition>
+        <partition t="map">
+          <create t="boolean">true</create>
+          <filesystem t="symbol">swap</filesystem>
+          <format t="boolean">false</format>
+	  <lv_name>swap</lv_name>
+          <mount>swap</mount>
+          <mountby t="symbol">device</mountby>
+          <pool t="boolean">false</pool>
+          <resize t="boolean">false</resize>
+          <size>67545071616</size>
+          <stripes t="integer">1</stripes>
+          <stripesize t="integer">0</stripesize>
+        </partition>
+        <partition t="map">
+          <create t="boolean">true</create>
+          <filesystem t="symbol">ext4</filesystem>
+          <format t="boolean">false</format>
+	  <fstopt>data=ordered,acl,user_xattr</fstopt>
+	  <lv_name>srv</lv_name>
+          <mount>/srv</mount>
+          <mountby t="symbol">device</mountby>
+          <pool t="boolean">false</pool>
+          <resize t="boolean">false</resize>
+          <size>107374182400</size>
+          <stripes t="integer">1</stripes>
+          <stripesize t="integer">0</stripesize>
+        </partition>
+      </partitions>
+      <pesize>4194304</pesize>
+      <type t="symbol">CT_LVM</type>
+    </drive>
+    <drive>
+      <device>/dev/sda</device>
+      <disklabel>gpt</disklabel>
+      <enable_snapshots t="boolean">false</enable_snapshots>
+      <initialize t="boolean">false</initialize>
+      <partitions t="list">
+        <partition>
+          <create t="boolean">true</create>
+          <filesystem t="symbol">vfat</filesystem>
+          <format t="boolean">true</format>
+          <mount>/boot/efi</mount>
+          <mountby t="symbol">uuid</mountby>
+          <partition_id t="integer">259</partition_id>
+          <partition_nr t="integer">1</partition_nr>
+          <resize t="boolean">false</resize>
+          <size>524288000</size>
+        </partition>
+        <partition>
+          <create t="boolean">true</create>
+          <format t="boolean">false</format>
+          <lvm_group>system</lvm_group>
+          <partition_id t="integer">142</partition_id>
+          <partition_nr t="integer">2</partition_nr>
+          <resize t="boolean">false</resize>
+          <size>536345558528</size>
+        </partition>
+      </partitions>
+      <type t="symbol">CT_DISK</type>
+      <use>all</use>
+    </drive>
+  </partitioning>
+  <proxy t="map">
+    <enabled t="boolean">false</enabled>
+  </proxy>
+  <security t="map">
+    <console_shutdown>reboot</console_shutdown>
+    <cracklib_dict_path>/usr/lib/cracklib_dict</cracklib_dict_path>
+    <disable_restart_on_update>no</disable_restart_on_update>
+    <disable_stop_on_removal>no</disable_stop_on_removal>
+    <extra_services>insecure</extra_services>
+    <fail_delay>3</fail_delay>
+    <gid_max>60000</gid_max>
+    <gid_min>1000</gid_min>
+    <hibernate_system>active_console</hibernate_system>
+    <kernel.sysrq>184</kernel.sysrq>
+    <mandatory_services>insecure</mandatory_services>
+    <net.ipv4.ip_forward>1</net.ipv4.ip_forward>
+    <net.ipv4.tcp_syncookies>0</net.ipv4.tcp_syncookies>
+    <net.ipv6.conf.all.forwarding>0</net.ipv6.conf.all.forwarding>
+    <pass_max_days>99999</pass_max_days>
+    <pass_min_days>0</pass_min_days>
+    <pass_min_len>5</pass_min_len>
+    <pass_warn_age>7</pass_warn_age>
+    <passwd_encryption>sha512</passwd_encryption>
+    <passwd_remember_history>0</passwd_remember_history>
+    <passwd_use_cracklib>yes</passwd_use_cracklib>
+    <permission_security>easy</permission_security>
+    <run_updatedb_as/>
+    <selinux_mode>disabled</selinux_mode>
+    <smtpd_listen_remote>no</smtpd_listen_remote>
+    <sys_gid_max>499</sys_gid_max>
+    <sys_gid_min>100</sys_gid_min>
+    <sys_uid_max>499</sys_uid_max>
+    <sys_uid_min>100</sys_uid_min>
+    <syslog_on_no_error>no</syslog_on_no_error>
+    <uid_max>60000</uid_max>
+    <uid_min>1000</uid_min>
+    <useradd_cmd>/usr/sbin/useradd.local</useradd_cmd>
+    <userdel_postcmd>/usr/sbin/userdel-post.local</userdel_postcmd>
+    <userdel_precmd>/usr/sbin/userdel-pre.local</userdel_precmd>
+  </security>
+  <services-manager t="map">
+    <default_target>multi-user</default_target>
+    <services t="map">
+      <enable t="list">
+        <service>YaST2-Firstboot</service>
+        <service>YaST2-Second-Stage</service>
+        <service>apparmor</service>
+        <service>auditd</service>
+        <service>klog</service>
+        <service>cron</service>
+        <service>wickedd-auto4</service>
+        <service>wickedd-dhcp4</service>
+        <service>wickedd-dhcp6</service>
+        <service>wickedd-nanny</service>
+        <service>display-manager</service>
+        <service>haveged</service>
+        <service>irqbalance</service>
+        <service>issue-generator</service>
+        <service>kbdsettings</service>
+        <service>kdump</service>
+        <service>kdump-early</service>
+        <service>lvm2-monitor</service>
+        <service>wicked</service>
+        <service>nscd</service>
+        <service>postfix</service>
+        <service>purge-kernels</service>
+        <service>rollback</service>
+        <service>rsyslog</service>
+        <service>smartd</service>
+        <service>sshd</service>
+        <service>systemd-remount-fs</service>
+      </enable>
+    </services>
+  </services-manager>
+  <software t="map">
+    <install_recommended t="boolean">true</install_recommended>
+    <instsource/>
+    <packages t="list">
+      <package>xfsprogs</package>
+      <package>wicked</package>
+      <package>sles-release</package>
+      <package>sle-module-basesystem-release</package>
+      <package>shim</package>
+      <package>python3</package>
+      <package>openssh</package>
+      <package>numactl</package>
+      <package>mokutil</package>
+      <package>kexec-tools</package>
+      <package>kdump</package>
+      <package>irqbalance</package>
+      <package>grub2-x86_64-efi</package>
+      <package>glibc</package>
+      <package>firewalld</package>
+      <package>dosfstools</package>
+      <package>autoyast2</package>
+    </packages>
+    <patterns t="list">
+      <pattern>apparmor</pattern>
+      <pattern>base</pattern>
+      <pattern>basic_desktop</pattern>
+      <pattern>enhanced_base</pattern>
+      <pattern>minimal_base</pattern>
+      <pattern>x11</pattern>
+      <pattern>x11_yast</pattern>
+      <pattern>yast2_basis</pattern>
+    </patterns>
+    <products t="list">
+      <product>SLES</product>
+    </products>
+  </software>
+  <ssh_import t="map">
+    <copy_config t="boolean">false</copy_config>
+    <import t="boolean">false</import>
+  </ssh_import>
+  <timezone t="map">
+    <timezone>America/New_York</timezone>
+  </timezone>
+  <user_defaults t="map">
+    <expire/>
+    <group>100</group>
+    <groups/>
+    <home>/home</home>
+    <inactive>-1</inactive>
+    <no_groups t="boolean">true</no_groups>
+    <shell>/bin/bash</shell>
+    <skel>/etc/skel</skel>
+    <umask>022</umask>
+  </user_defaults>
+  <users t="list">
+    <user t="map">
+      <username>root</username>
+      <user_password>{server[Host_Password]}</user_password>
+      <encrypted config:type="boolean">false</encrypted>
+    </user>
+  </users>
+</profile>
+

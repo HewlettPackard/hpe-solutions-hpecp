@@ -1,0 +1,92 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body:
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
+
+  - name: Fetch location header
+    set_fact:
+      session_token="{{ token.location }}"
+
+  - name: Fetch token
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug:
+      msg="{{ token }}"
+
+  - name: Get call to /api/v2/worker/k8shost to get k8shosts json response
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/worker/k8shost
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: workers_info
+  
+  - debug:
+      msg="{{ workers_info }}" 
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      worker_info: "{{ workers_info.content }}"
+  
+  - debug:
+      msg="{{ workers_info }}" 
+  
+  - name: Store the host name from input.
+    set_fact:
+      k8s_host: "{{ item.host }}"     # here item refers to outer loop on pools
+  
+  - name: Set the k8s_host_uri variable.
+    set_fact:
+      k8s_host_uri: "{{ item._links.self.href }}"    # here item refers to json response array
+    with_items: "{{ worker_info._embedded.k8shosts }}"
+    when: item.ipaddr == k8s_host
+
+  - debug:
+      msg: "{{ k8s_host_uri }}"
+
+  - name: set the k8s host role to variable
+    set_fact:
+      k8s_host_role: "{{ item.role }}"
+
+  - name: Update k8shosts_config array in the json payload
+    shell: cat /tmp/payload_k8scluster.json | jq '.k8shosts_config |= . + [{{ item | to_json }}]' | tee /tmp/payload_k8scluster.json
+    with_template: k8shosts_config.j2
+    vars:
+      k8s_host_uri: "{{ k8s_host_uri }}"
+      k8s_host_role: "{{ k8s_host_role }}"
+  
