@@ -153,9 +153,9 @@ In case if user want to deploy through individual playbooks. Sequence of playboo
       ansible-playbook -i hosts playbooks/prepare_hosts.yml --ask-vault-pass
       ansible-playbook -i hostsplaybooks/download-tools.yml --ask-vault-pass 
       ansible-playbook -i hosts playbooks/controller.yml --ask-vault-pass
+      ansible-playbook -i hosts playbooks/gateway-add.yml --ask-vault-pass  
       ansible-playbook -i hosts playbooks/epic-workers-add.yml --ask-vault-pass 
       ansible-playbook -i hosts playbooks/controller-ha.yml --ask-vault-pass
-      ansible-playbook -i hosts playbooks/gateway-add.yml --ask-vault-pass  
       ansible-playbook -i hosts playbooks/k8s-add-hosts.yml --ask-vault-pass
       ansible-playbook -i hosts playbooks/k8s-create-cluster.yml --ask-vault-pass
       ansible-playbook -i hosts playbooks/k8s-create-tenant.yml --ask-vault-pass 
@@ -298,7 +298,7 @@ If user want ERE deployment through airgap mode then perform below steps:
 
 2. Incase of timeout,retries and connection errors while copying docker images to docker registry re run the playbook again since copying images takes more time than expected.
    or
-copy all images using hpe utility tool to docker-registry server manually(incase if copying images is failig due to large size), Please check below commands and url to copy images manually to docker registry.
+copy all images using hpe utility tool to docker-registry server manually(incase if copying images is failing due to large size), Please check below commands and url to copy images manually to docker registry.
 
 ```
 hpe-airgap-util --release <ere-release-number> --required --copy --dest_url <docker-registry-server>:5000
