@@ -80,7 +80,8 @@
 
   - debug:
       msg: "{{ k8shost_uri }}"
-    when: k8shost_id_info_ip == host_to_deleted
+    when: item.ipaddr == host_to_deleted
+    with_items: "{{ k8shost_id_info._embedded.k8shosts }}"
 
   - name: Delete k8s host with rest api.
     uri:
@@ -95,13 +96,16 @@
       status_code:
         - 204
     register: res
-    when: k8shost_id_info_ip == host_to_deleted
+    when: item.ipaddr == host_to_deleted
+    with_items: "{{ k8shost_id_info._embedded.k8shosts }}"
 
   - debug:
       msg: "{{ res }}"
-    when: k8shost_id_info_ip == host_to_deleted
+    when: item.ipaddr == host_to_deleted
+    with_items: "{{ k8shost_id_info._embedded.k8shosts }}"
 
   - name: Sleep for 60 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 60
-    when: k8shost_id_info_ip == host_to_deleted
+    when: item.ipaddr == host_to_deleted
+    with_items: "{{ k8shost_id_info._embedded.k8shosts }}"

@@ -144,14 +144,15 @@ Sample vars.yml can be found in the following path ```group_vars/all/vars.sample
 Run the below command to execute the Lite Touch Installation.
 
    ```
-	  ansible-playbook  site.yml  --ask-vault-pass
+	  ansible-playbook -i hosts site.yml  --ask-vault-pass
+     
    ```
 In case if user want to deploy through individual playbooks. Sequence of playbooks to be followed are:
 
    ```
       ansible-playbook -i hosts playbooks/os_deployment.yml --ask-vault-pass
       ansible-playbook -i hosts playbooks/prepare_hosts.yml --ask-vault-pass
-      ansible-playbook -i hostsplaybooks/download-tools.yml --ask-vault-pass 
+      ansible-playbook -i hosts playbooks/download-tools.yml --ask-vault-pass 
       ansible-playbook -i hosts playbooks/controller.yml --ask-vault-pass
       ansible-playbook -i hosts playbooks/gateway-add.yml --ask-vault-pass  
       ansible-playbook -i hosts playbooks/epic-workers-add.yml --ask-vault-pass 
