@@ -197,7 +197,7 @@ controller:
   int_end_ip: 172.20.255.254  # No need to change
   int_gw_ip: 172.20.0.1  # No need to change
   int_nw_mask: 16   # No need to change
-  #controller_public_if: eth0 # If multiple interfaces with IP address assignments found. Use --controller-public-if to specify a public interface.
+  controller_public_if: eth0 # If multiple interfaces with IP address assignments found. Use --controller-public-if to specify a public interface.
 
 controller_creds:
   name: admin # username to login to ere dashboard
