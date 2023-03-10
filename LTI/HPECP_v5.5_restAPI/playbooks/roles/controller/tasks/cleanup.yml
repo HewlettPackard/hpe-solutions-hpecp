@@ -46,18 +46,4 @@
     - "wipefs -a /dev/sdb /dev/sdc"
     - "blockdev --rereadpt --flushbufs /dev/sdb /dev/sdc"
 
-  # - name: create catalog directory in controller node
-  #   file:
-  #     path: "/srv/bluedata/catalog"
-  #     state: directory
-  #     mode: 777
-  #     recurse: yes 
-  #   when: airgap.is_airgap_env == true
-
-  # - name: copying feed.json file into controller node
-  #   copy:
-  #     src: /tmp/feed.json
-  #     dest: /srv/bluedata/catalog/feed.json
-  #     mode: 777
-  #   when: airgap.is_airgap_env == true
 
