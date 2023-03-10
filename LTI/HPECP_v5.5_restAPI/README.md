@@ -1,4 +1,4 @@
-## Lite touch Installation of HPECP Platform using Ansible playbook
+## Lite touch Installation of HPERE Platform using Ansible playbook
 
 ### Overview 
 
@@ -6,7 +6,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 
 -   Install the SLES OS on bare metal servers
   
--   Prepare the hosts for HPECP implementation.
+-   Prepare the hosts for HPERE implementation.
 
 -   Setup docker-registry to deploy ere through air-gapped environment
   
@@ -36,7 +36,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
    3. Ansible 2.9.x and python 3.x and above should be installed. Please refer to the [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-Synergy/Solution-Deployment/Host-Configuration.html#installer-machine section of the deployment guide 
             
    4. Setup the installer machine to configure the nginx, development tools and other python packages required for LTI installation.
-      Navigate to the directory, $BASE_DIR/HPECP_v5.5_restAPI/playbooks/roles/os_deployment/tasks and run the below command. 
+      Navigate to the directory, $BASE_DIR/HPERE_v5.6_restAPI/playbooks/roles/os_deployment/tasks and run the below command. 
 
         ```
          sh setup.sh
@@ -60,22 +60,22 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
           ssh-keygen 
         ```
       **NOTE**  
-      Ensure that in the known hosts file of installer machine, the entries of HPECP host should not be present.
+      Ensure that in the known hosts file of installer machine, the entries of HPERE host should not be present.
 
-   8. The script downloads the hpecp bin file from the S3 bucket or the bin file can be downloaded the from the url and placed locally to root directory on the controller machine.The same needs to be updated in the vars.yml file.
+   8. The script downloads the hpere bin file from the S3 bucket or the bin file can be downloaded the from the url and placed locally to root directory on the controller machine.The same needs to be updated in the vars.yml file.
 
 
-### HPECP Nodes Prerequisite
+### HPERE Nodes Prerequisite
    
-   1. Minimum five (5) nodes with two raw disks are required for normal HPECP deployment.
+   1. Minimum five (5) nodes with two raw disks are required for normal HPERE deployment.
       
       **NOTE**
       sda :- for os installation
       sdb :- for docker storage
       The node which will be used for gateway can just have the OS (sda) disks.
-      Ensure that the sdb disk is not in use and is available to be used as docker storage.In case the disk is already in use kindly do a cleanup of the disks before initiating the HPECP deployment script.    
+      Ensure that the sdb disk is not in use and is available to be used as docker storage.In case the disk is already in use kindly do a cleanup of the disks before initiating the HPERE deployment script.    
 
-   2. HPECP Nodes Configuration Details.
+   2. HPERE Nodes Configuration Details.
       * 2 network interface for the production network 
       * 1 local drive to be used as the boot device
       * Boot mode is set to UEFI
@@ -98,7 +98,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
       
    
    **Note**
-   * Specified Partitions are inline with HPECP implementation and it is advised not to make changes to this.
+   * Specified Partitions are inline with HPERE implementation and it is advised not to make changes to this.
    
    * timezone - America/NewYork
    
@@ -119,7 +119,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 
 -   Update the values in *vars.yml* according to your environment.
 
--   Navigate to the base directory $BASE_DIR/HPECP_v5.5_restAPI and Use following command to edit *vars.yml* file
+-   Navigate to the base directory $BASE_DIR/HPERE_v5.6_restAPI and Use following command to edit *vars.yml* file
 
 **NOTE** The value for the constant "$BASE_DIR" referred to is /opt/hpe/solutions/hpecp/hpe-solutions-hpecp/LTI/
 
@@ -129,7 +129,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 - The hosts file is being generated in the backend during the OS deployment process.User can edit the hosts file if required according to their requirement.
   
   ```
-   vi $BASE_DIR/HPECP_v5.5_restAPI/hosts
+   vi $BASE_DIR/HPERE_v5.5_restAPI/hosts
   ```
 
 **NOTE**
@@ -139,13 +139,13 @@ Sample vars.yml can be found in the following path ```group_vars/all/vars.sample
 
 ### Installation
 
-1. HPE Ezmeral Container Platform can be deployed by running ```site.yml``` or by running individual playbooks. Each playbook description can be found further in this document
+1. HPE Ezmeral Runtime Enterprise can be deployed by running ```site.yml``` or by running individual playbooks. Each playbook description can be found further in this document
 
 Run the below command to execute the Lite Touch Installation.
 
    ```
 	  ansible-playbook -i hosts site.yml  --ask-vault-pass
-     
+
    ```
 In case if user want to deploy through individual playbooks. Sequence of playbooks to be followed are:
 
@@ -179,7 +179,7 @@ In case if there is no requirement of controller ha, user can skip ```playbooks/
 
 **Prepare_hosts.yml**
 
-- This playbook contains the script to prepare the hosts for HPECP deployment.
+- This playbook contains the script to prepare the hosts for HPERE deployment.
 
 
 **download-tools.yml**
@@ -195,7 +195,7 @@ In case of facing any issues while running download-tools.yml playbook, Download
  
 - jq (https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64)
 
-Update {{ kubectl_cli_version }} with the version which user want to download. Please make sure the version is compatible with the the version which HPECP supports. Recommended to use 1.17.13.
+Update {{ kubectl_cli_version }} with the version which user want to download. Please make sure the version is compatible with the the version which HPERE supports. Recommended to use 1.17.13.
 
 
 **controller.yml**
@@ -251,7 +251,7 @@ Run the following command to delete epic workers.
 	ansible-playbook  playbooks/epic-workers-delete.yml --ask-vault-pass
 ```
 **NOTE**
-    - If platform **High Availability** is enabled, then the user cannot delete the Controller, Shadow Controller or Arbiter host from the Container Platform. 
+    - If platform **High Availability** is enabled, then the user cannot delete the Controller, Shadow Controller or Arbiter host from the ERE. 
     - You must have **at least four (4) epic Worker Hosts** (including the HA epic worker hosts) in order to decommission the datanodes.
     - If HA is not enabled, then the user can delete the epic workers as usual.
     - For more information see <http://docs.bluedata.com/51_decommissioning-deleting-an-epic-worker>
