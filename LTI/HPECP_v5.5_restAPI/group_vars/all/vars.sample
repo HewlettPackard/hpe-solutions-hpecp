@@ -288,13 +288,13 @@ k8scluster:  # Provide details of k8 cluster
     - name: worker-pool
       role: worker
       host: "20.x.x.x"
-  k8sversion: "1.23.10-hpe2"   # Provide k8s version
+  k8sversion: "1.23.14-hpe2"   # Provide k8s version
   pod_network_range: "10.244.0.0/16"
   service_network_range: "10.96.0.0/16"
   pod_dns_domain: "cluster.local"
   tagname: ""
   tagvalue: ""
-  addon: "spark-operator" ###provide an add on for while creating k8s cluster like spark-operator
+  addon: "istio" ###provide an add on for while creating k8s cluster like istio
   persistent_storage:
     nimble_csi: false
    
