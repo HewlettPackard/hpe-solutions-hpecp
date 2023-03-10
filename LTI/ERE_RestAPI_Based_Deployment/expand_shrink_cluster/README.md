@@ -1,10 +1,10 @@
-# EXPANDING AND SHRINKING OF A COMPUTE CLUSTER IN ECP
+# EXPANDING AND SHRINKING OF A COMPUTE CLUSTER IN ERE
 
 This README describes the process required to expand or shrink an existing compute cluster with the help of automation scripts.
 
 ## PREREQUISITES
 
-1. Refer to [Installer Machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.3-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section to set up the required python and ansible environment.
+1. Refer to [Installer Machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.6-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section to set up the required python and ansible environment.
 
 2. Python module 'requests'.
 
