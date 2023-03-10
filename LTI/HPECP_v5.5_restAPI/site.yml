@@ -19,9 +19,9 @@
   - import_playbook: playbooks/prepare_hosts.yml
   - import_playbook: playbooks/download-tools.yml
   - import_playbook: playbooks/controller.yml
+  - import_playbook: playbooks/gateway-add.yml
   - import_playbook: playbooks/epic-workers-add.yml
   - import_playbook: playbooks/controller-ha.yml
-  - import_playbook: playbooks/gateway-add.yml
   - import_playbook: playbooks/k8s-add-hosts.yml
   - import_playbook: playbooks/k8s-create-cluster.yml
   - import_playbook: playbooks/k8s-create-tenant.yml
