@@ -184,8 +184,8 @@ init:
   host_ip: 20.x.x.x # provide controller node ip
 
 controller:
-  #url_bin_path: local:///root/hpe-cp-sles-release-5.5.0-3081.bin
-  url_bin_path:  https://ezmeral-platform-releases.s3.amazonaws.com/5.5.0/3081/hpe-cp-sles-release-5.5.0-3081.bin # Make sure to change this url to correct bundle file or point to the local downloaded bin file path with executable permission ( ex:local:///root/hpe-cp-bundle.bin.)
+  #url_bin_path: local:///root/hpe-cp-sles-release-5.6.0-3086.bin
+  url_bin_path:  https://ezmeral-platform-releases.s3.amazonaws.com/5.6.0/3086/hpe-cp-sles-release-5.6.0-3086.bin # Make sure to change this url to correct bundle file or point to the local downloaded bin file path with executable permission ( ex:local:///root/hpe-cp-bundle.bin.)
   host_ip: 20.x.x.x # Provide controller node ip
   bd_domain: bddomain # No need to change
   bd_prefix: bluedata # No need to change
