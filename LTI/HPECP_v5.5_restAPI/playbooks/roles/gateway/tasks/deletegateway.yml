@@ -69,14 +69,9 @@
       gateway_ip_info: "{{ item.ip }}"
     with_items: "{{ gateways._embedded.workers }}"
 
-  - name: debug host name
+  - name: set host name to be deleted
     debug:
       msg: "{{ host_to_deleted }}"
-
-  - name: debug item
-    debug:
-      msg: "{{ item }}"
-    with_items: "{{ gateways }}"
   
   - name: Set the gateway_uri variable.
     set_fact:
@@ -86,7 +81,8 @@
 
   - ansible.builtin.debug:
       msg: "{{ gateway_uri }}"
-    when: gateway_ip_info == host_to_deleted
+    when: item.ip == host_to_deleted
+    with_items: "{{ gateways._embedded.workers }}"
 
   - name: Delete gateway with rest api.
     uri:
@@ -100,13 +96,16 @@
       status_code:
         - 204
     register: res
-    when: gateway_ip_info == host_to_deleted
+    when: item.ip == host_to_deleted
+    with_items: "{{ gateways._embedded.workers }}"
 
   - debug:
       msg: "{{ res }}"
-    when: gateway_ip_info == host_to_deleted
+    when: item.ip == host_to_deleted
+    with_items: "{{ gateways._embedded.workers }}"
 
   - name: Sleep for 60 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 60
-    when: gateway_ip_info == host_to_deleted
+    when: item.ip == host_to_deleted
+    with_items: "{{ gateways._embedded.workers }}"

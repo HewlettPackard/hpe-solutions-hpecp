@@ -58,26 +58,35 @@
   
   - name: save the Json data to a Variable as a Fact
     set_fact:
-      epicworker_id_info: "{{ output.content }}"
+      epicworkers: "{{ output.content }}"
 
-  - name: save ip as variable to delete epic worker
-    set_fact:
-       epic_worker_ip_info: "{{ item.ip}}"
-    with_items: "{{ epicworker_id_info._embedded.workers }}"
-  
   - name: Set host name that needs to deleted
     set_fact:
       host_to_deleted: "{{ item.worker }}"
 
+  - name: save ip as variable to delete epic worker
+    set_fact:
+      epic_worker_ip_info: "{{ item.ip}}"
+    with_items: "{{ epicworkers._embedded.workers }}"
+  
+  - name: print host to be deleted
+    debug:
+      msg: "{{ host_to_deleted }}"
+
+  - name: print ip of epic worker to be deleted
+    debug:
+      msg: "{{ epic_worker_ip_info }}"
+
   - name: Set the epicworker_uri variable.
     set_fact:
       epicworker_uri: "{{ item._links.self.href }}"
-    with_items: "{{ epicworker_id_info._embedded.workers }}"
+    with_items: "{{ epicworkers._embedded.workers }}"
     when: item.ip  == host_to_deleted
 
   - debug:
       msg: "{{ epicworker_uri }}"
-    when: epic_worker_ip_info == host_to_deleted
+    when: item.ip == host_to_deleted
+    with_items: "{{ epicworkers._embedded.workers }}"
 
   - name: Delete epic worker with rest api
     uri:
@@ -91,15 +100,18 @@
       status_code:
         - 204
     register: res
-    when: epic_worker_ip_info == host_to_deleted
+    when: item.ip == host_to_deleted
+    with_items: "{{ epicworkers._embedded.workers }}"
 
   - debug:
       msg: "{{ res }}"
-    when: epic_worker_ip_info == host_to_deleted
+    when: item.ip == host_to_deleted
+    with_items: "{{ epicworkers._embedded.workers }}"
   
   - name: Sleep for 60 seconds and continue with play
     ansible.builtin.wait_for:
       timeout: 60
-    when: epic_worker_ip_info == host_to_deleted
+    when: item.ip == host_to_deleted
+    with_items: "{{ epicworkers._embedded.workers }}"
 
   
