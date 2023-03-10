@@ -1,4 +1,4 @@
-## Lite touch Installation of HPERE Platform using Ansible playbook
+## Lite touch Installation of HPERE Platform using Ansible playbook through RESTAPI
 
 ### Overview 
 
@@ -30,13 +30,13 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
    
 ### Installer Machine Prerequisite
 
- Centos 7 [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-Synergy/Solution-Deployment/Host-Configuration.html#installer-machine) with the following configurations is essential to initiate the OS deployment process.
+ Centos 7 [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpere/5.6-DL/Solution-Deployment/Host-Configuration.html) with the following configurations is essential to initiate the OS deployment process.
    1. At least 600 GB disk space (especially in the "/" partition), 4 CPU cores and 16GB RAM.
    2. 1 network interface with static IP address configured on same network as the management plane of the bare-metal servers and has access to internet.
-   3. Ansible 2.9.x and python 3.x and above should be installed. Please refer to the [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-Synergy/Solution-Deployment/Host-Configuration.html#installer-machine section of the deployment guide 
+   3. Ansible 2.9.x and python 3.x and above should be installed. Please refer to the [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.6-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of the deployment guide 
             
    4. Setup the installer machine to configure the nginx, development tools and other python packages required for LTI installation.
-      Navigate to the directory, $BASE_DIR/HPERE_v5.6_restAPI/playbooks/roles/os_deployment/tasks and run the below command. 
+      Navigate to the directory, $BASE_DIR/ERE_RestAPI_Based_Deployment/playbooks/roles/os_deployment/tasks and run the below command. 
 
         ```
          sh setup.sh
@@ -119,7 +119,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 
 -   Update the values in *vars.yml* according to your environment.
 
--   Navigate to the base directory $BASE_DIR/HPERE_v5.6_restAPI and Use following command to edit *vars.yml* file
+-   Navigate to the base directory $BASE_DIR/ERE_RestAPI_Based_Deployment and Use following command to edit *vars.yml* file
 
 **NOTE** The value for the constant "$BASE_DIR" referred to is /opt/hpe/solutions/hpecp/hpe-solutions-hpecp/LTI/
 
@@ -129,7 +129,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 - The hosts file is being generated in the backend during the OS deployment process.User can edit the hosts file if required according to their requirement.
   
   ```
-   vi $BASE_DIR/HPERE_v5.5_restAPI/hosts
+   vi $BASE_DIR/ERE_RestAPI_Based_Deployment/hosts
   ```
 
 **NOTE**
