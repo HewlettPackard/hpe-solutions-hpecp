@@ -1,0 +1,51 @@
+#CLUSTER EXPANSION TEST CASE
+
+[root@installer expand_shrink]# python expand_shrink.py
+Gathering Input Variables...
+Enter key for encrypted variables:
+
+
+Getting Session ID...
+Successfully Logged In
+
+
+Getting required Host URI's...
+
+
+Acquiring cluster ID...
+
+
+Performing cluster modification...
+Started cluster operation
+Waiting for cluster status to become Ready...
+
+
+Cluster has been Modified
+
+#########################################################
+
+#CLUSTER SHRINKING TEST CASE
+
+[root@installer expand_shrink]# python expand_shrink.py
+Gathering Input Variables...
+Enter key for encrypted variables:
+
+
+Getting Session ID...
+Successfully Logged In
+
+
+Getting required Host URI's...
+
+
+Acquiring cluster ID...
+
+
+Performing cluster modification...
+Started cluster operation
+Waiting for cluster status to become Ready...
+
+
+Cluster has been Modified
+
+#########################################################
