@@ -91,6 +91,7 @@ echo "installing mksusecd"
 echo "============================================================"
 make install
 cp mksusecd /usr/local/bin
+cp -r ../mksusecd /usr/lib/
 echo "============================================================"
 echo "installing perl-Digest-HMAC"
 echo "============================================================"
