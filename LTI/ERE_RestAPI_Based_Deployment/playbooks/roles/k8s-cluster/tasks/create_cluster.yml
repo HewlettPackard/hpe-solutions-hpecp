@@ -100,9 +100,9 @@
       msg: "k8s cluster is getting created"
     when: k8s_cluster_status == "creating"
   
-  - name: Sleep for 3600 seconds and continue with play
+  - name: Sleep for 5400 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 3600
+      timeout: 5400
 
   - name: Fetch k8s cluster status 
     uri:
@@ -131,7 +131,7 @@
       msg: "{{ k8s_cluster_status_new }}"
     
   - debug: 
-      msg: "k8s cluster failed"
+      msg: "k8s cluster failed\still creating check dashboard"
     failed_when: k8s_cluster_status_new == "error"
     when: k8s_cluster_status_new != "ready"
 

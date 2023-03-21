@@ -67,9 +67,9 @@
   - debug:
       msg: "{{ res_ha_status }}"
   
-  - name: Sleep for 3600 seconds and continue with play
+  - name: Sleep for 1800 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 3600
+      timeout: 1800
 
   - debug:
       msg: "HA disable successfully completed"

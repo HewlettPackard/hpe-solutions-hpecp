@@ -145,9 +145,9 @@
   - debug:
       msg: "{{ res_with_edf }}"
 
-  - name: Sleep for 250 seconds and continue with play
+  - name: Sleep for 350 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 250
+      timeout: 350
 
   - name: Fetch k8s host id location for host without edf
     set_fact:
@@ -199,9 +199,9 @@
   - debug:
       msg: "{{ response }}"
   
-  - name: Sleep for 400 seconds and continue with play
+  - name: Sleep for 450 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 400
+      timeout: 450
 
   - name: Get call to /api/v2/worker/k8shost to get k8shosts json response
     uri:

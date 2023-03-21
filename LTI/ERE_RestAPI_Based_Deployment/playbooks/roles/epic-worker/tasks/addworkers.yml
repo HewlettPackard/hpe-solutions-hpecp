@@ -82,9 +82,9 @@
   - debug:
       msg: "{{ res }}"
 
-  - name: Sleep for 300 seconds and continue with play
+  - name: Sleep for 350 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 300
+      timeout: 350
 
   - name: Fetch epic-worker id location
     set_fact:
@@ -116,9 +116,9 @@
   - debug:
       msg: "{{ response }}"
 
-  - name: Sleep for 400 seconds and continue with play
+  - name: Sleep for 450 seconds and continue with play
     ansible.builtin.wait_for:
-      timeout: 400
+      timeout: 450
   
   - name: Get epic-workers info
     uri:
