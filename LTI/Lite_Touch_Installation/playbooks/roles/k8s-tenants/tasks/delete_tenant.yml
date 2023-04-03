@@ -14,51 +14,79 @@
 ## limitations under the License.
 ####
 ---
-  - name: Get the tenant URI using the tenant name.
-    command: epicctl api get -u /api/v1/tenant -n {{ common.name }} -p {{ common.platform }} --jsonpath "._embedded.tenants" -o /tmp/get-response.json
-    register: res
-    failed_when: res.rc != 0
+  - name: Get session token to connect controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body:
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: login_response
 
-  - name: Check if response file exists.
-    stat:
-      path: /tmp/get-response.json
-    register: output
-
-  - name: Parse json to retrieve the tenant URI.
+  - name: Fetch location header
     set_fact:
-      tenants: "{{ lookup('file', '/tmp/get-response.json') | from_json }}"
-    when: output.stat.exists == True
+      session_token="{{ login_response.location }}"
+
+  - name: Fetch token
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug:
+      msg="{{ token }}"
+  
+  - name: Get k8s tenant id
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/tenant
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: GET
+      status_code:
+        - 200
+    register: output
+  
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      tenant_id_info: "{{ output.content }}"
 
   - name: Set the tenant_uri variable.
     set_fact:
       tenant_uri: "{{ item._links.self.href }}"
-    with_items: "{{ tenants }}"
+    with_items: "{{ tenant_id_info._embedded.tenants }}"
     when: item.label.name  == "{{ k8stenant.name }}"
 
   - debug:
       msg: "{{ tenant_uri }}"
 
-  - name: Delete k8s tenant with epicctl and rest api.
-    command: epicctl api delete -u "{{ tenant_uri }}" -n "{{ common.name }}" -p {{ common.platform }} -o /tmp/delete-response.json
-    register: res
-    failed_when: res.rc != 0
+  - name: Delete k8s tenant with rest api.
+    uri:
+      url: http://{{ controller.host_ip }}:8080{{ tenant_uri }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: DELETE
+      status_code:
+        - 204
+    register: output
 
   - debug:
-     msg: "{{ res.stdout }}"
+     msg: "{{ output }}"
 
-  # TODO: check: deleteing tenant doesn't take much time,
-  # instead of polling , it is good idea to check http status code for 204
+  - name: Sleep for 60 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 60
 
-  # - name: Poll the status of tenant delete by making get call to /api/v1/tenant/tenant_id
-  #   command: epicctl api get -u "/api/v1/tenant/{{ k8stenant.tenant_delete_id }}" -n "OnPremSetup" -p {{ common.platform }} -o /tmp/get-response.json
-  #   vars:
-  #     getResp: "{{ (lookup('file', '/tmp/get-response.json') | from_json)['status'] }}"
-  #   register : res
-  #   failed_when: false # when resource is deleted, last get call returns 404, don't want to fail it
-  #   changed_when: false
-  #   retries: 30
-  #   delay: 10
-  #   until:  '"deleting" != getResp'
-
-  # - debug:
-  #     msg: "{{ res.stdout }}"

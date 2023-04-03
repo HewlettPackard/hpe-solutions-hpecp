@@ -14,22 +14,43 @@
 ## limitations under the License.
 ####
 ---
-  - name: Prepare input file for epicctl.
-    template:
-      src: controller.j2
-      dest: /tmp/controller.yml
-      mode: 0640
+  - name: set fact for ere bin file url
+    set_fact:
+      url: "{{ controller.url_bin_path }}"
   
-  - name: Ensure to erase the previous install files on your local machine.
-    command: epicctl -n {{ common.name }} -p {{ common.platform }} destroy
-    register: res
-    failed_when: res.rc != 0
+  - name: set fact for file name of ere package
+    set_fact:
+      file_name: "{{ url | basename }}"
 
-  - name: Run epicctl command to setup and configure controller node
-    command: epicctl op -f /tmp/controller.yml -n {{ common.name }}
-    register: res
-    #failed_when: res.rc != 0
-    failed_when: false
+  - name: Check if bin file is copied to path
+    stat:
+      path: '/root/{{ file_name }}'
+    register: result
+
+  - name: Download latest ecp bin file
+    shell: wget --wait=5 "{{ url }}" -P /root/
+    when: not result.stat.exists
+
+  - name: Give execute permission to ecp bin file
+    file:
+      path: '/root/{{ file_name }}'
+      state: file
+      mode: "0775"
+
+  - name: Ensure to erase the previous install files on your local machine.
+    shell: ./"{{ file_name }}" --erase
+    args:
+      chdir: /root
+
+  - name: Run ecp bin file
+    shell: ./"{{ file_name }}" --install --default-password={{ controller_creds.password }} --controller-public-if={{ controller.controller_public_if }} --skipeula --force
+    register: response
+    args:
+      chdir: /root
 
   - debug:
-      msg: "{{ res.stdout }}"
+      msg: "{{ response }}"
+  
+  - name: Sleep for 200 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 200

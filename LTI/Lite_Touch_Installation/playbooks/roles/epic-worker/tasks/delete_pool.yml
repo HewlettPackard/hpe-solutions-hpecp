@@ -14,5 +14,5 @@
 ## limitations under the License.
 ####
 ---
-    - include_tasks: deleteworker.yml
-      with_items: "{{ epicworkers.host_pools }}" # This variable is set in the upstream playbook
+  - include_tasks: deleteworker.yml
+    with_items: "{{ epicworkers.host_pools }}" # This variable is set in the upstream playbook

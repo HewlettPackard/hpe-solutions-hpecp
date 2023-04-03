@@ -14,13 +14,142 @@
 ## limitations under the License.
 ####
 ---
-  - name: Setingup and configuring epic workers.
-    command: epicctl op -f /tmp/create_epicworkers.yml -n {{ common.name }}
-    register: res
-    # BUG: for some reason epicctl thinks that, there is an error
-    # but epicctl logs shows all success
-    #failed_when: false
-    failed_when: res.rc != 0
+  - name: Set the epic worker ip variable
+    set_fact:
+      worker_ip: "{{ item.worker }}"
+
+  - name: Set the epic worker node disk variable
+    set_fact:
+      worker_node_disk: "{{ epicworkers.node_disks }}"
+
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body:
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
+
+  - name: Fetch location header
+    set_fact:
+      session_token="{{ token.location }}"
+
+  - name: Fetch token
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
 
   - debug:
-      msg: "{{ res.stdout }}"
+      msg: "{{ token }}"
+
+  - name: Load add worker payload json file
+    include_vars:
+      file: /tmp/payload_add_epic.json
+      name: add_epic
+
+  - name: Update ip in json file
+    set_fact:
+      add_epic: "{{ add_epic | default({}) | combine({ 'ip': worker_ip }) }}"
+
+  - name: Write add-epic file back to disk.
+    copy:
+      content: "{{ add_epic | to_nice_json }}"
+      dest: /tmp/payload_add_epic.json
+
+  - name: Add epic-worker nodes
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/workers
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: "{{ lookup('file','/tmp/payload_add_epic.json') }}"
+      status_code:
+        - 201
+    register: res
+
+  - debug:
+      msg: "{{ res }}"
+
+  - name: Sleep for 350 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 350
+
+  - name: Fetch epic-worker id location
+    set_fact:
+      id_location="{{ res.location }}"
+  
+  - name: Fetch epic-worker id
+    set_fact:
+      id: "/{{id_location.split('/')[3]}}/{{id_location.split('/')[4]}}/{{id_location.split('/')[5]}}/{{id_location.split('/')[6]}}"
+
+  - debug:
+      msg="{{ id }}"
+  
+  - name: Configure epic-workers storage
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/install/?install_alter
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: PUT
+      body_format: json
+      body: "{\"workers\":[{\"containerdisks\":[\"{{ worker_node_disk }}\"],\"hdfsdisks\":[],\"id\":\"{{ id }}\",\"name\":\"{{ worker_ip }}\"}]}"
+      status_code:
+        - 204
+    register: response
+
+  - debug:
+      msg: "{{ response }}"
+
+  - name: Sleep for 450 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 450
+  
+  - name: Get epic-workers info
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/workers
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+        Content-Type: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: epic_workers_info
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      worker_info: "{{ epic_workers_info.content }}"
+
+  - name: Get valid worker status
+    set_fact:
+      worker_hrefs: "{{ item.state}}"
+    with_items: "{{worker_info._embedded.workers }}"
+    when: item.ip == worker_ip
+  
+  - debug: 
+      msg: "epic worker is ready"
+    when: worker_hrefs == "installed"
+  
+  - debug:
+      msg: "epic worker adding is failed"
+    failed_when: worker_hrefs == "storage_error" or worker_hrefs == "error" or worker_hrefs == "storage_config_error"
+    when: worker_hrefs != "installed"
+

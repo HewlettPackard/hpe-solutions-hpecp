@@ -15,32 +15,69 @@
 ####
 ---
 
-  - name: Prepare input file for epicctl to create controller ha.
-    template:
-      src: site-exit-lockdown.j2
-      dest: /tmp/site-exit-lockdown.json
-      mode: 0640
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: 
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
 
-  - name: Get Site Lockdown Response
-    command: epicctl api get -u "/api/v1/lock" -n {{ common.name }} -p {{ common.platform }} --jsonpath "._embedded.external_locks"  -o /tmp/get-lockresp.json
-    register: res
-    failed_when: res.rc != 0
+  - name: Fetch location header
+    set_fact: 
+      session_token="{{ token.location }}"
 
-  - name: Check if response file exists.
-    stat:
-      path: /tmp/get-lockresp.json
-    register: output
+  - name: Fetch token 
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
 
-  - set_fact:
-      jsondata: "{{ (lookup('file', '/tmp/get-lockresp.json') | from_json)}}"
-    when: output.stat.exists == True
+  - debug: 
+      msg="{{ token }}"
+  
+  - name: Get lock id for exit lock down mode
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/lock
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: lock_info
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      lock_id_info: "{{ lock_info.content }}"
 
   - set_fact:
       exit_url_lock: "{{ item._links.self.href }}"    # here item refers to json response array
-    with_items: "{{ jsondata }}"
+    with_items: "{{ lock_id_info._embedded.external_locks }}"
 
   - name: Exit Site Lockdown
-    command: epicctl api delete -a -u {{ exit_url_lock }} -f /tmp/site-exit-lockdown.json -p  {{ common.platform }} -n {{ common.name }}
-    register: res
-    failed_when: res.rc != 0
+    uri:
+      url: http://{{ controller.host_ip }}:8080{{ exit_url_lock }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      method: DELETE
+      status_code:
+        - 204
+    register: response
 
+  - debug:
+      msg: "{{ response }}"

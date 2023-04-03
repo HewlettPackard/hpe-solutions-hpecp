@@ -29,7 +29,6 @@
       - role: k8s-hosts
         vars:
           deletehosts: yes
-          delete_pools: yes
   
   - name: uninstall software from nodes.
     hosts: k8sclusternodes

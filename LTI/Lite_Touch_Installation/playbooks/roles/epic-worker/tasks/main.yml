@@ -14,12 +14,17 @@
 ## limitations under the License.
 ####
 ---
-  - include_tasks: add_pool.yml
+  - include_tasks: site_lock_mode.yml
+  
+  - include_tasks: payload.yml
     when: addworkers is defined
 
   - include_tasks: addworkers.yml
     when: addworkers is defined
+    with_items: "{{ epicworkers.host_pools }}"
 
   - include_tasks: delete_pool.yml
     when: deleteworkers is defined
 
+  - include_tasks: site_exit_lockdown.yml
+    

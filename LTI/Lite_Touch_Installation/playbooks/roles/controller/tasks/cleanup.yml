@@ -34,7 +34,7 @@
     - "pkill -9 haproxy"
     - "pkill -9 beam.smp"
     - "systemctl stop openvswitch"
-    - "rpm -e openvswitch"
+    - "zypper remove -y openvswitch"
 
   # Dangerous command, be careful before cleanup
   - name: Ensure storage disks are available.
@@ -45,3 +45,5 @@
     - "parted -ms /dev/sdb -- rm 1"
     - "wipefs -a /dev/sdb /dev/sdc"
     - "blockdev --rereadpt --flushbufs /dev/sdb /dev/sdc"
+
+

@@ -14,35 +14,128 @@
 ## limitations under the License.
 ####
 ---
-  - name: Create k8s cluster with epicctl and rest api.
-    command: epicctl api post -u "/api/v2/k8scluster/" -f /tmp/create_k8scluster.json -n {{ common.name }} -p {{ common.platform }} -o /tmp/post-response.json
-    register: res
-    failed_when: res.rc != 0
+  - name: Get session token to connect controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body:
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: login_response
+
+  - name: Fetch location header
+    set_fact:
+      session_token="{{ login_response.location }}"
+
+  - name: Fetch token
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
 
   - debug:
-     msg: "{{ res.stdout }}"
-  
-  - name: Check if response file exists.
-    stat:
-      path: /tmp/post-response.json
+      msg="{{ token }}"
+
+  - name: create k8s cluster
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/k8scluster
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: "{{ lookup('file','/tmp/payload_k8scluster.json') }}"
+      status_code:
+        - 201
     register: output
 
-  - name: Read response json file created during cluster creation
-    set_fact:
-      jsonResp: "{{ (lookup('file', '/tmp/post-response.json') | from_json)['location'] }}"
-    when: output.stat.exists == True
+  - debug:
+      msg: "{{ output }}"
 
-  - name: Poll the status of cluster creation by making get call to /api/v2/k8scluster/k8scluster_id
-    command: epicctl api get -u {{ jsonResp }} -n {{ common.name }} -p {{ common.platform }} -o /tmp/get-response.json
-    vars:
-      getResp: "{{ (lookup('file', '/tmp/get-response.json') | from_json)['status'] }}"
-    register : res
-    failed_when: res.rc != 0
-    changed_when: false
-    retries: 30
-    delay: 120
-    until:  '"ready" == getResp'
+  - name: Fetch k8s cluster status 
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/k8scluster
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: GET
+      status_code:
+        - 200
+    register: k8scluster_info
+
+  - debug: 
+      msg: "{{ k8scluster_info }}"
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      k8scluster_content: "{{ k8scluster_info.content }}"
+
+  - name: Set the k8s_cluster status info
+    set_fact:
+      k8s_cluster_status: "{{ item.status }}"    # here item refers to json response array
+    with_items: "{{ k8scluster_content._embedded.k8sclusters }}"
+  
+  - debug: 
+      msg: "k8s cluster failed"
+    failed_when: k8s_cluster_status == "error"
+    when: k8s_cluster_status != "ready"
+    
+  - debug:
+      msg: "k8s cluster successfully created"
+    when: k8s_cluster_status == "ready"
 
   - debug:
-      msg: "polling task finished"
+      msg: "k8s cluster is getting created"
+    when: k8s_cluster_status == "creating"
+  
+  - name: Sleep for 5400 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 5400
 
+  - name: Fetch k8s cluster status 
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v2/k8scluster
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: GET
+      status_code:
+        - 200
+    register: k8scluster_info_creating
+  
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      k8scluster_content_info: "{{ k8scluster_info_creating.content }}"
+
+  - name: Set the k8s_cluster status info
+    set_fact:
+      k8s_cluster_status_new: "{{ item.status }}"    # here item refers to json response array
+    with_items: "{{ k8scluster_content_info._embedded.k8sclusters }}"
+  
+  - debug:
+      msg: "{{ k8s_cluster_status_new }}"
+    
+  - debug: 
+      msg: "k8s cluster failed\still creating check dashboard"
+    failed_when: k8s_cluster_status_new == "error"
+    when: k8s_cluster_status_new != "ready"
+
+  - debug:
+      msg: "k8s cluster successfully created"
+    when: k8s_cluster_status_new == "ready"
+  

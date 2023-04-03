@@ -19,3 +19,7 @@
     when: cleanup is defined
   - include_tasks: setup_controller.yml
     when: provision is defined
+  - include_tasks: payload.yml
+    when: post_install_config is defined
+  - include_tasks: Post_install_config_controller.yml
+    when: post_install_config is defined

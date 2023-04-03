@@ -15,7 +15,6 @@
 ####
 
 ---
-
   - name: Deploysles_os and prepare the hosts for HPECP deployment
     hosts: sles_os
     gather_facts: false

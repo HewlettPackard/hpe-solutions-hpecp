@@ -21,7 +21,6 @@
       - role: epic-worker
         vars:
           deleteworkers: yes
-          delete_pools: yes
 
   - name: uninstall software from nodes.
     hosts: epicworker
