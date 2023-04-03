@@ -36,7 +36,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
    3. Ansible 2.9.x and python 3.x and above should be installed. Please refer to the [Installer machine](https://hewlettpackard.github.io/hpe-solutions-hpecp/5.6-DL/Solution-Deployment/Host-Configuration.html#installer-machine) section of the deployment guide 
             
    4. Setup the installer machine to configure the nginx, development tools and other python packages required for LTI installation.
-      Navigate to the directory, $BASE_DIR/ERE_RestAPI_Based_Deployment/playbooks/roles/os_deployment/tasks and run the below command. 
+      Navigate to the directory, $BASE_DIR/Lite_Touch_Installation/playbooks/roles/os_deployment/tasks and run the below command. 
 
         ```
          sh setup.sh
@@ -119,7 +119,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 
 -   Update the values in *vars.yml* according to your environment.
 
--   Navigate to the base directory $BASE_DIR/ERE_RestAPI_Based_Deployment and Use following command to edit *vars.yml* file
+-   Navigate to the base directory $BASE_DIR/Lite_Touch_Installation and Use following command to edit *vars.yml* file
 
 **NOTE** The value for the constant "$BASE_DIR" referred to is /opt/hpe/solutions/hpecp/hpe-solutions-hpecp/LTI/
 
@@ -129,7 +129,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 - The hosts file is being generated in the backend during the OS deployment process.User can edit the hosts file if required according to their requirement.
   
   ```
-   vi $BASE_DIR/ERE_RestAPI_Based_Deployment/hosts
+   vi $BASE_DIR/Lite_Touch_Installation/hosts
   ```
 
 **NOTE**
@@ -141,7 +141,10 @@ Sample vars.yml can be found in the following path ```group_vars/all/vars.sample
 
 1. HPE Ezmeral Runtime Enterprise can be deployed by running ```site.yml``` or by running individual playbooks. Each playbook description can be found further in this document
 
-Run the below command to execute the Lite Touch Installation.
+Run the below command to execute the Lite Touch Installation 
+   ```
+  	cd $BASE_DIR/Lite_Touch_Installation/
+   ```
 
    ```
 	  ansible-playbook -i hosts site.yml  --ask-vault-pass
@@ -287,6 +290,7 @@ If user want ERE deployment through airgap mode then perform below steps:
 - To setup docker registry update the details under airgap section in vars.yml and run below command to setup docker registry (registry server).
 
    ```
+      cd $BASE_DIR/Lite_Touch_Installation/
       ansible-playbook -i hosts playbooks/setup_docker_registry.yml --ask-vault-pass
    ```
 **setup_docker_registry.yml**
