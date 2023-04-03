@@ -71,16 +71,7 @@
 
     
   - name: Activating the HA module using user credentials
-    command: SUSEConnect -p sle-ha/15.2/x86_64 -r {{ ha_code }}
-    when: Mode == 2
-    retries: 20
-    delay: 3
-    register: result
-    until: result.rc == 0
-
-
-  - name: Activating the caas module using user credentials
-    command: SUSEConnect -p caasp/4.5/x86_64 -r {{ caas_code }}
+    command: SUSEConnect -p sle-ha/15.3/x86_64 -r {{ ha_code }}
     when: Mode == 2
     retries: 20
     delay: 3
@@ -89,11 +80,7 @@
 
 
   - name: Activating the HA module using RMT server
-    command: SUSEConnect -p sle-ha/15.2/x86_64 
-    when: Mode == 1
-
-  - name: Activating the caas module using RMT server
-    command: SUSEConnect -p caasp/4.5/x86_64
+    command: SUSEConnect -p sle-ha/15.3/x86_64 
     when: Mode == 1
 
   - name: Installing Zypper packages
@@ -145,8 +132,11 @@
     lineinfile:
       path: /etc/default/grub
       regexp: 'GRUB_CMDLINE_LINUX='
-      line: GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=0 systemd.legacy_systemd_cgroup_controller=1 apparmor=0 cgroup_enable=memory swapaccount=1 ipv6.disable=1 security=selinux selinux=1"
-
+      line: GRUB_CMDLINE_LINUX="splash=silent mitigations=auto quiet systemd.unified_cgroup_hierarchy=0 systemd.legacy_systemd_cgroup_controller=1 apparmor=0 cgroup_enable=memory swapaccount=1 ipv6.disable=1 selinux=0"
+  
+  - name: Refresh bootloader parameters
+    command: update-bootloader --refresh
+    
   - name: Running grub2 command
     command: grub2-mkconfig
 
@@ -156,9 +146,9 @@
   - name: Rebooting the hosts
     reboot:
   
-  - name: Enabling firewall
-    command: systemctl enable firewalld
+  - name: Disable firewall
+    command: systemctl disable firewalld
     
-  - name: Starting firewall service
-    command: systemctl start firewalld
+  - name: Stop firewall service
+    command: systemctl stop firewalld
      

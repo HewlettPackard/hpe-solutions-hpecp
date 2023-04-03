@@ -14,122 +14,104 @@
 ## limitations under the License.
 ####
 ---
-  - name: Get the host URI using the name/ip address.
-    command: epicctl api get -u /api/v1/workers -n {{ common.name }} -p {{ common.platform }} --jsonpath "._embedded.workers" -o /tmp/get-response.json
-    register: res
-    failed_when: res.rc != 0
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: 
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
 
-  - name: Check if response file exists.
-    stat:
-      path: /tmp/get-response.json
-    register: output
+  - name: Fetch location header
+    set_fact: 
+      session_token="{{ token.location }}"
 
-  - name: Parse json to retrieve the tenant URI.
+  - name: Fetch token 
     set_fact:
-      epic_workers: "{{ lookup('file', '/tmp/get-response.json') | from_json }}"
-    when: output.stat.exists == True
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug: 
+      msg="{{ token }}"
   
+  - name: Get worker host id info
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/workers
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: GET
+      status_code:
+        - 200
+    register: output
+  
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      epicworkers: "{{ output.content }}"
+
   - name: Set host name that needs to deleted
     set_fact:
       host_to_deleted: "{{ item.worker }}"
-  
-  - name: Set hdfs_disks status
-    set_fact:
-      hdfs_disks_status: "{{ epicworkers.hdfs_disks }}"
 
+  - name: save ip as variable to delete epic worker
+    set_fact:
+      epic_worker_ip_info: "{{ item.ip}}"
+    with_items: "{{ epicworkers._embedded.workers }}"
   
+  - name: print host to be deleted
+    debug:
+      msg: "{{ host_to_deleted }}"
+
+  - name: print ip of epic worker to be deleted
+    debug:
+      msg: "{{ epic_worker_ip_info }}"
+
   - name: Set the epicworker_uri variable.
     set_fact:
       epicworker_uri: "{{ item._links.self.href }}"
-    with_items: "{{ epic_workers }}"
+    with_items: "{{ epicworkers._embedded.workers }}"
     when: item.ip  == host_to_deleted
 
   - debug:
       msg: "{{ epicworker_uri }}"
-    failed_when: epicworker_uri is undefined
+    when: item.ip == host_to_deleted
+    with_items: "{{ epicworkers._embedded.workers }}"
 
-  - name: Get the storage_commission_status log
-    command: epicctl api get -u "{{ epicworker_uri }}" -a -n {{ common.name }} -p {{ common.platform }} -o /tmp/get-response.json
-    register: result
-
-  - name: Get the storage_commission_status
-    command: grep -i "hdfs_commission_status" /tmp/get-response.json
-    register: storage_status
-    ignore_errors: true
-
-  # Before deleting host, ensure host is decommissioned
-
-  - name: Get the hdfs_commission_status status
-    command: epicctl api get -u "{{ epicworker_uri }}" -a -n {{ common.name }} -p {{ common.platform }} --jsonpath ".hdfs_commission_status" -o /tmp/get-response.json
-    register: result
-    when: storage_status.stdout | length > 0
-    failed_when: result.rc != 0
-
-  - name: Set the decomminssion status to variable
-    set_fact:
-      decomm_status: "{{ result.stdout | from_json }}"
-    when: storage_status.stdout | length > 0
-
-  - name: create decommission request
-    template:
-      src: worker_decomm.j2  # {"commission": false, "operation": "hdfs_commission", "id": "/api/v1/workers/6"}
-      dest: "/tmp/epicworker-decomm.json"
-      mode: 0644
-    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
-
-  - name: Make request to decommission a epic worker.
-    command: epicctl api put -u "{{ epicworker_uri }}" -f /tmp/epicworker-decomm.json -n "{{ common.name }}" -p {{ common.platform }} -o /tmp/epicworker-decomm-response.json
-    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
+  - name: Delete epic worker with rest api
+    uri:
+      url: http://{{ controller.host_ip }}:8080{{ epicworker_uri }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+      method: DELETE
+      status_code:
+        - 204
     register: res
-    failed_when: res.rc != 0
+    when: item.ip == host_to_deleted
+    with_items: "{{ epicworkers._embedded.workers }}"
 
-  - pause:
-      seconds: 45
+  - debug:
+      msg: "{{ res }}"
+    when: item.ip == host_to_deleted
+    with_items: "{{ epicworkers._embedded.workers }}"
   
-  - name: Poll the status of host decommission process by making get call to /api/v1/worker/workerr_id
-    command: epicctl api get -u "{{ epicworker_uri }}" -a -n {{ common.name }} -p {{ common.platform }} --jsonpath ".hdfs_commission_status" -o /tmp/get-response.json
-    register : res
-    vars:
-      getResp: "{{ res.stdout | from_json }}"
-    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
-    failed_when: res.rc != 0
-    changed_when: false
-    retries: 30
-    delay: 30
-    until:  '"Decommissioning" != getResp'
+  - name: Sleep for 60 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 60
+    when: item.ip == host_to_deleted
+    with_items: "{{ epicworkers._embedded.workers }}"
 
-  - debug:
-      msg: "{{ res.stdout }}"
-    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
-
-  - debug:
-      msg: "polling of host decommission task finished"
-    when: storage_status.stdout | length > 0 and decomm_status in ["Normal", "Commissioned"]
-
-  - name: Delete epic worker with epicctl and rest api.
-    command: epicctl api delete -u "{{ epicworker_uri }}" -a -n "{{ common.name }}" -p {{ common.platform }} -o /tmp/delete-response.json
-    register: res
-    failed_when: res.rc != 0
-
-  - debug:
-     msg: "{{ res.stdout }}"
-
-  - pause:
-      seconds: 45
-
-  - name: Poll the status of host delete process by making get call to /api/v1/workers/worker_id
-    command: epicctl api get -u "{{ epicworker_uri }}" -a -n {{ common.name }} -p {{ common.platform }} --jsonpath ".state" -o /tmp/get-response.json
-    register: res
-    vars:
-      getResp: "{{ res.stdout | from_json }}"
-    when: res.rc != 404
-    ignore_errors: yes # last call returns 403, above templating fails, so ignoring the error forcibly
-    failed_when: false # TODO still fails at the last call. need to handle but passing this task
-    changed_when: false
-    retries: 20
-    delay: 30
-    until:  '"delete_in_progress" != getResp'
-
-  - debug:
-      msg: "polling of host delete task finished"
   

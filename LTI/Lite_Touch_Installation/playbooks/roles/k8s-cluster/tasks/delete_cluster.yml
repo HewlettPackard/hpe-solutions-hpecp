@@ -14,48 +14,78 @@
 ## limitations under the License.
 ####
 ---
-  - name: Get the k8s cluster json response.
-    command: epicctl api get -u /api/v2/k8scluster -n {{ common.name }} -p {{ common.platform }} --jsonpath "._embedded.k8sclusters" -o /tmp/get-response.json
-    register: res
-    failed_when: res.rc != 0
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: 
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
 
-  - name: Check if response file exists.
-    stat:
-      path: /tmp/get-response.json
-    register: output
+  - name: Fetch location header
+    set_fact: 
+      session_token="{{ token.location }}"
 
-  - name: Parse json to retrieve the tenant URI.
+  - name: Fetch token 
     set_fact:
-      k8sclusters: "{{ lookup('file', '/tmp/get-response.json') | from_json }}"
-    when: output.stat.exists == True
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug: 
+      msg="{{ token }}"
+  
+  - name: Get k8s cluster id info
+    uri:
+        url: http://{{ controller.host_ip }}:8080/api/v2/k8scluster
+        return_content: yes
+        validate_certs: false
+        headers:
+          X-BDS-SESSION: "{{ token }}"
+          Content-Type: "application/json"
+          Accept-Charset: "UTF-8"
+        method: GET
+        status_code:
+          - 200
+    register: output
+  
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      k8scluster_id_info: "{{ output.content }}"
 
   - name: Set the k8scluster_uri variable.
     set_fact:
       k8scluster_uri: "{{ item._links.self.href }}"
-    with_items: "{{ k8sclusters }}"
+    with_items: "{{ k8scluster_id_info._embedded.k8sclusters }}"
     when: item.label.name == "{{ k8scluster.name }}"
 
   - debug:
       msg: "{{ k8scluster_uri }}"
 
-  - name: Delete k8s cluster with epicctl and rest api.
-    command: epicctl api delete -u "{{ k8scluster_uri }}" -n {{ common.name }} -p {{ common.platform }} -o /tmp/delete-response.json
+  - name: Delete k8s cluster with rest api.
+    uri:
+      url: http://{{ controller.host_ip }}:8080{{ k8scluster_uri }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: DELETE
+      status_code:
+        - 204
     register: res
-    failed_when: res.rc != 0
 
   - debug:
-     msg: "{{ res.stdout }}"
-  
-  - name: Poll the status of cluster delete by making get call to /api/v2/k8scluster/k8scluster_id
-    command: epicctl api get -u "{{ k8scluster_uri }}" -n {{ common.name }} -p {{ common.platform }} -o /tmp/get-response.json
-    vars:
-      getResp: "{{ (lookup('file', '/tmp/get-response.json') | from_json)['status'] }}"
-    register : res
-    failed_when: false # when resource is deleted, last get call returns 404, don't want to fail it
-    changed_when: false
-    retries: 30
-    delay: 10
-    until:  '"deleting" != getResp'
+      msg: "{{ res }}"
 
-  - debug:
-      msg: "{{ res.stdout }}"
+  - name: Sleep for 600 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 600

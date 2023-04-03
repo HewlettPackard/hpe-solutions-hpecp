@@ -1,37 +1,72 @@
-###
-## Copyright (2021) Hewlett Packard Enterprise Development LP
-##
-## Licensed under the Apache License, Version 2.0 (the "License");
-## You may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-##
-## http://www.apache.org/licenses/LICENSE-2.0
-##
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-####
----
+--- 
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: 
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
 
-  - name: Prepare input file for epicctl to create controller ha.
-    template:
-      src: site-lockdown.j2
-      dest: /tmp/site-lockdown.json
-      mode: 0640
+  - name: Fetch location header
+    set_fact: 
+      session_token="{{ token.location }}"
 
-  - name: Check site lockdown
-    command: epicctl api get -u "/api/v1/lock" -n {{ common.name }} -p {{ common.platform }} -o /tmp/get-lockresp.json
-    register: res
-    failed_when: res.rc != 0
+  - name: Fetch token 
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
 
-  - set_fact:
-      lock_status: "{{ (lookup('file', '/tmp/get-lockresp.json') | from_json)['locked'] }}"
+  - debug: 
+      msg="{{ token }}"
+  
+  - name: Get lock id if available
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/lock
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: lock_info
 
-  - name: Enter Site Lockdown
-    command: epicctl api post -a -u "/api/v1/lock/" -f /tmp/site-lockdown.json -p  {{ common.platform }} -n {{ common.name }}
-    register: res
-    when: lock_status == false
-    failed_when: res.rc != 0
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      lock_id_info: "{{ lock_info.content }}"
 
+  - name: Save external lock value as a Fact
+    set_fact:
+      lock_info: "{{ lock_id_info._embedded.external_locks }}"
+
+  - name: Put ERE in lock down mode
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/lock
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      method: POST
+      body_format: json
+      body:
+        reason: "To enable controller HA"
+      status_code:
+        - 201
+    register: response
+    when: lock_info == []
+
+  - debug:
+      msg: "{{ response }}"
+    when: lock_info == []

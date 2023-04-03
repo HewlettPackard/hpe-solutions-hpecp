@@ -7,7 +7,7 @@
 ##
 ## http://www.apache.org/licenses/LICENSE-2.0
 ##
-## Unless required by applicable law or agreed to in writing, software
+## Unless required by applicable law or agreed to in writing, softaware
 ## distributed under the License is distributed on an "AS IS" BASIS,
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ## See the License for the specific language governing permissions and
@@ -29,7 +29,23 @@
     - "pkill -9 haproxy"
     - "pkill -9 beam.smp"
     - "systemctl stop openvswitch"
-    - "rpm -e openvswitch"
+    - "zypper remove -y openvswitch"
+    - "systemctl stop kube-apiserver"
+    - "systemctl stop etcd"
+
+  - name: Check if common sles bin file is there
+    find:
+      paths: "/tmp/"
+      use_regex: yes
+      patterns: "common-cp-*"
+      file_type: "file"
+    register: var
+
+  - name: Erase common sles release bin file
+    shell: ./common-cp-* --erase
+    when: var.files != []
+    args:
+      chdir: /tmp/
 
   - name: Disable swap
     command: swapoff -a

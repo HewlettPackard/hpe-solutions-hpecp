@@ -15,11 +15,12 @@
 ####
 
 ---
-  - include_tasks: template_to_json.yml
+  - include_tasks: payload.yml
     when: provision is defined
-  - include_tasks: pool.yml
-    when: provision is defined
+  - include_tasks: update_json.yml
+    when: provision is defined 
+    with_items: "{{ k8scluster.host_pools }}" 
   - include_tasks: create_cluster.yml
-    when: provision is defined  
+    when: provision is defined 
   - include_tasks: delete_cluster.yml
     when: decommission is defined

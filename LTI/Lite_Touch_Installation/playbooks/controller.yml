@@ -23,9 +23,18 @@
           cleanup: yes
 
   - name: Provision controller nodes
-    hosts: localhost
+    hosts: controller
     gather_facts: false
     roles:
       - role: controller
         vars:
           provision: yes
+  
+  - name: Post install configuration of controller nodes
+    hosts: localhost
+    gather_facts: false
+    roles:
+      - role: controller
+        vars:
+          post_install_config: yes
+          

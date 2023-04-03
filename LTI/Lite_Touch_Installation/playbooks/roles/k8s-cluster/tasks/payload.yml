@@ -1,0 +1,25 @@
+---
+  - name: creating payload json file 
+    copy:
+      dest: "/tmp/payload_k8scluster.json"
+      content: |
+        {
+          "label": {
+            "name": "{{ k8scluster.name }}",
+            "description": "{{ k8scluster.description }}"
+          },
+          "k8shosts_config": [],
+          "k8s_version": "{{ k8scluster.k8sversion }}",
+          "pod_network_range": "{{ k8scluster.pod_network_range }}",
+          "service_network_range": "{{ k8scluster.service_network_range }}",
+          "pod_dns_domain": "{{ k8scluster.pod_dns_domain }}",
+          "datafabric": "{{ k8scluster.tagvalue }}",
+          "datafabric_name": "{{ k8scluster.tagname }}",
+          "addons": ["{{ k8scluster.addon }}"]
+        }
+    register: output
+
+  - debug:
+      msg:  "{{ output }}"
+  
+      

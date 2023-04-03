@@ -14,69 +14,98 @@
 ## limitations under the License.
 ####
 ---
-  - name: Get the host URI using the name/ip address.
-    command: epicctl api get -u /api/v1/workers -n {{ common.name }} -p {{ common.platform }} --jsonpath "._embedded.workers" -o /tmp/get-response.json
-    register: res
-    failed_when: res.rc != 0
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: 
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
 
-  - name: Check if response file exists.
-    stat:
-      path: /tmp/get-response.json
-    register: output
+  - name: Fetch location header
+    set_fact: 
+      session_token="{{ token.location }}"
 
-  - name: Parse json to retrieve the tenant URI.
+  - name: Fetch token 
     set_fact:
-      gateways: "{{ lookup('file', '/tmp/get-response.json') | from_json }}"
-    when: output.stat.exists == True
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug: 
+      msg="{{ token }}"
+  
+  - name: Get gateway host id info
+    uri:
+        url: http://{{ controller.host_ip }}:8080/api/v1/workers
+        return_content: yes
+        validate_certs: false
+        headers:
+          X-BDS-SESSION: "{{ token }}"
+          Content-Type: "application/json"
+          Accept-Charset: "UTF-8"
+        method: GET
+        status_code:
+          - 200
+    register: output
+  
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      gateways: "{{ output.content }}"
   
   - name: Set host name that needs to deleted
     set_fact:
       host_to_deleted: "{{ item.gateway }}"
+  
+  - name: Set gateway ip to delete 
+    set_fact:
+      gateway_ip_info: "{{ item.ip }}"
+    with_items: "{{ gateways._embedded.workers }}"
 
-  - name: debug host name
+  - name: set host name to be deleted
     debug:
       msg: "{{ host_to_deleted }}"
-
-  - name: debug item
-    debug:
-      msg: "{{ item }}"
-    with_items: "{{ gateways }}"
   
   - name: Set the gateway_uri variable.
     set_fact:
       gateway_uri: "{{ item._links.self.href }}"
-    with_items: "{{ gateways }}"
+    with_items: "{{ gateways._embedded.workers }}"
     when: item.ip  == host_to_deleted
 
   - ansible.builtin.debug:
       msg: "{{ gateway_uri }}"
-    failed_when: gateway_uri is undefined
+    when: item.ip == host_to_deleted
+    with_items: "{{ gateways._embedded.workers }}"
 
-  - name: Delete gateway with epicctl and rest api.
-    command: epicctl api delete -u "{{ gateway_uri }}" -a -n "{{ common.name }}" -p {{ common.platform }} -o /tmp/delete-response.json
+  - name: Delete gateway with rest api.
+    uri:
+      url: http://{{ controller.host_ip }}:8080{{ gateway_uri }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Accept-Charset: "UTF-8"
+      method: DELETE
+      status_code:
+        - 204
     register: res
-    failed_when: res.rc != 0
-
-  
-  - debug:
-     msg: "{{ res.stdout }}"
-
-  - pause:
-      seconds: 45
-
-  - name: Poll the status of host delete process by making get call to /api/v2/workers/gateway_id
-    command: epicctl api get -u "{{ gateway_uri }}" -a -n {{ common.name }} -p {{ common.platform }} --jsonpath ".status" -o /tmp/get-response.json
-    register: res
-    vars:
-      getResp: "{{ res.stdout | from_json }}"
-    when: res.rc != 404
-    ignore_errors: yes # last call returns 403, above templating fails, so ignoring the error forcibly
-    failed_when: false
-    changed_when: false
-    retries: 20
-    delay: 30
-    until:  '"deleting" != getResp'
+    when: item.ip == host_to_deleted
+    with_items: "{{ gateways._embedded.workers }}"
 
   - debug:
-      msg: "polling of host delete task finished"
-  
+      msg: "{{ res }}"
+    when: item.ip == host_to_deleted
+    with_items: "{{ gateways._embedded.workers }}"
+
+  - name: Sleep for 60 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 60
+    when: item.ip == host_to_deleted
+    with_items: "{{ gateways._embedded.workers }}"

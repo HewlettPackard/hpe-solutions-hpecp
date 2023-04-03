@@ -1,0 +1,19 @@
+---
+  - name: creating payload json file for adding epic workers 
+    copy:
+      dest: "/tmp/payload_add_epic.json"
+      content: |
+        {
+          "ip": "",
+          "purpose": "worker",
+          "credentials": {
+            "type": "password_access",
+            "password": "{{ credentials.ssh.password }}"
+          },
+          "tags": []
+        }
+    register: output
+
+  - debug:
+      msg: "{{ output }}"
+

@@ -15,6 +15,7 @@
 ####
 ---
 # tasks file for tools
+
   - set_fact:
       env: {}
     when: common.proxy is not defined
@@ -43,43 +44,13 @@
     retries: 30
     delay: 15 # Every 5 seconds
     with_items:
-    - url: https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_cli_version }}/bin/linux/amd64/kubectl
-      dest: "{{ tools_dir }}/kubectl"
-      mode: 755
-    - url: https://epicctl.s3.amazonaws.com/beta.6/linux/epicctl
-      dest: "{{ tools_dir }}/epicctl"
-      mode: 755
-    - url: https://bluedata-releases.s3.amazonaws.com/kubectl-epic/3.2/162/linux/kubectl-hpecp
-      dest: "{{ tools_dir }}/kubectl-hpecp"
-      mode: 755
     - url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
       dest: "{{ tools_dir }}/jq"
       mode: 755
     environment: "{{ env }}"
-
-  - name: Move epicctl to /usr/local/bin directory
-    copy:
-      src: "{{ tools_dir }}/epicctl"
-      dest: /usr/local/bin
-      mode: preserve
-  
-  - name: Move kubectl-hpecp to /usr/local/bin directory
-    copy:
-      src: "{{ tools_dir }}/kubectl-hpecp"
-      dest: /usr/local/bin
-      mode: preserve
-
-  - name: Move kubectl to /usr/local/bin directory
-    copy:
-      src: "{{ tools_dir }}/kubectl"
-      dest: /usr/local/bin
-      mode: preserve
 
   - name: Move jq to /usr/local/bin directory
     copy:
       src: "{{ tools_dir }}/jq"
       dest: /usr/local/bin
       mode: preserve
-
-#  - name: Create host file from input infor
-#    command: python3 /tmp/HPECP-Synergy-develop/scripts/hcp_epicctl_deployment/playbooks/roles/tools/tasks/create_hostfile.py

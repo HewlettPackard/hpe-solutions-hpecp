@@ -29,5 +29,5 @@
     - "pkill -9 haproxy"
     - "pkill -9 beam.smp"
     - "systemctl stop openvswitch"
-    - "rpm -e openvswitch"
+    - "zypper remove -y openvswitch"
   
