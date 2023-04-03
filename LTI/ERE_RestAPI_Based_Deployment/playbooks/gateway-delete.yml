@@ -1,3 +1,4 @@
+
 ###
 ## Copyright (2021) Hewlett Packard Enterprise Development LP
 ##
@@ -14,6 +15,27 @@
 ## limitations under the License.
 ####
 ---
-# tasks file for datafabric register nodes
-  - include_tasks: datafabric.yml
+  - name: Ensure to cleanup ports and services before adding hosts.
+    hosts: gateway
+    gather_facts: false
+    roles:
+      - role: gateway
+        vars:
+          cleanup: yes
+
+  - name: Delete gateway.
+    hosts: localhost
+    gather_facts: false
+    roles:
+      - role: gateway
+        vars:
+          deletegateway: yes
   
+  - name: Prepare nodes before installing software.
+    hosts: gateway
+    gather_facts: false
+    roles:
+      - role: uninstall-bds
+        vars:
+          uninstall: yes
+

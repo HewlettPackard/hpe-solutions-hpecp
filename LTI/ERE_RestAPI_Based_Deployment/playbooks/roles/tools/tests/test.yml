@@ -14,6 +14,7 @@
 ## limitations under the License.
 ####
 ---
-# tasks file for datafabric register nodes
-  - include_tasks: datafabric.yml
-  
+- hosts: localhost
+  remote_user: root
+  roles:
+    - tools

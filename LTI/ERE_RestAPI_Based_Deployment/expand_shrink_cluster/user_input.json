@@ -1,0 +1,16 @@
+{
+    "_comment_1": "IP Address of the primary controller",
+    "CONTROLLER_IP": "controller_IP_address",
+
+    "_comment_2": "name of the existing compute cluster",
+    "CLUSTER_NAME": "name_of_cluster",
+  
+    "_comment_3": "Cluster Operation ('expand' or 'shrink')",
+    "EXPAND_OR_SHRINK": "expand_or_shrink",
+  
+    "_comment_4": "Host IP's for expansion or shrinking( Host must be present in the list of available hosts)",
+    "HOST_IP's": ["IP_ADDRESS_1","IP_ADDRESS_2","IP_ADDRESS_3"],
+
+    "_comment_5": "Roles of the Hosts ('master' or 'worker')",
+    "HOST_ROLE": ["master_or_worker","master_or_worker","master_or_worker"]
+}

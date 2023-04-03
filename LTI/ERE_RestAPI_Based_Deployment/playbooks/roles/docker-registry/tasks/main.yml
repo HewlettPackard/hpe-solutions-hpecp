@@ -14,6 +14,13 @@
 ## limitations under the License.
 ####
 ---
-# tasks file for datafabric register nodes
-  - include_tasks: datafabric.yml
-  
+# tasks file to setup docker registry
+
+  - include_tasks: setup_dockerregistry.yml
+    when: createregistry is defined and airgap.is_airgap_env == true
+
+
+  - include_tasks: configure_dockerregistry.yml
+    when: configureregistry is defined and airgap.is_airgap_env == true
+
+    

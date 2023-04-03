@@ -14,6 +14,18 @@
 ## limitations under the License.
 ####
 ---
-# tasks file for datafabric register nodes
-  - include_tasks: datafabric.yml
+  - include_tasks: cleanup.yml
+    when: cleanup is defined
   
+  - include_tasks: payload.yml
+    when: addhosts is defined
+
+  - include_tasks: addhosts.yml
+    when: addhosts is defined
+    with_items: "{{ k8shosts.host_pools }}"
+
+  - include_tasks: deletehost.yml
+    when: deletehosts is defined
+    with_items: "{{ k8shosts.host_pools }}"
+    
+

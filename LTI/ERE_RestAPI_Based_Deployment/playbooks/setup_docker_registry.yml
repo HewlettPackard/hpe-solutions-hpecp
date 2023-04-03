@@ -14,6 +14,18 @@
 ## limitations under the License.
 ####
 ---
-# tasks file for datafabric register nodes
-  - include_tasks: datafabric.yml
+  - name: Create & setup Docker Registry.
+    hosts: localhost
+    gather_facts: false
+    roles:
+      - role: docker-registry
+        vars:
+          createregistry: yes
   
+  - name: Setup hpe utility and add images to resgitry.
+    hosts: localhost
+    gather_facts: false
+    roles:
+      - role: docker-registry
+        vars:
+          configureregistry: yes

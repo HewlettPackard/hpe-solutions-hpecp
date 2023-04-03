@@ -1,0 +1,56 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+  - name: set fact for ere bin file url
+    set_fact:
+      url: "{{ controller.url_bin_path }}"
+  
+  - name: set fact for file name of ere package
+    set_fact:
+      file_name: "{{ url | basename }}"
+
+  - name: Check if bin file is copied to path
+    stat:
+      path: '/root/{{ file_name }}'
+    register: result
+
+  - name: Download latest ecp bin file
+    shell: wget --wait=5 "{{ url }}" -P /root/
+    when: not result.stat.exists
+
+  - name: Give execute permission to ecp bin file
+    file:
+      path: '/root/{{ file_name }}'
+      state: file
+      mode: "0775"
+
+  - name: Ensure to erase the previous install files on your local machine.
+    shell: ./"{{ file_name }}" --erase
+    args:
+      chdir: /root
+
+  - name: Run ecp bin file
+    shell: ./"{{ file_name }}" --install --default-password={{ controller_creds.password }} --controller-public-if={{ controller.controller_public_if }} --skipeula --force
+    register: response
+    args:
+      chdir: /root
+
+  - debug:
+      msg: "{{ response }}"
+  
+  - name: Sleep for 200 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 200

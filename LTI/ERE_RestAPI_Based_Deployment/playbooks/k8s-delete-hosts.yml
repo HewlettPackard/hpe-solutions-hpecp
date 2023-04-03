@@ -14,6 +14,26 @@
 ## limitations under the License.
 ####
 ---
-# tasks file for datafabric register nodes
-  - include_tasks: datafabric.yml
+  - name: Ensure to cleanup ports and services before adding hosts.
+    hosts: k8sclusternodes
+    gather_facts: false
+    roles:
+      - role: k8s-hosts
+        vars:
+          cleanup: yes
+
+  - name: Delete k8s-hosts from cluster.
+    hosts: localhost
+    gather_facts: false
+    roles:
+      - role: k8s-hosts
+        vars:
+          deletehosts: yes
   
+  - name: uninstall software from nodes.
+    hosts: k8sclusternodes
+    gather_facts: false
+    roles:
+      - role: uninstall-bds
+        vars:
+          uninstall: yes

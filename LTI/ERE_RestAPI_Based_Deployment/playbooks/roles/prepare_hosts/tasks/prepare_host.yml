@@ -1,0 +1,154 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+
+
+---
+  - name: Verifying registration status
+    command: SUSEConnect --status
+    register: reg_status
+
+  - name: De-registering the server
+    command: SUSEConnect --de-register
+    when: "'Not Registered' not in reg_status.stdout"
+
+  - name: Verifying Input Mode
+    debug:
+      msg: Input mode is {{ Mode }}
+
+  - fail: 
+       msg: "valid input mode,either 1 or 2 is required for server registration"
+    when: Mode !=1 and Mode !=2
+    
+  - name: Registering the server through RMT
+    command: SUSEConnect --url {{ RMT_URL }}
+    when: Mode == 1
+
+  - name: Verifying Internet Connection
+    uri:
+      url: http://api.ipify.org
+      return_content: yes
+    register: this
+    when: Mode == 2
+
+  - fail:
+      msg: "Active internet connection is required"
+    when: Mode == 2 and this.status != 200
+  
+  - name: Registering the server through user credentials
+    command: SUSEConnect -r {{ base_code }} -e {{ Email }}
+    when: Mode == 2
+    retries: 20
+    delay: 3
+    register: result
+    until: result.rc == 0
+
+  
+  - name: Verifying registration status
+    command: SUSEConnect --status
+    register: reg_status
+    failed_when: "'Not Registered' in reg_status.stdout"
+
+  - name: Installing the SLES modules
+    command: SUSEConnect -p "{{ item }}"
+    loop: "{{ sles_packages }}"
+    retries: 20
+    delay: 3
+    register: result
+    until: result.rc == 0
+
+    
+  - name: Activating the HA module using user credentials
+    command: SUSEConnect -p sle-ha/15.3/x86_64 -r {{ ha_code }}
+    when: Mode == 2
+    retries: 20
+    delay: 3
+    register: result
+    until: result.rc == 0
+
+
+  - name: Activating the HA module using RMT server
+    command: SUSEConnect -p sle-ha/15.3/x86_64 
+    when: Mode == 1
+
+  - name: Installing Zypper packages
+    zypper:
+      name: "{{ item }}"
+      state: latest
+    register: result
+    until: result is succeeded
+    retries: 30
+    delay: 15 #every 5 seconds
+    loop: "{{ zypper_packages }}"
+    
+  - name: Installing package for GPU host
+    zypper:
+      name: libglvnd-devel
+      state: latest
+    when: GPU_Host  == "yes"
+    
+  - name: Running sed command to change the autofs file
+    command: sed -i'' -e "s|#/net.*$|/net\ -hosts|g" /etc/auto.master
+    
+  - name: Checking apparmor service
+    command: systemctl status apparmor
+    register: armor_output
+    no_log: True
+    ignore_errors: True
+
+  - name: Stopping apparmor service
+    command: systemctl stop apparmor 
+    when: armor_output.rc == 0
+
+  - name: Disabling apparmor service
+    command: systemctl disable apparmor
+    when: armor_output.rc == 0
+
+  - name: Disabling SWAP in fstab 
+    replace:
+      path: /etc/fstab
+      regexp: '^(/dev/system/swap)'
+      replace: '# \1'
+ 
+  - name: Enable IPv4 forwarding 
+    replace:
+      path:  /etc/sysctl.d/70-yast.conf
+      regexp: 'net.ipv4.ip_forward = 0'
+      replace: 'net.ipv4.ip_forward = 1'
+  
+  - name: Updating grub file in accordance with hpecp implementation 
+    lineinfile:
+      path: /etc/default/grub
+      regexp: 'GRUB_CMDLINE_LINUX='
+      line: GRUB_CMDLINE_LINUX="splash=silent mitigations=auto quiet systemd.unified_cgroup_hierarchy=0 systemd.legacy_systemd_cgroup_controller=1 apparmor=0 cgroup_enable=memory swapaccount=1 ipv6.disable=1 selinux=0"
+  
+  - name: Refresh bootloader parameters
+    command: update-bootloader --refresh
+    
+  - name: Running grub2 command
+    command: grub2-mkconfig
+
+  - name: Running dracut command
+    command: dracut -f
+
+  - name: Rebooting the hosts
+    reboot:
+  
+  - name: Disable firewall
+    command: systemctl disable firewalld
+    
+  - name: Stop firewall service
+    command: systemctl stop firewalld
+     

@@ -14,6 +14,15 @@
 ## limitations under the License.
 ####
 ---
-# tasks file for datafabric register nodes
-  - include_tasks: datafabric.yml
+  - name: Check if script under bundles exists.
+    stat:
+      path: /opt/bluedata/bundles/{{ bundle_name }}/startscript.sh
+    register: res
+
+  - name: Uninstall software.
+    command: /opt/bluedata/bundles/{{ bundle_name }}/startscript.sh --erase
+    when: res.stat.exists == True
+    register: result
   
+  - debug:
+      msg: "{{ result }}"

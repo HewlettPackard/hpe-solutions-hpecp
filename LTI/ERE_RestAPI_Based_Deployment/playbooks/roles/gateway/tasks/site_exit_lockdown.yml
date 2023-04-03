@@ -1,0 +1,83 @@
+###
+## Copyright (2021) Hewlett Packard Enterprise Development LP
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## You may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+####
+---
+
+  - name: Get session token for connecting to controller
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/login
+      return_content: yes
+      validate_certs: false
+      headers:
+        Content-Type: "application/json"
+        Accept-Charset: "UTF-8"
+      method: POST
+      body_format: json
+      body: 
+        name: "{{ controller_creds.name }}"
+        password: "{{ controller_creds.password }}"
+      status_code:
+        - 201
+    register: token
+
+  - name: Fetch location header
+    set_fact: 
+      session_token="{{ token.location }}"
+
+  - name: Fetch token 
+    set_fact:
+      token: "/{{session_token.split('/')[3]}}/{{session_token.split('/')[4]}}/{{session_token.split('/')[5]}}/{{session_token.split('/')[6]}}"
+
+  - debug: 
+      msg="{{ token }}"
+  
+  - name: Get lock id for exit lock down mode
+    uri:
+      url: http://{{ controller.host_ip }}:8080/api/v1/lock
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      method: GET
+      status_code:
+        - 200
+    register: lock_info
+
+  - name: save the Json data to a Variable as a Fact
+    set_fact:
+      lock_id_info: "{{ lock_info.content }}"
+
+  - set_fact:
+      exit_url_lock: "{{ item._links.self.href }}"    # here item refers to json response array
+    with_items: "{{ lock_id_info._embedded.external_locks }}"
+
+  - name: Exit Site Lockdown
+    uri:
+      url: http://{{ controller.host_ip }}:8080{{ exit_url_lock }}
+      return_content: yes
+      validate_certs: false
+      headers:
+        X-BDS-SESSION: "{{ token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      method: DELETE
+      status_code:
+        - 204
+    register: response
+
+  - debug:
+      msg: "{{ response }}"
