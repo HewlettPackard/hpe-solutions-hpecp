@@ -14,10 +14,18 @@
 ## limitations under the License.
 ####
 ---
-  - name: Add epic workers into cluster and install bundle.
+  - name: Delete arbiter and shadow from cluster.
     hosts: localhost
     gather_facts: false
     roles:
-      - role: epic-worker
+      - role: shadow-arbiter
         vars:
-          addworkers: yes
+          deleteworkers: yes
+
+  - name: uninstall software from nodes.
+    hosts: shadowarbiter
+    gather_facts: false
+    roles:
+      - role: uninstall-bds
+        vars:
+          uninstall: yes
