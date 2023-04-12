@@ -131,7 +131,7 @@
       msg: "{{ k8s_cluster_status_new }}"
     
   - debug: 
-      msg: "k8s cluster failed\still creating check dashboard"
+      msg: "k8s cluster failed or still creating check dashboard"
     failed_when: k8s_cluster_status_new == "error"
     when: k8s_cluster_status_new != "ready"
 
