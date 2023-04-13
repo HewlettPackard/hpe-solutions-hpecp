@@ -2,4 +2,4 @@
  
 This folder contains the script to deploy HPE Ezmeral Runtime Enterprise 5.6 and HPE Ezmeral Data Fabric end-to-end.
  
-For more details please refer to https://hewlettpackard.github.io/hpe-solutions-hpecp/5.2-Synergy/Additional-Features-and-Functionality/Lite-Touch-Installation.html 
+For more details please refer to https://hewlettpackard.github.io/hpe-solutions-hpecp/5.6-DL/Additional-Features-and-Functionality/Lite-Touch-Installation.html
