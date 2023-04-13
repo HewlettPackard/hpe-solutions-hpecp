@@ -158,7 +158,7 @@ In case if user want to deploy through individual playbooks. Sequence of playboo
       ansible-playbook -i hosts playbooks/download-tools.yml --ask-vault-pass 
       ansible-playbook -i hosts playbooks/controller.yml --ask-vault-pass
       ansible-playbook -i hosts playbooks/gateway-add.yml --ask-vault-pass  
-      ansible-playbook -i hosts playbooks/epic-workers-add.yml --ask-vault-pass 
+      ansible-playbook -i hosts playbooks/shadow-arbiter-add.yml --ask-vault-pass 
       ansible-playbook -i hosts playbooks/controller-ha.yml --ask-vault-pass
       ansible-playbook -i hosts playbooks/k8s-add-hosts.yml --ask-vault-pass
       ansible-playbook -i hosts playbooks/k8s-create-cluster.yml --ask-vault-pass
@@ -209,7 +209,7 @@ Update {{ kubectl_cli_version }} with the version which user want to download. P
 
 - This playbook contains the script to add gateways. User can add multiple gateways by providing ip and host information in vars.yml file and also provide ip details in hosts inventory file.
 
-**epic-workers-add.yml**
+**shadow-arbiter-add.yml**
 
 - This playbook contains the script to add epic worker nodes. Provide epic worker details in vars.yml and also in hosts inventory file.
 
@@ -217,7 +217,7 @@ Update {{ kubectl_cli_version }} with the version which user want to download. P
 
 - This playbook contains the script to enable controller ha. User need to provide virtual ip with FQDN in vars.yml file to configure controller ha. Please make sure virtual ip details present in DNS entries.
 
-- User need to run ``` playbooks/epic-workers-add.yml``` playbook first to add required epic worker nodes. And then run ``` playbooks/controller-ha.yml``` playbook. 
+- User need to run ``` playbooks/shadow-arbiter-add.yml``` playbook first to add required epic worker nodes. And then run ``` playbooks/controller-ha.yml``` playbook. 
 
 **k8-add-hosts.yml**
 
@@ -251,14 +251,8 @@ Run the following command to disable controller ha.
 Run the following command to delete epic workers.
  
 ```
-	ansible-playbook -i hosts playbooks/epic-workers-delete.yml --ask-vault-pass
+	ansible-playbook -i hosts playbooks/shadow-arbiter-delete.yml --ask-vault-pass
 ```
-**NOTE**
-    - If platform **High Availability** is enabled, then the user cannot delete the Controller, Shadow Controller or Arbiter host from the ERE. 
-    - You must have **at least four (4) epic Worker Hosts** (including the HA epic worker hosts) in order to decommission the datanodes.
-    - If HA is not enabled, then the user can delete the epic workers as usual.
-    - For more information see <http://docs.bluedata.com/51_decommissioning-deleting-an-epic-worker>
-
 Run the following command to delete k8s hosts.
 
 ```
@@ -315,9 +309,3 @@ hpe-airgap-util --release <ere-release-number> --optional --copy --dest_url <doc
 Update {{ ere-release-number }} and {{ docker-registry-server }} with the version and registry server which user want to copy images and run above commands on server where you are configured registry server.
 
 - After docker-registry setup is ready run the playbooks shown in installation block above, follow same process which will deploy ERE through airgap environment.
-
-
-
-
-
-
