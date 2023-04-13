@@ -211,13 +211,13 @@ Update {{ kubectl_cli_version }} with the version which user want to download. P
 
 **shadow-arbiter-add.yml**
 
-- This playbook contains the script to add epic worker nodes. Provide epic worker details in vars.yml and also in hosts inventory file.
+- This playbook contains the script to add shadow and arbiter nodes. Provide shadow and arbiter node details in vars.yml and also in hosts inventory file.
 
 **controller-ha.yml**
 
 - This playbook contains the script to enable controller ha. User need to provide virtual ip with FQDN in vars.yml file to configure controller ha. Please make sure virtual ip details present in DNS entries.
 
-- User need to run ``` playbooks/shadow-arbiter-add.yml``` playbook first to add required epic worker nodes. And then run ``` playbooks/controller-ha.yml``` playbook. 
+- User need to run ``` playbooks/shadow-arbiter-add.yml``` playbook first to add required shadow and arbiter nodes. And then run ``` playbooks/controller-ha.yml``` playbook. 
 
 **k8-add-hosts.yml**
 
@@ -248,7 +248,7 @@ Run the following command to disable controller ha.
 	ansible-playbook -i hosts playbooks/disable-controller-ha.yml --ask-vault-pass
 ```
 
-Run the following command to delete epic workers.
+Run the following command to delete shadow and arbiter nodes.
  
 ```
 	ansible-playbook -i hosts playbooks/shadow-arbiter-delete.yml --ask-vault-pass
