@@ -14,7 +14,7 @@ Usage of Ansible playbooks to deploy the HPE Ezmeral Runtime Enterprise is autom
 
 -   Add gateway nodes, delete gateway nodes or enable gateway HA.
 
--   Add and delete EPIC worker nodes.
+-   Add and delete Shadow and arbiter nodes.
 
 -   Enable or disable controller high availability.
 
